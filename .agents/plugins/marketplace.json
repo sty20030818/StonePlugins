@@ -1,7 +1,7 @@
 {
   "name": "stonefish",
   "interface": {
-    "displayName": "Stonefish Plugins"
+    "displayName": "石头鱼插件"
   },
   "plugins": [
     {

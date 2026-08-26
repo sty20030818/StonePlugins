@@ -8,7 +8,7 @@ const ALLOWED_EVENTS = new Set([
     "SubagentStart",
     "UserPromptSubmit",
 ]);
-const PROMPT_REMINDER = "Stonefish Engineering 仍然生效：工程任务应加载 $stonefish-engineering；项目明确约束优先，选择最小完整、长期连贯且可验证的方案。";
+const PROMPT_REMINDER = "石头鱼工程工作流仍然生效：工程任务应加载 $stonefish-engineering；项目明确约束优先，选择最小完整、长期连贯且可验证的方案。";
 class SafeHookError extends Error {
     code;
     constructor(code) {
@@ -123,7 +123,7 @@ try {
 catch (error) {
     const code = error instanceof SafeHookError ? error.code : "未知错误";
     output = {
-        systemMessage: `Stonefish Engineering Hook 未加载：${code}。`,
+        systemMessage: `石头鱼工程工作流 Hook 未加载：${code}。`,
     };
 }
 process.stdout.write(JSON.stringify(output));

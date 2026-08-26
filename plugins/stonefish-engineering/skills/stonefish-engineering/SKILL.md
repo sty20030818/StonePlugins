@@ -3,7 +3,7 @@ name: stonefish-engineering
 description: "Use when implementing, debugging, reviewing, refactoring, or designing software changes that need durable ownership, scoped changes, and evidence-based verification. Not for pure prose or formatting with no technical effect."
 ---
 
-# 长期工程准则
+# 工程设计、实现与验证
 
 目标不是最少行数或最小 diff，而是完成已确认目标的**最小完整方案**：解决根因，把行为放到正确的所有者，保持一个清晰事实源，不遗留无退出条件的临时旁路或永久双轨，并让下一次相关修改更集中。
 

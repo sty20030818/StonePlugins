@@ -1,10 +1,10 @@
-# Stonefish Codex Plugins
+# 石头鱼 Codex 插件
 
 一个可通过 GitHub 安装和升级的 Codex marketplace。首个插件 `stonefish-engineering` 提供一套偏长期、重证据、控制复杂度的工程工作流。
 
-> Chinese-first today. The workflow is repository-aware and does not force the author's language, greeting, package manager, or project conventions on other users.
+> 当前以中文为主。工作流会尊重项目上下文，不会把作者个人的语言、称呼、包管理器或项目约定强加给其他用户。
 
-## Stonefish Engineering
+## 石头鱼工程工作流
 
 它把工程规则分成三层：
 
@@ -56,7 +56,7 @@ codex plugin add stonefish-engineering@stonefish
 安装并信任后，核心规则自动生效。复杂工程任务也可以显式调用：
 
 ```text
-$stonefish-engineering 按长期工程准则处理这个重构，并加载匹配的参考文件。
+$stonefish-engineering 按工程设计、实现与验证工作流处理这个重构，并加载匹配的参考文件。
 ```
 
 插件不会自动改变你的全局 `AGENTS.md`。作者自己的称呼、中文回复、Bun 兜底和 CodeGraph 规则位于 [examples/AGENTS.stonefish.md](examples/AGENTS.stonefish.md)，仅供选择性合并，不属于公开插件默认行为。
@@ -70,7 +70,7 @@ codex plugin add stonefish-engineering@stonefish
 
 更新后启动新任务。若 Hook 定义的 hash 发生变化，在 `/hooks` 中重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.2.1`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.0`。
 
 ## 隐私与安全
 
