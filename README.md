@@ -29,7 +29,7 @@ Hook 可以保证已信任脚本在相应生命周期运行并注入上下文，
 需要：
 
 - 支持 Plugins 和 Hooks 的当前 Codex CLI 或 ChatGPT 桌面版 Codex；
-- Hook 运行环境的 `PATH` 中存在 Node.js 20 或更高版本。
+- Hook 运行环境的 `PATH` 中存在 Node.js 22.18 或更高版本。
 
 安装前检查：
 
@@ -70,7 +70,7 @@ codex plugin add stonefish-engineering@stonefish
 
 更新后启动新任务。若 Hook 定义的 hash 发生变化，在 `/hooks` 中重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.1.0`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.2.0`。
 
 ## 隐私与安全
 
@@ -81,17 +81,18 @@ codex plugin add stonefish-engineering@stonefish
 
 ## 本地开发
 
-仓库没有 npm 依赖；使用 Node.js 20 或更高版本直接检查：
+插件运行时没有 npm 依赖。仓库开发使用 TypeScript，首次检查先安装开发依赖：
 
 ```bash
-node scripts/validate-repository.mjs
-node --check plugins/stonefish-engineering/hooks/inject-context.mjs
-node --test tests/inject-context.test.mjs
+npm ci
+npm run check
 ```
+
+Hook 源码位于 `plugins/stonefish-engineering/src/`；`npm run build` 会生成安装时实际执行的 `.mjs` 文件，不要直接编辑生成物。
 
 发布新版本时：
 
-1. 更新 `.codex-plugin/plugin.json` 的 SemVer。
+1. 同步更新根 `package.json` 与 `.codex-plugin/plugin.json` 的 SemVer。
 2. 更新 `CHANGELOG.md`。
 3. 运行本地验证并等待 GitHub Actions 通过。
 4. 创建同版本 tag，例如 `v0.1.1`，再创建 GitHub Release。

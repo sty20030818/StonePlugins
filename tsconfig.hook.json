@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "plugins/stonefish-engineering/src",
+    "outDir": "plugins/stonefish-engineering/hooks"
+  },
+  "include": ["plugins/stonefish-engineering/src/**/*.mts"]
+}

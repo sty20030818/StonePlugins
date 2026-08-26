@@ -14,7 +14,16 @@ const PLUGIN_ROOT = path.join(
 const HOOKS_DIR = path.join(PLUGIN_ROOT, "hooks");
 const SCRIPT = path.join(HOOKS_DIR, "inject-context.mjs");
 
-function runHook(input, options = {}) {
+type RunHookOptions = { pluginRoot?: string };
+
+type HookConfig = {
+  hooks: Record<
+    string,
+    Array<{ hooks: Array<{ command: string }> }>
+  >;
+};
+
+function runHook(input: unknown, options: RunHookOptions = {}) {
   const env = { ...process.env };
   if (Object.hasOwn(options, "pluginRoot")) {
     if (options.pluginRoot === undefined) delete env.PLUGIN_ROOT;
@@ -37,7 +46,7 @@ function runHook(input, options = {}) {
 test("Hook 配置覆盖三个事件并通过 PLUGIN_ROOT 启动同一脚本", () => {
   const config = JSON.parse(
     readFileSync(path.join(HOOKS_DIR, "hooks.json"), "utf8"),
-  );
+  ) as HookConfig;
   assert.deepEqual(Object.keys(config.hooks).sort(), [
     "SessionStart",
     "SubagentStart",
@@ -59,7 +68,7 @@ test("SessionStart 与 SubagentStart 注入版本化且去除 frontmatter 的核
     assert.equal(output.systemMessage, undefined);
     assert.match(
       output.hookSpecificOutput.additionalContext,
-      /STONEFISH ENGINEERING ACTIVE — v0\.1\.0/,
+      /STONEFISH ENGINEERING ACTIVE — v0\.2\.0/,
     );
     assert.match(
       output.hookSpecificOutput.additionalContext,

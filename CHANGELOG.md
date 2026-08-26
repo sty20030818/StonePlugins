@@ -2,6 +2,13 @@
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and use [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-08-26
+
+### Changed
+
+- Migrated Hook development, tests, and repository validation to statically checked TypeScript.
+- Kept the published Hook dependency-free by committing its generated `.mjs` runtime artifact.
+
 ## [0.1.0] - 2026-08-26
 
 ### Added
@@ -11,4 +18,5 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Git-backed Codex marketplace metadata.
 - Dependency-free Hook tests and repository validation.
 
+[0.2.0]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/sty20030818/stonefish-codex-plugins/releases/tag/v0.1.0

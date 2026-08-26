@@ -10,11 +10,18 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22, 24]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
-      - run: node scripts/validate-repository.mjs
-      - run: node --check plugins/stonefish-engineering/hooks/inject-context.mjs
-      - run: node --test tests/inject-context.test.mjs
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: git diff --exit-code -- plugins/stonefish-engineering/hooks/inject-context.mjs
+      - run: node scripts/validate-repository.ts
+      - run: node --test tests/inject-context.test.ts

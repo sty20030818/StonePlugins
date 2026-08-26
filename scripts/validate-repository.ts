@@ -10,11 +10,43 @@ const PLUGIN_NAME = "stonefish-engineering";
 const PLUGIN_ROOT = path.join(REPO_ROOT, "plugins", PLUGIN_NAME);
 const STRICT_SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
 
-function readJson(file) {
-  return JSON.parse(readFileSync(file, "utf8"));
+type PluginManifest = {
+  name: string;
+  version: string;
+  skills: string;
+  hooks?: unknown;
+  author?: { name?: string };
+  license: string;
+  interface?: { defaultPrompt?: string[] };
+};
+
+type Marketplace = {
+  name: string;
+  plugins: Array<{
+    name: string;
+    source: unknown;
+    policy?: { installation?: string; authentication?: string };
+  }>;
+};
+
+type HookConfig = {
+  hooks: Record<
+    string,
+    Array<{
+      hooks?: Array<{ type?: string; command?: string; timeout?: number }>;
+    }>
+  >;
+};
+
+type RepositoryPackage = {
+  version: string;
+};
+
+function readJson<T>(file: string): T {
+  return JSON.parse(readFileSync(file, "utf8")) as T;
 }
 
-function requireFile(file) {
+function requireFile(file: string): void {
   assert.ok(existsSync(file), `缺少文件：${path.relative(REPO_ROOT, file)}`);
 }
 
@@ -29,7 +61,10 @@ const marketplacePath = path.join(
   "plugins",
   "marketplace.json",
 );
+const repositoryPackagePath = path.join(REPO_ROOT, "package.json");
 const hooksPath = path.join(PLUGIN_ROOT, "hooks", "hooks.json");
+const hookSourcePath = path.join(PLUGIN_ROOT, "src", "inject-context.mts");
+const hookRuntimePath = path.join(PLUGIN_ROOT, "hooks", "inject-context.mjs");
 const skillPath = path.join(
   PLUGIN_ROOT,
   "skills",
@@ -37,13 +72,27 @@ const skillPath = path.join(
   "SKILL.md",
 );
 
-for (const file of [manifestPath, marketplacePath, hooksPath, skillPath]) {
+for (const file of [
+  manifestPath,
+  repositoryPackagePath,
+  marketplacePath,
+  hooksPath,
+  hookSourcePath,
+  hookRuntimePath,
+  skillPath,
+]) {
   requireFile(file);
 }
 
-const manifest = readJson(manifestPath);
+const manifest = readJson<PluginManifest>(manifestPath);
+const repositoryPackage = readJson<RepositoryPackage>(repositoryPackagePath);
 assert.equal(manifest.name, PLUGIN_NAME);
 assert.match(manifest.version, STRICT_SEMVER, "plugin version 必须是严格 SemVer");
+assert.equal(
+  repositoryPackage.version,
+  manifest.version,
+  "package 与 plugin manifest 版本必须一致",
+);
 assert.equal(manifest.skills, "./skills/");
 assert.ok(!Object.hasOwn(manifest, "hooks"), "默认 hooks/hooks.json 不应在 manifest 重复声明");
 assert.notEqual(manifest.author?.name, "Local developer");
@@ -54,7 +103,7 @@ for (const prompt of manifest.interface.defaultPrompt) {
   assert.ok(prompt.length <= 128, "defaultPrompt 不得超过 128 字符");
 }
 
-const marketplace = readJson(marketplacePath);
+const marketplace = readJson<Marketplace>(marketplacePath);
 assert.equal(marketplace.name, "stonefish");
 const entry = marketplace.plugins.find((plugin) => plugin.name === PLUGIN_NAME);
 assert.ok(entry, `marketplace 缺少 ${PLUGIN_NAME}`);
@@ -65,7 +114,7 @@ assert.deepEqual(entry.source, {
 assert.equal(entry.policy?.installation, "AVAILABLE");
 assert.equal(entry.policy?.authentication, "ON_INSTALL");
 
-const hooks = readJson(hooksPath).hooks;
+const hooks = readJson<HookConfig>(hooksPath).hooks;
 assert.deepEqual(Object.keys(hooks).sort(), [
   "SessionStart",
   "SubagentStart",
@@ -78,7 +127,7 @@ for (const event of Object.values(hooks)) {
     handler?.command,
     'node "${PLUGIN_ROOT}/hooks/inject-context.mjs"',
   );
-  assert.ok(handler.timeout <= 5, "Hook timeout 应保持短小");
+  assert.ok((handler?.timeout ?? Infinity) <= 5, "Hook timeout 应保持短小");
 }
 
 const skill = readFileSync(skillPath, "utf8");
