@@ -1,0 +1,37 @@
+{
+  "name": "stonefish-engineering",
+  "version": "0.1.0",
+  "description": "Opinionated Codex engineering workflow for durable, scoped, evidence-driven software changes.",
+  "author": {
+    "name": "Stonefish",
+    "url": "https://github.com/sty20030818"
+  },
+  "homepage": "https://github.com/sty20030818/stonefish-codex-plugins",
+  "repository": "https://github.com/sty20030818/stonefish-codex-plugins",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "engineering",
+    "architecture",
+    "refactoring",
+    "verification"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Stonefish Engineering",
+    "shortDescription": "Durable, scoped, evidence-driven engineering",
+    "longDescription": "Applies a long-horizon engineering workflow: understand the real path, fix the correct owner, keep changes causally scoped, and finish with risk-proportionate evidence.",
+    "developerName": "Stonefish",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Instructions",
+      "Lifecycle hooks"
+    ],
+    "websiteURL": "https://github.com/sty20030818/stonefish-codex-plugins",
+    "defaultPrompt": [
+      "Use Stonefish Engineering for this implementation.",
+      "Review this change for durable ownership and unnecessary complexity.",
+      "Find the smallest complete fix and verify it with evidence."
+    ]
+  }
+}

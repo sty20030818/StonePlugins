@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+coverage/
+*.log
+
+# The author's global gitignore excludes .github; this repository publishes CI.
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
