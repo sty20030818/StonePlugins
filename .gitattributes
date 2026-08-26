@@ -1,1 +1,3 @@
 plugins/stonefish-engineering/hooks/inject-context.mjs linguist-generated=true
+*.ts linguist-language=TypeScript
+*.mts linguist-language=TypeScript
