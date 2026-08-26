@@ -17,7 +17,11 @@ type PluginManifest = {
   hooks?: unknown;
   author?: { name?: string };
   license: string;
-  interface?: { defaultPrompt?: string[] };
+  interface?: {
+    composerIcon?: string;
+    logo?: string;
+    defaultPrompt?: string[];
+  };
 };
 
 type Marketplace = {
@@ -97,6 +101,9 @@ assert.equal(manifest.skills, "./skills/");
 assert.ok(!Object.hasOwn(manifest, "hooks"), "默认 hooks/hooks.json 不应在 manifest 重复声明");
 assert.notEqual(manifest.author?.name, "Local developer");
 assert.equal(manifest.license, "MIT");
+assert.equal(manifest.interface?.composerIcon, "./assets/icon.jpg");
+assert.equal(manifest.interface?.logo, "./assets/icon.jpg");
+requireFile(path.join(PLUGIN_ROOT, "assets", "icon.jpg"));
 assert.ok(Array.isArray(manifest.interface?.defaultPrompt));
 assert.ok(manifest.interface.defaultPrompt.length <= 3);
 for (const prompt of manifest.interface.defaultPrompt) {

@@ -1,6 +1,6 @@
 {
   "name": "stonefish-engineering",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Opinionated Codex engineering workflow for durable, scoped, evidence-driven software changes.",
   "author": {
     "name": "Stonefish",
@@ -28,6 +28,8 @@
       "Lifecycle hooks"
     ],
     "websiteURL": "https://github.com/sty20030818/stonefish-codex-plugins",
+    "composerIcon": "./assets/icon.jpg",
+    "logo": "./assets/icon.jpg",
     "defaultPrompt": [
       "Use Stonefish Engineering for this implementation.",
       "Review this change for durable ownership and unnecessary complexity.",

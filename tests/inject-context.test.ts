@@ -68,7 +68,7 @@ test("SessionStart 与 SubagentStart 注入版本化且去除 frontmatter 的核
     assert.equal(output.systemMessage, undefined);
     assert.match(
       output.hookSpecificOutput.additionalContext,
-      /STONEFISH ENGINEERING ACTIVE — v0\.2\.0/,
+      /STONEFISH ENGINEERING ACTIVE — v0\.2\.1/,
     );
     assert.match(
       output.hookSpecificOutput.additionalContext,
