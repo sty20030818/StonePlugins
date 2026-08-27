@@ -12,7 +12,7 @@ const ALLOWED_EVENTS = new Set([
   "UserPromptSubmit",
 ]);
 const PROMPT_REMINDER =
-  "石头鱼的工程规则仍然生效：工程任务应加载 $stonefish-engineering；项目明确约束优先，采用最小完整、长期连贯且可验证的方案。";
+  "石头鱼的工程规则仍然生效：项目明确约束优先；工程任务采用最小完整、长期连贯且可验证的方案。";
 
 type HookEventName = "SessionStart" | "SubagentStart" | "UserPromptSubmit";
 type HookInput = {

@@ -37,6 +37,7 @@ type HookConfig = {
   hooks: Record<
     string,
     Array<{
+      matcher?: string;
       hooks?: Array<{ type?: string; command?: string; timeout?: number }>;
     }>
   >;
@@ -44,6 +45,11 @@ type HookConfig = {
 
 type RepositoryPackage = {
   version: string;
+};
+
+type RepositoryPackageLock = {
+  version: string;
+  packages: { "": { version: string } };
 };
 
 function readJson<T>(file: string): T {
@@ -66,6 +72,7 @@ const marketplacePath = path.join(
   "marketplace.json",
 );
 const repositoryPackagePath = path.join(REPO_ROOT, "package.json");
+const repositoryPackageLockPath = path.join(REPO_ROOT, "package-lock.json");
 const hooksPath = path.join(PLUGIN_ROOT, "hooks", "hooks.json");
 const hookSourcePath = path.join(PLUGIN_ROOT, "src", "inject-context.mts");
 const hookRuntimePath = path.join(PLUGIN_ROOT, "hooks", "inject-context.mjs");
@@ -75,27 +82,49 @@ const skillPath = path.join(
   PLUGIN_NAME,
   "SKILL.md",
 );
+const skillMetadataPath = path.join(
+  PLUGIN_ROOT,
+  "skills",
+  PLUGIN_NAME,
+  "agents",
+  "openai.yaml",
+);
 
 for (const file of [
   manifestPath,
   repositoryPackagePath,
+  repositoryPackageLockPath,
   marketplacePath,
   hooksPath,
   hookSourcePath,
   hookRuntimePath,
   skillPath,
+  skillMetadataPath,
 ]) {
   requireFile(file);
 }
 
 const manifest = readJson<PluginManifest>(manifestPath);
 const repositoryPackage = readJson<RepositoryPackage>(repositoryPackagePath);
+const repositoryPackageLock = readJson<RepositoryPackageLock>(
+  repositoryPackageLockPath,
+);
 assert.equal(manifest.name, PLUGIN_NAME);
 assert.match(manifest.version, STRICT_SEMVER, "plugin version 必须是严格 SemVer");
 assert.equal(
   repositoryPackage.version,
   manifest.version,
   "package 与 plugin manifest 版本必须一致",
+);
+assert.equal(
+  repositoryPackageLock.version,
+  manifest.version,
+  "package-lock 与 plugin manifest 版本必须一致",
+);
+assert.equal(
+  repositoryPackageLock.packages[""].version,
+  manifest.version,
+  "package-lock 根包与 plugin manifest 版本必须一致",
 );
 assert.equal(manifest.skills, "./skills/");
 assert.ok(!Object.hasOwn(manifest, "hooks"), "默认 hooks/hooks.json 不应在 manifest 重复声明");
@@ -127,6 +156,11 @@ assert.deepEqual(Object.keys(hooks).sort(), [
   "SubagentStart",
   "UserPromptSubmit",
 ]);
+assert.equal(
+  hooks.SessionStart[0]?.matcher,
+  "startup|resume|clear|compact",
+  "SessionStart 必须覆盖压缩后的重新注入",
+);
 for (const event of Object.values(hooks)) {
   const handler = event[0]?.hooks?.[0];
   assert.equal(handler?.type, "command");

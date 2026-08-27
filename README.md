@@ -2,16 +2,20 @@
 
 一个可通过 GitHub 安装和升级的 Codex marketplace。首个插件 `stonefish-engineering` 提供一套重视长期维护、控制改动范围并用证据验证结果的工程规则。
 
-> 当前以中文为主。这些规则会尊重项目上下文，不会把作者个人的语言、称呼、包管理器或项目约定强加给其他用户。
+> 规则正文和插件说明以中文为主，Skill 展示名为 `Stonefish Engineering`，技术标识保持 `stonefish-engineering`。这些规则会尊重项目上下文，不会把作者个人的语言、称呼、包管理器或项目约定强加给其他用户。
 
 ## 石头鱼的工程规则
 
 规则通过三类 Hook 自动注入，并通过 Skill references 按需加载细则：
 
-- `SessionStart`：在会话启动、恢复、清空或压缩后注入精简核心。
-- `SubagentStart`：让子 Agent 获得同一工程底线。
-- `UserPromptSubmit`：每轮只注入一条短提醒，不重复整份规则。
+- `SessionStart`：在会话启动、恢复、清空或压缩后注入核心 Skill 正文；官方 `source: "compact"` 会在压缩后的下一次模型请求前触发，不重复注册 `PostCompact`。
+- `SubagentStart`：只注入同一核心 Skill 正文，不展开 references；细则仍按任务需要读取。
+- `UserPromptSubmit`：每轮注入同一条短提醒，不根据提示内容做启发式匹配，也不回显用户输入。
 - Skill references：仅在匹配任务中读取架构、修改边界和验证细则。
+
+多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；本插件的每次注入都自包含，不依赖其他 Hook 先后顺序。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
+
+Hook 契约、规则取舍、维护信号与测试矩阵见 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)。
 
 核心倾向：
 
@@ -21,6 +25,7 @@
 - 外科手术式修改限定因果范围，Boy Scout Rule 改善范围内质量；
 - 允许经授权的破坏性重构，但先审计消费者、迁移和恢复边界；
 - 完成声明必须区分实际验证、静态推断和待人工验收。
+- 失败测试不能靠弱化断言、跳过或盲目重试变绿；错误、安全、外部副作用和文档同步按风险读取对应细则。
 
 Hook 可以确保已信任的脚本在相应生命周期运行并注入规则，但不能保证模型每次都能正确判断“是否长期最优”。命令权限、不可逆操作和 CI 仍应由 Codex 审批、沙箱、`.rules` 和项目检查负责。
 
@@ -70,7 +75,7 @@ codex plugin add stonefish-engineering@stonefish
 
 更新后启动新任务。若 Hook 定义的 hash 发生变化，在 `/hooks` 中重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.1`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.2`。
 
 ## 隐私与安全
 
@@ -92,7 +97,7 @@ Hook 源码位于 `plugins/stonefish-engineering/src/`；`npm run build` 会生�
 
 发布新版本时：
 
-1. 同步更新根 `package.json` 与 `.codex-plugin/plugin.json` 的 SemVer。
+1. 同步更新根 `package.json`、`package-lock.json` 与 `.codex-plugin/plugin.json` 的 SemVer。
 2. 更新 `CHANGELOG.md`。
 3. 运行本地验证并等待 GitHub Actions 通过。
 4. 创建与 manifest 相同版本的 tag，再创建 GitHub Release。

@@ -1,13 +1,17 @@
 ---
 name: stonefish-engineering
-description: "Use when implementing, debugging, reviewing, refactoring, or designing software changes that need durable ownership, scoped changes, and evidence-based verification. Not for pure prose or formatting with no technical effect."
+description: "Use for software implementation, debugging, testing, review, refactoring, and architecture decisions that require correct ownership, causally scoped changes, durable solutions, and risk-proportionate verification. Not for pure prose, translation, formatting, or non-technical requests."
 ---
 
-# 工程设计、实现与验证
+# 石头鱼的工程规则
 
-目标不是最少行数或最小 diff，而是完成已确认目标的**最小完整方案**：解决根因，把行为放到正确的所有者，保持一个清晰事实源，不遗留无退出条件的临时旁路或永久双轨，并让下一次相关修改更集中。
+面向用户时称为“石头鱼的工程规则”。仅在显式调用、配置、日志或排障时使用 `$stonefish-engineering`，普通叙述不要复述技术标识。
+
+目标不是最少行数或最小 diff，而是完成已确认目标的**最小完整方案**：解决根因，把行为放到正确的所有者，保持清晰的单一事实源，不遗留无退出条件的临时旁路或永久双轨，并让下一次相关修改更集中。
 
 “长期最优”只依据已确认需求、当前不变量、真实消费者、现有约束和明确演进方向。不得用猜测的未来为提前分层、接口、工厂、配置、插件或兼容层辩护。
+
+用户提供新的约束、证据或经验观察时，重新评估并说明判断改变在哪里。若没有新依据，可以保留已说明的专业意见；对安全、合法、未越过权限边界且属于用户决策权的事项，按其最终决定执行并明确保留意见，不静默改口或假装被说服。
 
 ## 工作顺序
 
@@ -38,3 +42,4 @@ description: "Use when implementing, debugging, reviewing, refactoring, or desig
 - 结果满足已定义的可观察判据，且没有已知相关路径仍依赖旧错误行为。
 - 新增抽象、文件、依赖和兼容代码都能指出当前消费者与必要性；否则删除。
 - 验证覆盖此次改变的风险所有者；未运行或无法覆盖的部分明确列出。
+- 若改变了现有文档描述的行为，同步更新权威文档；文档所有权不明或超出授权时明确列为待确认项。
