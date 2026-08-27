@@ -8,7 +8,7 @@ const ALLOWED_EVENTS = new Set([
     "SubagentStart",
     "UserPromptSubmit",
 ]);
-const PROMPT_REMINDER = "石头鱼工程工作流仍然生效：工程任务应加载 $stonefish-engineering；项目明确约束优先，选择最小完整、长期连贯且可验证的方案。";
+const PROMPT_REMINDER = "石头鱼的工程规则仍然生效：工程任务应加载 $stonefish-engineering；项目明确约束优先，采用最小完整、长期连贯且可验证的方案。";
 class SafeHookError extends Error {
     code;
     constructor(code) {
@@ -92,7 +92,7 @@ async function readCoreContext(env) {
             `STONEFISH ENGINEERING ACTIVE — v${version}`,
             `Skill source: ${skillPath}`,
             `Resolve bundled relative references from: ${skillRoot}`,
-            "以下内容来自已安装的 $stonefish-engineering 核心；需要详细规则时按其中路由读取 references。",
+            "以下是已安装的 $stonefish-engineering 核心规则；需要细则时，按正文说明读取 references 中的对应文件。",
             "",
             rules,
         ].join("\n"),
@@ -123,7 +123,7 @@ try {
 catch (error) {
     const code = error instanceof SafeHookError ? error.code : "未知错误";
     output = {
-        systemMessage: `石头鱼工程工作流 Hook 未加载：${code}。`,
+        systemMessage: `未能加载石头鱼的工程规则：${code}。`,
     };
 }
 process.stdout.write(JSON.stringify(output));

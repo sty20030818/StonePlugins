@@ -2,6 +2,13 @@
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and use [Semantic Versioning](https://semver.org/).
 
+## [0.3.1] - 2026-08-27
+
+### Changed
+
+- Renamed the user-facing product from `石头鱼工程工作流` to `石头鱼的工程规则`.
+- Polished the Chinese descriptions, starter prompts, Hook messages, and Skill metadata.
+
 ## [0.3.0] - 2026-08-26
 
 ### Changed
@@ -31,6 +38,7 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Git-backed Codex marketplace metadata.
 - Dependency-free Hook tests and repository validation.
 
+[0.3.1]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.1.0...v0.2.0

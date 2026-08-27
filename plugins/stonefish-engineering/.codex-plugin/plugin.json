@@ -1,7 +1,7 @@
 {
   "name": "stonefish-engineering",
-  "version": "0.3.0",
-  "description": "面向长期维护、范围可控与证据驱动软件变更的 Codex 工程工作流。",
+  "version": "0.3.1",
+  "description": "一套重视长期维护、控制改动范围并用证据验证结果的 Codex 工程规则。",
   "author": {
     "name": "石头鱼",
     "url": "https://github.com/sty20030818"
@@ -18,9 +18,9 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "石头鱼工程工作流",
-    "shortDescription": "面向长期维护、范围可控与证据驱动",
-    "longDescription": "提供一套面向长期维护的工程工作流：理解真实调用路径，在正确职责边界修复根因，将改动限制在因果范围内，并以与风险相匹配的证据完成验证。",
+    "displayName": "石头鱼的工程规则",
+    "shortDescription": "重视长期维护，控制改动范围，用证据验证结果",
+    "longDescription": "提供一套面向长期维护的工程规则：理解真实调用路径，在正确的职责边界修复根因，把改动限制在因果范围内，并用与风险相匹配的证据验证结果。",
     "developerName": "石头鱼",
     "category": "Developer Tools",
     "capabilities": [
@@ -31,9 +31,9 @@
     "composerIcon": "./assets/icon.jpg",
     "logo": "./assets/icon.jpg",
     "defaultPrompt": [
-      "使用石头鱼工程工作流完成这个实现。",
-      "审查这次改动的职责归属、长期维护性和不必要复杂度。",
-      "找到最小完整修复，并用可复现证据验证。"
+      "使用石头鱼的工程规则完成这个实现。",
+      "审查这次改动的职责归属、长期维护性和不必要的复杂度。",
+      "找到最小完整的修复，并给出可复现的验证证据。"
     ]
   }
 }

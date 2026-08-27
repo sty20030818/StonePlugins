@@ -1,7 +1,7 @@
 interface:
   display_name: "工程设计、实现与验证"
-  short_description: "理解真实路径，选择长期方案，控制改动边界并完成证据化验证"
-  default_prompt: "使用 $stonefish-engineering 设计、实现或审查这个工程任务，并按需加载架构、修改边界与验证规则。"
+  short_description: "理解真实路径，选择长期可维护的方案，控制改动边界，并用证据验证结果"
+  default_prompt: "使用 $stonefish-engineering 设计、实现或审查这个工程任务，并按需加载架构、修改边界和验证规则。"
 
 policy:
   allow_implicit_invocation: true

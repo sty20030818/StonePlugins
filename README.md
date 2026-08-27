@@ -1,12 +1,12 @@
 # 石头鱼 Codex 插件
 
-一个可通过 GitHub 安装和升级的 Codex marketplace。首个插件 `stonefish-engineering` 提供一套偏长期、重证据、控制复杂度的工程工作流。
+一个可通过 GitHub 安装和升级的 Codex marketplace。首个插件 `stonefish-engineering` 提供一套重视长期维护、控制改动范围并用证据验证结果的工程规则。
 
-> 当前以中文为主。工作流会尊重项目上下文，不会把作者个人的语言、称呼、包管理器或项目约定强加给其他用户。
+> 当前以中文为主。这些规则会尊重项目上下文，不会把作者个人的语言、称呼、包管理器或项目约定强加给其他用户。
 
-## 石头鱼工程工作流
+## 石头鱼的工程规则
 
-它把工程规则分成三层：
+规则通过三类 Hook 自动注入，并通过 Skill references 按需加载细则：
 
 - `SessionStart`：在会话启动、恢复、清空或压缩后注入精简核心。
 - `SubagentStart`：让子 Agent 获得同一工程底线。
@@ -22,7 +22,7 @@
 - 允许经授权的破坏性重构，但先审计消费者、迁移和恢复边界；
 - 完成声明必须区分实际验证、静态推断和待人工验收。
 
-Hook 可以保证已信任脚本在相应生命周期运行并注入上下文，但不能数学意义上保证模型正确判断“是否长期最优”。命令权限、不可逆操作和 CI 仍应由 Codex 审批、沙箱、`.rules` 与项目检查负责。
+Hook 可以确保已信任的脚本在相应生命周期运行并注入规则，但不能保证模型每次都能正确判断“是否长期最优”。命令权限、不可逆操作和 CI 仍应由 Codex 审批、沙箱、`.rules` 和项目检查负责。
 
 ## 安装
 
@@ -56,7 +56,7 @@ codex plugin add stonefish-engineering@stonefish
 安装并信任后，核心规则自动生效。复杂工程任务也可以显式调用：
 
 ```text
-$stonefish-engineering 按工程设计、实现与验证工作流处理这个重构，并加载匹配的参考文件。
+$stonefish-engineering 按石头鱼的工程规则处理这个重构，并加载匹配的参考文件。
 ```
 
 插件不会自动改变你的全局 `AGENTS.md`。作者自己的称呼、中文回复、Bun 兜底和 CodeGraph 规则位于 [examples/AGENTS.stonefish.md](examples/AGENTS.stonefish.md)，仅供选择性合并，不属于公开插件默认行为。
@@ -70,7 +70,7 @@ codex plugin add stonefish-engineering@stonefish
 
 更新后启动新任务。若 Hook 定义的 hash 发生变化，在 `/hooks` 中重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.0`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.1`。
 
 ## 隐私与安全
 
@@ -95,7 +95,7 @@ Hook 源码位于 `plugins/stonefish-engineering/src/`；`npm run build` 会生�
 1. 同步更新根 `package.json` 与 `.codex-plugin/plugin.json` 的 SemVer。
 2. 更新 `CHANGELOG.md`。
 3. 运行本地验证并等待 GitHub Actions 通过。
-4. 创建同版本 tag，例如 `v0.1.1`，再创建 GitHub Release。
+4. 创建与 manifest 相同版本的 tag，再创建 GitHub Release。
 
 ## 许可
 

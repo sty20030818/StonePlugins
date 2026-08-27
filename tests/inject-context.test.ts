@@ -68,7 +68,7 @@ test("SessionStart 与 SubagentStart 注入版本化且去除 frontmatter 的核
     assert.equal(output.systemMessage, undefined);
     assert.match(
       output.hookSpecificOutput.additionalContext,
-      /STONEFISH ENGINEERING ACTIVE — v0\.3\.0/,
+      /STONEFISH ENGINEERING ACTIVE — v0\.3\.1/,
     );
     assert.match(
       output.hookSpecificOutput.additionalContext,
@@ -88,7 +88,7 @@ test("UserPromptSubmit 只注入短提醒且不回显用户提示", () => {
   });
 
   assert.equal(output.hookSpecificOutput.hookEventName, "UserPromptSubmit");
-  assert.match(output.hookSpecificOutput.additionalContext, /^石头鱼工程工作流/);
+  assert.match(output.hookSpecificOutput.additionalContext, /^石头鱼的工程规则/);
   assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /工程设计、实现与验证/);
   assert.doesNotMatch(raw, new RegExp(secret));
 });
