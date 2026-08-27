@@ -1,5 +1,12 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
@@ -11,8 +18,7 @@ const PLUGIN_ROOT = path.join(
   "plugins",
   "stonefish-engineering",
 );
-const HOOKS_DIR = path.join(PLUGIN_ROOT, "hooks");
-const SCRIPT = path.join(HOOKS_DIR, "inject-context.mjs");
+const SCRIPT = path.join(PLUGIN_ROOT, "hooks", "inject-context.mjs");
 const PLUGIN_VERSION = (
   JSON.parse(
     readFileSync(
@@ -23,13 +29,6 @@ const PLUGIN_VERSION = (
 ).version;
 
 type RunHookOptions = { pluginRoot?: string };
-
-type HookConfig = {
-  hooks: Record<
-    string,
-    Array<{ matcher?: string; hooks: Array<{ command: string }> }>
-  >;
-};
 
 const CORE_CONTEXT_BYTE_LIMIT = 6_000;
 
@@ -53,27 +52,28 @@ function runHook(input: unknown, options: RunHookOptions = {}) {
   return { output: JSON.parse(result.stdout), raw: result.stdout };
 }
 
-test("Hook 配置覆盖三个事件并通过 PLUGIN_ROOT 启动同一脚本", () => {
-  const config = JSON.parse(
-    readFileSync(path.join(HOOKS_DIR, "hooks.json"), "utf8"),
-  ) as HookConfig;
-  assert.deepEqual(Object.keys(config.hooks).sort(), [
-    "SessionStart",
-    "SubagentStart",
-    "UserPromptSubmit",
-  ]);
-  assert.equal(
-    config.hooks.SessionStart[0].matcher,
-    "startup|resume|clear|compact",
-  );
-
-  for (const event of Object.values(config.hooks)) {
-    assert.equal(
-      event[0].hooks[0].command,
-      'node "${PLUGIN_ROOT}/hooks/inject-context.mjs"',
+function createPluginRoot(files: { skill?: string; manifest?: string }) {
+  const root = mkdtempSync(path.join(tmpdir(), "stonefish-engineering-hook-"));
+  if (files.skill !== undefined) {
+    const skillDir = path.join(
+      root,
+      "skills",
+      "stonefish-engineering",
+    );
+    mkdirSync(skillDir, { recursive: true });
+    writeFileSync(path.join(skillDir, "SKILL.md"), files.skill, "utf8");
+  }
+  if (files.manifest !== undefined) {
+    const manifestDir = path.join(root, ".codex-plugin");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(
+      path.join(manifestDir, "plugin.json"),
+      files.manifest,
+      "utf8",
     );
   }
-});
+  return root;
+}
 
 test("SessionStart compact 与 SubagentStart 注入同一份有体积上限的核心", () => {
   const contexts: string[] = [];
@@ -121,6 +121,10 @@ test("UserPromptSubmit 固定注入短提醒且不读取或回显用户提示", 
     hook_event_name: "UserPromptSubmit",
     prompt: "完全不同的架构讨论",
   });
+  const withoutPluginRoot = runHook(
+    { hook_event_name: "UserPromptSubmit", prompt: "不读取插件文件" },
+    { pluginRoot: undefined },
+  );
 
   assert.equal(output.hookSpecificOutput.hookEventName, "UserPromptSubmit");
   assert.match(output.hookSpecificOutput.additionalContext, /^石头鱼的工程规则/);
@@ -136,18 +140,86 @@ test("UserPromptSubmit 固定注入短提醒且不读取或回显用户提示", 
     output.hookSpecificOutput.additionalContext,
     second.output.hookSpecificOutput.additionalContext,
   );
+  assert.equal(
+    output.hookSpecificOutput.additionalContext,
+    withoutPluginRoot.output.hookSpecificOutput.additionalContext,
+  );
   assert.doesNotMatch(raw, new RegExp(secret));
 });
 
-test("无效输入和缺失 PLUGIN_ROOT 只返回安全 systemMessage", () => {
+test("无效输入边界只返回安全 systemMessage", () => {
   const secret = "private-token-value";
-  const invalid = runHook(`{\"token\":\"${secret}\"`);
-  assert.match(invalid.output.systemMessage, /输入不是有效 JSON/);
-  assert.doesNotMatch(invalid.raw, new RegExp(secret));
+  const cases = [
+    {
+      result: runHook(`{\"token\":\"${secret}\"`),
+      error: /输入不是有效 JSON/,
+    },
+    {
+      result: runHook({ hook_event_name: "UnknownEvent", secret }),
+      error: /Hook 事件不受支持/,
+    },
+    {
+      result: runHook({
+        hook_event_name: "UserPromptSubmit",
+        prompt: 42,
+        secret,
+      }),
+      error: /提示内容类型无效/,
+    },
+    {
+      result: runHook(
+        { hook_event_name: "SessionStart", secret },
+        { pluginRoot: "relative-plugin-root" },
+      ),
+      error: /PLUGIN_ROOT 无效/,
+    },
+  ];
 
-  const missingRoot = runHook(
-    { hook_event_name: "SessionStart" },
-    { pluginRoot: undefined },
-  );
-  assert.match(missingRoot.output.systemMessage, /PLUGIN_ROOT 无效/);
+  for (const { result, error } of cases) {
+    assert.deepEqual(Object.keys(result.output), ["systemMessage"]);
+    assert.match(result.output.systemMessage, error);
+    assert.doesNotMatch(result.raw, new RegExp(secret));
+  }
+});
+
+test("损坏的插件文件保持脱敏失败语义", (t) => {
+  const secret = "fixture-secret-must-not-leak";
+  const fixtures = [
+    {
+      files: {},
+      error: /插件规则或 manifest 不可读/,
+    },
+    {
+      files: { skill: "# 规则", manifest: `{\"secret\":\"${secret}\"` },
+      error: /manifest 不是有效 JSON/,
+    },
+    {
+      files: {
+        skill: "# 规则",
+        manifest: JSON.stringify({ secret }),
+      },
+      error: /manifest 缺少版本/,
+    },
+    {
+      files: {
+        skill: `---\nname: ${secret}\n# 缺少结束分隔符`,
+        manifest: JSON.stringify({ version: "0.0.0" }),
+      },
+      error: /规则文件 frontmatter 无效/,
+    },
+  ];
+  const roots = fixtures.map(({ files }) => createPluginRoot(files));
+  t.after(() => {
+    for (const root of roots) rmSync(root, { recursive: true, force: true });
+  });
+
+  for (const [index, { error }] of fixtures.entries()) {
+    const result = runHook(
+      { hook_event_name: "SessionStart" },
+      { pluginRoot: roots[index] },
+    );
+    assert.deepEqual(Object.keys(result.output), ["systemMessage"]);
+    assert.match(result.output.systemMessage, error);
+    assert.doesNotMatch(result.raw, new RegExp(secret));
+  }
 });

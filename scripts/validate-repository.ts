@@ -9,6 +9,50 @@ const REPO_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PLUGIN_NAME = "stonefish-engineering";
 const PLUGIN_ROOT = path.join(REPO_ROOT, "plugins", PLUGIN_NAME);
 const STRICT_SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
+const HOOK_COMMAND = 'node "${PLUGIN_ROOT}/hooks/inject-context.mjs"';
+const CORE_CONTEXT_TOKEN_LIMIT = 6_000;
+const EXPECTED_HOOK_CONFIG = {
+  hooks: {
+    SessionStart: [
+      {
+        matcher: "startup|resume|clear|compact",
+        hooks: [
+          {
+            type: "command",
+            command: HOOK_COMMAND,
+            timeout: 5,
+            additionalContextLimit: CORE_CONTEXT_TOKEN_LIMIT,
+            statusMessage: "正在加载石头鱼的工程规则……",
+          },
+        ],
+      },
+    ],
+    SubagentStart: [
+      {
+        hooks: [
+          {
+            type: "command",
+            command: HOOK_COMMAND,
+            timeout: 5,
+            additionalContextLimit: CORE_CONTEXT_TOKEN_LIMIT,
+            statusMessage: "正在加载石头鱼的工程规则……",
+          },
+        ],
+      },
+    ],
+    UserPromptSubmit: [
+      {
+        hooks: [
+          {
+            type: "command",
+            command: HOOK_COMMAND,
+            timeout: 5,
+          },
+        ],
+      },
+    ],
+  },
+} as const;
 
 type PluginManifest = {
   name: string;
@@ -31,16 +75,6 @@ type Marketplace = {
     source: unknown;
     policy?: { installation?: string; authentication?: string };
   }>;
-};
-
-type HookConfig = {
-  hooks: Record<
-    string,
-    Array<{
-      matcher?: string;
-      hooks?: Array<{ type?: string; command?: string; timeout?: number }>;
-    }>
-  >;
 };
 
 type RepositoryPackage = {
@@ -158,26 +192,18 @@ assert.deepEqual(entry.source, {
 assert.equal(entry.policy?.installation, "AVAILABLE");
 assert.equal(entry.policy?.authentication, "ON_INSTALL");
 
-const hooks = readJson<HookConfig>(hooksPath).hooks;
-assert.deepEqual(Object.keys(hooks).sort(), [
-  "SessionStart",
-  "SubagentStart",
-  "UserPromptSubmit",
-]);
-assert.equal(
-  hooks.SessionStart[0]?.matcher,
-  "startup|resume|clear|compact",
-  "SessionStart 必须覆盖压缩后的重新注入",
+assert.deepEqual(
+  readJson<unknown>(hooksPath),
+  EXPECTED_HOOK_CONFIG,
+  "Hook 配置必须保持精确的单 group、单 handler 允许列表",
 );
-for (const event of Object.values(hooks)) {
-  const handler = event[0]?.hooks?.[0];
-  assert.equal(handler?.type, "command");
-  assert.equal(
-    handler?.command,
-    'node "${PLUGIN_ROOT}/hooks/inject-context.mjs"',
-  );
-  assert.ok((handler?.timeout ?? Infinity) <= 5, "Hook timeout 应保持短小");
-}
+
+const skillMetadata = readFileSync(skillMetadataPath, "utf8");
+assert.match(
+  skillMetadata,
+  /^\s*allow_implicit_invocation:\s*false\s*$/m,
+  "Hook 是唯一自动规则所有者，Skill 只能显式调用",
+);
 
 const skill = readFileSync(skillPath, "utf8");
 for (const match of skill.matchAll(/\]\((references\/[^)]+)\)/g)) {

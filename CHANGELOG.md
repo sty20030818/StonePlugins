@@ -4,6 +4,19 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [0.3.4] - 2026-08-27
+
+### Changed
+
+- Made lifecycle Hooks the only automatic owner of the core engineering rules while keeping the Skill as an explicit invocation and fallback path.
+- Added an explicit context threshold for core Hook output and strict repository validation for the complete Hook configuration.
+- Added versioned rule-evaluation evidence and labeled research documents as historical decision snapshots.
+
+### Fixed
+
+- Closed validation gaps that allowed extra Hook groups, handlers, or fields to pass unnoticed.
+- Expanded safe-failure tests for invalid Hook input and damaged plugin files.
+
 ## [0.3.3] - 2026-08-27
 
 ### Added
@@ -61,7 +74,8 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Git-backed Codex marketplace metadata.
 - Dependency-free Hook tests and repository validation.
 
-[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.3...HEAD
+[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.4...HEAD
+[0.3.4]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.0...v0.3.1

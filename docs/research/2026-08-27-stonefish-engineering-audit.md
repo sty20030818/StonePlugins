@@ -3,6 +3,7 @@
 > 日期：2026-08-27
 > 范围：Codex Hooks 生命周期、当前插件注入行为，以及可纳入工程代理规则的约束。
 > 方法：以 OpenAI、OWASP、Google、Microsoft、GitHub、W3C、IETF 等一手资料为依据，并对当前仓库做只读静态核对。本文中的“事实”指官方契约或本地可重复观察；“建议”是基于这些事实作出的工程取舍，不冒充官方要求。
+> 快照基线：本文首次记录于 `v0.3.2`（`b1a9bc8`），其中体积和“当前状态”只代表当时快照。现行行为以 [核心 Skill](../../plugins/stonefish-engineering/skills/stonefish-engineering/SKILL.md)、references、测试和版本化评测记录为准。
 
 ## 结论摘要
 

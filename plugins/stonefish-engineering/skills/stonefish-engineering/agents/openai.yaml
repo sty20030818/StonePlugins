@@ -4,4 +4,4 @@ interface:
   default_prompt: "使用 $stonefish-engineering，按照石头鱼的工程规则设计、实现或审查这个工程任务，并用与风险相称的证据验证结果。"
 
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

@@ -16,7 +16,7 @@
 
 多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；本插件的每次注入都自包含，不依赖其他 Hook 先后顺序。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
 
-Hook 契约、规则取舍、维护信号与测试矩阵见 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)；现有方法覆盖、候选边界与索引设计见 [方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md)。
+Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md) 和 [方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md) 两份历史研究快照中；当前行为以核心 Skill、references、测试和 [版本化评测记录](docs/evals/v0.3.4.md) 为准。
 
 核心倾向：
 
@@ -59,11 +59,13 @@ codex plugin add stonefish-engineering@stonefish
 
 ## 使用
 
-安装并信任后，核心规则自动生效。复杂工程任务也可以显式调用：
+安装并信任后，核心规则由 Hook 自动生效，不需要再显式调用 Skill。Skill 不参与隐式自动选择；当 Hook 未信任、被禁用、运行失败、宿主不支持 Hooks，或用户希望当前任务主动重读规则与 references 时，可以显式调用：
 
 ```text
 $stonefish-engineering 按石头鱼的工程规则处理这个重构，并加载匹配的参考文件。
 ```
+
+显式调用只影响当前任务，不能替代会话恢复、压缩后、子 Agent 启动和逐轮提醒等生命周期注入。
 
 插件不会自动改变你的全局 `AGENTS.md`。作者自己的称呼、中文回复、Bun 兜底和 CodeGraph 规则位于 [examples/AGENTS.stonefish.md](examples/AGENTS.stonefish.md)，仅供选择性合并，不属于公开插件默认行为。
 
@@ -76,7 +78,7 @@ codex plugin add stonefish-engineering@stonefish
 
 更新后启动新任务。若 Hook 定义的 hash 发生变化，在 `/hooks` 中重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.3`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.4`。
 
 ## 隐私与安全
 
@@ -100,8 +102,9 @@ Hook 源码位于 `plugins/stonefish-engineering/src/`；`npm run build` 会生�
 
 1. 同步更新根 `package.json`、`package-lock.json` 与 `.codex-plugin/plugin.json` 的 SemVer。
 2. 更新 `CHANGELOG.md`。
-3. 运行本地验证并等待 GitHub Actions 通过。
-4. 创建与 manifest 相同版本的 tag，再创建 GitHub Release。
+3. 规则语义变化时更新对应版本的评测记录；Hook 生命周期变化时完成其中列出的真实客户端冒烟项。
+4. 运行本地验证并等待 GitHub Actions 通过。
+5. 创建与 manifest 相同版本的 tag，再创建 GitHub Release。
 
 ## 许可
 
