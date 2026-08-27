@@ -21,6 +21,7 @@ description: "Use for software implementation, debugging, testing, review, refac
    - 修改现有代码、配置、依赖或迁移内容前，读取 [references/change-boundaries.md](references/change-boundaries.md)。
    - 改变模块边界、架构、数据模型、公共接口、依赖方向、兼容策略、权限或安全边界，或进行跨模块/破坏性重构前，读取 [references/architecture.md](references/architecture.md)。
    - 修复 Bug、改变非平凡逻辑、测试、审查，或涉及安全、权限、金钱、持久化、迁移和外部副作用时，读取 [references/verification.md](references/verification.md)。
+   - 同时比较多种工程方法、维护本规则或运行固定评测时，读取 [references/methodology-index.md](references/methodology-index.md)；普通任务不为浏览方法名而读取。
 4. **选择改变的所有者**：优先在所有相关路径共同经过的最小正确位置修复根因，不在每个调用点重复打补丁。
 5. **实施最小完整改动**：每一处改动都可追溯到目标；完成根因修复所需的连带调整，但不扩散到无关清理。
 6. **以证据收尾**：运行与风险相称的检查，检查最终 diff，明确已验证和未验证边界。

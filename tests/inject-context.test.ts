@@ -101,6 +101,8 @@ test("SessionStart compact 与 SubagentStart 注入同一份有体积上限的�
     assert.doesNotMatch(context, /^# 架构与长期变更$/m);
     assert.doesNotMatch(context, /^# 修改边界、依赖与迁移$/m);
     assert.doesNotMatch(context, /^# 验证、诊断与审查$/m);
+    assert.match(context, /references\/methodology-index\.md/);
+    assert.doesNotMatch(context, /^# 方法论索引与晋升门槛$/m);
     assert.ok(
       Buffer.byteLength(context, "utf8") <= CORE_CONTEXT_BYTE_LIMIT,
       `核心注入超过 ${CORE_CONTEXT_BYTE_LIMIT} bytes`,

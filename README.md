@@ -12,10 +12,11 @@
 - `SubagentStart`：只注入同一核心 Skill 正文，不展开 references；细则仍按任务需要读取。
 - `UserPromptSubmit`：每轮注入同一条短提醒，不根据提示内容做启发式匹配，也不回显用户输入。
 - Skill references：仅在匹配任务中读取架构、修改边界和验证细则。
+- [方法论索引](plugins/stonefish-engineering/skills/stonefish-engineering/references/methodology-index.md)：只在比较多种做法、维护规则或运行固定评测时读取，不参与每轮 Hook 注入。
 
 多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；本插件的每次注入都自包含，不依赖其他 Hook 先后顺序。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
 
-Hook 契约、规则取舍、维护信号与测试矩阵见 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)。
+Hook 契约、规则取舍、维护信号与测试矩阵见 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)；现有方法覆盖、候选边界与索引设计见 [方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md)。
 
 核心倾向：
 
@@ -75,7 +76,7 @@ codex plugin add stonefish-engineering@stonefish
 
 更新后启动新任务。若 Hook 定义的 hash 发生变化，在 `/hooks` 中重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.2`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.3`。
 
 ## 隐私与安全
 

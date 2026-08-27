@@ -4,6 +4,17 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-08-27
+
+### Added
+
+- Added a maintenance-only methodology index with triggers, counter-signals, conflicts, source provenance, lifecycle gates, and decision-focused evaluation cases.
+- Added conditional guidance for substitutable behavior contracts and shared contract tests, legacy characterization tests, structure-versus-behavior sequencing, and migration strategy selection.
+
+### Changed
+
+- Added one concise core route for methodology comparison, rule maintenance, and fixed evaluations while keeping the full methodology material out of Hook injection.
+
 ## [0.3.2] - 2026-08-27
 
 ### Changed
@@ -50,7 +61,8 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Git-backed Codex marketplace metadata.
 - Dependency-free Hook tests and repository validation.
 
-[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.2.1...v0.3.0

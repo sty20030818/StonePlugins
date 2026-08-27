@@ -89,6 +89,13 @@ const skillMetadataPath = path.join(
   "agents",
   "openai.yaml",
 );
+const methodologyIndexPath = path.join(
+  PLUGIN_ROOT,
+  "skills",
+  PLUGIN_NAME,
+  "references",
+  "methodology-index.md",
+);
 
 for (const file of [
   manifestPath,
@@ -100,6 +107,7 @@ for (const file of [
   hookRuntimePath,
   skillPath,
   skillMetadataPath,
+  methodologyIndexPath,
 ]) {
   requireFile(file);
 }
