@@ -1,6 +1,6 @@
 {
   "name": "stonefish-engineering",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "一套重视长期维护、控制改动范围并用证据验证结果的 Codex 工程规则。",
   "author": {
     "name": "石头鱼",

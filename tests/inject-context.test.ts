@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  cpSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -18,7 +19,7 @@ const PLUGIN_ROOT = path.join(
   "plugins",
   "stonefish-engineering",
 );
-const SCRIPT = path.join(PLUGIN_ROOT, "hooks", "inject-context.mjs");
+const SCRIPT = path.join(PLUGIN_ROOT, "hooks", "inject-context.js");
 const PLUGIN_VERSION = (
   JSON.parse(
     readFileSync(
@@ -28,7 +29,7 @@ const PLUGIN_VERSION = (
   ) as { version: string }
 ).version;
 
-type RunHookOptions = { pluginRoot?: string };
+type RunHookOptions = { pluginRoot?: string; script?: string };
 
 const CORE_CONTEXT_BYTE_LIMIT = 6_000;
 
@@ -41,7 +42,7 @@ function runHook(input: unknown, options: RunHookOptions = {}) {
     env.PLUGIN_ROOT = PLUGIN_ROOT;
   }
 
-  const result = spawnSync(process.execPath, [SCRIPT], {
+  const result = spawnSync(process.execPath, [options.script ?? SCRIPT], {
     encoding: "utf8",
     env,
     input: typeof input === "string" ? input : JSON.stringify(input),
@@ -111,6 +112,26 @@ test("SessionStart compact 与 SubagentStart 注入同一份有体积上限的�
   assert.equal(contexts[0], contexts[1]);
 });
 
+test("生成的 .js Hook 可在独立插件缓存中保持 ESM 语义", (t) => {
+  const cacheRoot = mkdtempSync(path.join(tmpdir(), "stonefish-plugin-cache-"));
+  const installedPluginRoot = path.join(cacheRoot, "stonefish-engineering");
+  cpSync(PLUGIN_ROOT, installedPluginRoot, { recursive: true });
+  t.after(() => rmSync(cacheRoot, { recursive: true, force: true }));
+
+  const { output } = runHook(
+    { hook_event_name: "SessionStart", source: "startup" },
+    {
+      pluginRoot: installedPluginRoot,
+      script: path.join(installedPluginRoot, "hooks", "inject-context.js"),
+    },
+  );
+
+  assert.match(
+    output.hookSpecificOutput.additionalContext,
+    /STONEFISH ENGINEERING ACTIVE/,
+  );
+});
+
 test("UserPromptSubmit 固定注入短提醒且不读取或回显用户提示", () => {
   const secret = "TOKEN_SENTINEL_MUST_NOT_LEAK";
   const { output, raw } = runHook({
@@ -128,6 +149,7 @@ test("UserPromptSubmit 固定注入短提醒且不读取或回显用户提示", 
 
   assert.equal(output.hookSpecificOutput.hookEventName, "UserPromptSubmit");
   assert.match(output.hookSpecificOutput.additionalContext, /^石头鱼的工程规则/);
+  assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /仍然生效/);
   assert.doesNotMatch(
     output.hookSpecificOutput.additionalContext,
     /\$stonefish-engineering/,

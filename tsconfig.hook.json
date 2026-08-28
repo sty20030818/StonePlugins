@@ -5,5 +5,5 @@
     "rootDir": "plugins/stonefish-engineering/src",
     "outDir": "plugins/stonefish-engineering/hooks"
   },
-  "include": ["plugins/stonefish-engineering/src/**/*.mts"]
+  "include": ["plugins/stonefish-engineering/src/**/*.ts"]
 }

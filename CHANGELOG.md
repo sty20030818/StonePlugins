@@ -4,6 +4,18 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [0.3.6] - 2026-08-28
+
+### Changed
+
+- Improved engineering rationale summaries with a bold Markdown heading, restrained semantic Emoji, plain-language decisions, accurate method names, adaptive detail, and tradeoffs only when real alternatives affect the choice.
+- Renamed the Hook source to `.ts` and its generated runtime to `.js`, while keeping the three lifecycle events in one shared, stateless handler.
+
+### Fixed
+
+- Moved punctuation outside bold engineering-rationale labels so Markdown renderers do not display the emphasis markers literally when body text follows immediately.
+- Made the per-prompt reminder neutral so a partial plugin-cache failure cannot falsely claim that the core rules loaded successfully.
+
 ## [0.3.5] - 2026-08-28
 
 ### Changed
@@ -69,7 +81,7 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 ### Changed
 
 - Migrated Hook development, tests, and repository validation to statically checked TypeScript.
-- Kept the published Hook dependency-free by committing its generated `.mjs` runtime artifact.
+- Kept the published Hook dependency-free by committing its generated JavaScript runtime artifact.
 
 ## [0.1.0] - 2026-08-26
 
@@ -80,7 +92,8 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Git-backed Codex marketplace metadata.
 - Dependency-free Hook tests and repository validation.
 
-[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.5...HEAD
+[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.6...HEAD
+[0.3.6]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.5...v0.3.6
 [0.3.5]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.2...v0.3.3

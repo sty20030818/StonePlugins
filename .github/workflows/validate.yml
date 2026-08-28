@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22, 24]
+        node-version: [22.18.0, 24]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -20,8 +20,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
+      - name: Verify release tag matches plugin version
+        if: github.ref_type == 'tag'
+        run: |
+          expected="v$(node -p "require('./plugins/stonefish-engineering/.codex-plugin/plugin.json').version")"
+          test "$GITHUB_REF_NAME" = "$expected"
       - run: npm run typecheck
       - run: npm run build
-      - run: git diff --exit-code -- plugins/stonefish-engineering/hooks/inject-context.mjs
+      - run: git ls-files --error-unmatch plugins/stonefish-engineering/hooks/inject-context.js
+      - run: git diff --exit-code -- plugins/stonefish-engineering/hooks/inject-context.js
       - run: node scripts/validate-repository.ts
       - run: node --test tests/inject-context.test.ts

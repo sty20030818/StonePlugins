@@ -349,7 +349,7 @@
 | --- | --- | --- |
 | 静态配置 | 三个事件、matcher、命令路径、manifest/version 一致 | 配置解析与仓库验证脚本 |
 | Hook 单元 | 每类输入输出、错误脱敏、prompt 不回显、体积上限 | 现有 Node 测试；补充边界输入时保持无网络、无状态 |
-| 构建一致性 | TypeScript 源与发布 `.mjs` 同步 | clean build 后 diff/校验 |
+| 构建一致性 | TypeScript 源与发布 `.js` 同步 | clean build 后 diff/校验 |
 | 生命周期冒烟 | startup/resume/clear/manual compact/auto compact/子 Agent 在真实客户端触发 | 发布候选人工记录事件、版本标记和上下文是否出现；不要只信脚本模拟 |
 | 多 Hook 组合 | 并发时均能运行且不依赖顺序 | 安装一个最小第二 Hook，断言两者结果存在，不断言顺序 |
 | 规则行为 eval | 规则是否真的改善工程决策 | 固定任务集、固定成功判据，前后对照违规数、成功率、返工、token、延迟 |

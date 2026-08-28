@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.mjs\"",
+            "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.js\"",
             "timeout": 5,
             "additionalContextLimit": 6000,
             "statusMessage": "正在加载石头鱼的工程规则……"
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.mjs\"",
+            "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.js\"",
             "timeout": 5,
             "additionalContextLimit": 6000,
             "statusMessage": "正在加载石头鱼的工程规则……"
@@ -32,7 +32,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.mjs\"",
+            "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.js\"",
             "timeout": 5
           }
         ]

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-// `npm run build` generates the dependency-free Hook runtime in ../hooks/.
+// `npm run build` generates the dependency-free JavaScript Hook runtime in ../hooks/.
 
 const ALLOWED_EVENTS = new Set([
   "SessionStart",
@@ -12,7 +12,7 @@ const ALLOWED_EVENTS = new Set([
   "UserPromptSubmit",
 ]);
 const PROMPT_REMINDER =
-  "石头鱼的工程规则仍然生效：项目明确约束优先；工程任务采用最小完整、长期连贯且可验证的方案。";
+  "石头鱼的工程规则提醒：项目明确约束优先；工程任务采用最小完整、长期连贯且可验证的方案。";
 
 type HookEventName = "SessionStart" | "SubagentStart" | "UserPromptSubmit";
 type HookInput = {
