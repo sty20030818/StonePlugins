@@ -16,7 +16,7 @@
 
 多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；本插件的每次注入都自包含，不依赖其他 Hook 先后顺序。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
 
-Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md) 和 [方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md) 两份历史研究快照中；当前行为以核心 Skill、references、测试和 [版本化评测记录](docs/evals/v0.3.4.md) 为准。
+Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)、[方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md) 和 [决策透明度研究](docs/research/2026-08-28-methodology-disclosure-and-decision-transparency.md) 中；当前行为以核心 Skill、references、测试和 [版本化评测记录](docs/evals/v0.3.5.md) 为准。
 
 核心倾向：
 
@@ -27,6 +27,7 @@ Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/
 - 允许经授权的破坏性重构，但先审计消费者、迁移和恢复边界；
 - 完成声明必须区分实际验证、静态推断和待人工验收。
 - 失败测试不能靠弱化断言、跳过或盲目重试变绿；错误、安全、外部副作用和文档同步按风险读取对应细则。
+- 方法真正改变设计或验证时，在一个“工程依据（石头鱼的工程规则）”区块中用通俗语言说明事实、方法和具体影响；没有实际影响时不显示。
 
 Hook 可以确保已信任的脚本在相应生命周期运行并注入规则，但不能保证模型每次都能正确判断“是否长期最优”。命令权限、不可逆操作和 CI 仍应由 Codex 审批、沙箱、`.rules` 和项目检查负责。
 
@@ -78,7 +79,7 @@ codex plugin add stonefish-engineering@stonefish
 
 更新后启动新任务。若 Hook 定义的 hash 发生变化，在 `/hooks` 中重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.4`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.5`。
 
 ## 隐私与安全
 

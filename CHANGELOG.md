@@ -4,6 +4,12 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [0.3.5] - 2026-08-28
+
+### Changed
+
+- Added conditional, plain-language engineering rationale summaries that connect genuinely applied methods to project facts and concrete design or verification decisions without exposing chain-of-thought or forcing method-name checklists.
+
 ## [0.3.4] - 2026-08-27
 
 ### Changed
@@ -74,7 +80,8 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Git-backed Codex marketplace metadata.
 - Dependency-free Hook tests and repository validation.
 
-[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.5...HEAD
+[0.3.5]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.1...v0.3.2
