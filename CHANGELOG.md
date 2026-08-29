@@ -4,6 +4,28 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [0.3.7] - 2026-08-29
+
+### Added
+
+- Added an always-on engineering check for ownership, cohesion, coupling, knowledge-level DRY, simplicity, causal scope, long-term coherence, and risk-proportionate evidence without forcing architecture patterns.
+- Added a project glossary, a focused ADR, and primary-source research for the public decision-summary contract.
+- Added installed-cache integrity checks so a truncated Skill cannot report successful rule loading.
+
+### Changed
+
+- Replaced the generic engineering-rationale block with a decision-centered “本次决策与方法论” summary that classifies and explains methods that materially affect user judgment.
+- Added adaptive Markdown for simple, normal, and complex decisions, with separate proposal-stage and delivery-stage impact and verification fields.
+- Made large decision sets use a compact index, honor higher-priority output constraints, and disclose any omitted boundary instead of applying a fixed item cap.
+- Required compatibility deadlines to come from a confirmed contract or release plan instead of being invented during migration design.
+- Made the 5,800-byte repository target deterministic with a 128-byte plugin-root budget instead of the current checkout path, and distinguished it from Codex's approximate token spill threshold.
+- Kept one public Skill, four conditional references, one shared Hook adapter, and the existing `docs/research`, `docs/evals`, and deterministic test boundaries.
+
+### Fixed
+
+- Documented duplicate old-Hook cleanup during upgrades so conflicting versions are not injected concurrently.
+- Reclassified the six model-behavior results as exploratory observations because the original prompts, instruction stack, and raw outputs were not preserved for independent replay.
+
 ## [0.3.6] - 2026-08-28
 
 ### Changed
@@ -92,7 +114,8 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Git-backed Codex marketplace metadata.
 - Dependency-free Hook tests and repository validation.
 
-[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.6...HEAD
+[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.7...HEAD
+[0.3.7]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.5...v0.3.6
 [0.3.5]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.3...v0.3.4

@@ -9,25 +9,25 @@
 规则通过三类 Hook 自动注入，并通过 Skill references 按需加载细则：
 
 - `SessionStart`：在会话启动、恢复、清空或压缩后注入核心 Skill 正文；官方 `source: "compact"` 会在压缩后的下一次模型请求前触发，不重复注册 `PostCompact`。
-- `SubagentStart`：只注入同一核心 Skill 正文，不展开 references；细则仍按任务需要读取。
+- `SubagentStart`：只注入同一核心 Skill 正文，不展开 references；每个子 Agent 独立注入，成本会随数量线性增长，大量短任务可在 `/hooks` 关闭此事件，但子 Agent 将不再收到核心规则。
 - `UserPromptSubmit`：每轮注入同一条短提醒，不根据提示内容做启发式匹配，也不回显用户输入。
 - Skill references：仅在匹配任务中读取架构、修改边界和验证细则。
-- [方法论索引](plugins/stonefish-engineering/skills/stonefish-engineering/references/methodology-index.md)：只在比较多种做法、维护规则或运行固定评测时读取，不参与每轮 Hook 注入。
+- [方法论索引](plugins/stonefish-engineering/skills/stonefish-engineering/references/methodology-index.md)：只在同时采用或比较多种方法、分类不确定、维护规则或运行固定评测时读取，不参与每轮 Hook 注入。
 
-多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；本插件的每次注入都自包含，不依赖其他 Hook 先后顺序。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
+多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；本插件的每次注入都自包含，不依赖其他 Hook 先后顺序。如果曾把旧版石头鱼 Hook 手动写入全局或项目配置，升级后应在 `/hooks` 核对来源并停用旧副本，避免新旧规则同时注入。`additionalContextLimit` 是触发落盘预览的近似 token 阈值，不是字节上限；仓库另外用字节预算控制核心正文。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
 
-Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)、[方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md) 和 [决策透明度研究](docs/research/2026-08-28-methodology-disclosure-and-decision-transparency.md) 中。当前源码行为以核心 Skill、references、测试和 [v0.3.6 评测](docs/evals/v0.3.6.md) 为准；上一版本的历史证据保留在 [v0.3.5 评测](docs/evals/v0.3.5.md)。
+Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)、[方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md)、[决策透明度研究](docs/research/2026-08-28-methodology-disclosure-and-decision-transparency.md) 和 [决策文案研究](docs/research/2026-08-29-engineering-rationale-copy-structure.md) 中。当前源码行为以核心 Skill、references、测试和 [v0.3.7 评测](docs/evals/v0.3.7.md) 为准；上一版本的历史证据保留在 [v0.3.6 评测](docs/evals/v0.3.6.md)。
 
 核心倾向：
 
 - 先理解真实调用链、消费者、不变量和失败边界；
 - 修复正确所有者处的根因，不追求错误位置上的最小 diff；
-- KISS/YAGNI 默认优先，DRY、端口和抽象必须有当前证据；
+- 每个工程任务轻量检查单一职责、高内聚低耦合、模块边界、知识级 DRY、KISS/YAGNI、长期连贯性和风险相称验证；检查不等于强制增加结构；
 - 外科手术式修改限定因果范围，Boy Scout Rule 改善范围内质量；
 - 允许经授权的破坏性重构，但先审计消费者、迁移和恢复边界；
 - 完成声明必须区分实际验证、静态推断和待人工验收。
 - 失败测试不能靠弱化断言、跳过或盲目重试变绿；错误、安全、外部副作用和文档同步按风险读取对应细则。
-- 规则、方法或工程判断真正改变方案、风险边界或验证时，在一个 **🧭 工程依据（石头鱼的工程规则）** 区块中先用通俗语言说明决定，再标出准确方法、事实和结果；重要取舍才展开方案优缺点，没有实际影响时不显示。
+- 方法论、工程判断或用户约束真正改变方案、风险边界或验证时，在一个 `## 🧭 本次决策与方法论（石头鱼的工程规则）` 区块中按独立决策说明所有实际采用的方法、准确分类、具体作用，以及阶段对应的影响与验证；简单、普通和复杂决定使用自适应 Markdown，没有实际影响时不显示。
 
 Hook 可以确保已信任的脚本在相应生命周期运行并注入规则，但不能保证模型每次都能正确判断“是否长期最优”。命令权限、不可逆操作和 CI 仍应由 Codex 审批、沙箱、`.rules` 和项目检查负责。
 
@@ -77,16 +77,16 @@ codex plugin marketplace upgrade stonefish
 codex plugin add stonefish-engineering@stonefish
 ```
 
-更新后启动新任务。若 Hook 定义的 hash 发生变化，在 `/hooks` 中重新审查和信任。
+更新后先在 `/hooks` 确认只有预期来源的三个 Hook，再启动新任务。若 Hook 定义的 hash 发生变化，重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.6`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。需要固定版本时，在添加 marketplace 时使用 `--ref v0.3.7`。
 
 ## 隐私与安全
 
 - Hook 不联网、不写日志、不保存状态。
 - `UserPromptSubmit` 不读取规则文件，也不会把用户 prompt 回显到输出。
 - Session 与子 Agent Hook 只读取插件自带的 manifest 和 Skill 正文。
-- Hook 入口捕获到的失败只输出不包含原始输入的安全错误标识；若插件缓存损坏导致 Node 在入口执行前退出，需要重新安装插件。
+- Hook 入口会拒绝不可读、不可解析、正文为空或关键结构缺失的缓存，只输出不含原始输入的安全错误标识；若 Node 在入口执行前退出，需要重新安装插件。
 
 ## 本地开发
 

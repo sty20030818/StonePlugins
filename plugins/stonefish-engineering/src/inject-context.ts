@@ -115,6 +115,13 @@ async function readCoreContext(env: HookEnvironment) {
   }
 
   const rules = stripFrontmatter(skill);
+  if (
+    !/^# 石头鱼的工程规则$/m.test(rules) ||
+    !/^## 工作顺序$/m.test(rules) ||
+    !rules.endsWith("<!-- SF_END -->")
+  ) {
+    throw new SafeHookError("规则正文无效");
+  }
   const skillRoot = path.dirname(skillPath);
   return {
     version,

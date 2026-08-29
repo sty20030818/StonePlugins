@@ -32,6 +32,27 @@ const PLUGIN_VERSION = (
 type RunHookOptions = { pluginRoot?: string; script?: string };
 
 const CORE_CONTEXT_BYTE_LIMIT = 6_000;
+const CORE_CONTEXT_BYTE_TARGET = 5_800;
+const PLUGIN_ROOT_BYTE_BUDGET = 128;
+
+function budgetedContextBytes(context: string) {
+  const budgetRoot = `/${"p".repeat(PLUGIN_ROOT_BYTE_BUDGET - 1)}`;
+  assert.equal(Buffer.byteLength(budgetRoot, "utf8"), PLUGIN_ROOT_BYTE_BUDGET);
+
+  const skillRoot = path.join(PLUGIN_ROOT, "skills", "stonefish-engineering");
+  const skillPath = path.join(skillRoot, "SKILL.md");
+  const budgetSkillRoot = path.join(
+    budgetRoot,
+    "skills",
+    "stonefish-engineering",
+  );
+  const budgetSkillPath = path.join(budgetSkillRoot, "SKILL.md");
+  const normalized = context
+    .replace(skillPath, budgetSkillPath)
+    .replace(skillRoot, budgetSkillRoot);
+
+  return Buffer.byteLength(normalized, "utf8");
+}
 
 function runHook(input: unknown, options: RunHookOptions = {}) {
   const env = { ...process.env };
@@ -104,6 +125,19 @@ test("SessionStart compact 与 SubagentStart 注入同一份有体积上限的�
     assert.doesNotMatch(context, /^# 验证、诊断与审查$/m);
     assert.match(context, /references\/methodology-index\.md/);
     assert.doesNotMatch(context, /^# 方法论索引与晋升门槛$/m);
+    assert.match(context, /^## 常驻工程检查$/m);
+    assert.match(context, /^## 本次决策与方法论$/m);
+    assert.match(context, /## 🧭 本次决策与方法论（石头鱼的工程规则）/);
+    assert.match(context, /每个方法或同作用、同分类的近义方法族单独一项/);
+    assert.match(context, /不设 `1～3` 项固定上限/);
+    assert.match(context, /更高优先级的输出约束优先/);
+    assert.match(context, /<!-- SF_END -->$/);
+    assert.doesNotMatch(context, /`\*\*\{[^`]+\}\*\*`/);
+    assert.doesNotMatch(context, /工程依据（石头鱼的工程规则）/);
+    assert.ok(
+      budgetedContextBytes(context) <= CORE_CONTEXT_BYTE_TARGET,
+      `核心注入在 ${PLUGIN_ROOT_BYTE_BUDGET}-byte 根路径预算下超过仓库目标 ${CORE_CONTEXT_BYTE_TARGET} bytes`,
+    );
     assert.ok(
       Buffer.byteLength(context, "utf8") <= CORE_CONTEXT_BYTE_LIMIT,
       `核心注入超过 ${CORE_CONTEXT_BYTE_LIMIT} bytes`,
@@ -228,6 +262,27 @@ test("损坏的插件文件保持脱敏失败语义", (t) => {
         manifest: JSON.stringify({ version: "0.0.0" }),
       },
       error: /规则文件 frontmatter 无效/,
+    },
+    {
+      files: {
+        skill: "---\nname: stonefish-engineering\n---\n   \n",
+        manifest: JSON.stringify({ version: "0.0.0" }),
+      },
+      error: /规则正文无效/,
+    },
+    {
+      files: {
+        skill: "# 截断的规则",
+        manifest: JSON.stringify({ version: "0.0.0" }),
+      },
+      error: /规则正文无效/,
+    },
+    {
+      files: {
+        skill: "# 石头鱼的工程规则\n\n## 工作顺序\n\n1. 尾部已截断",
+        manifest: JSON.stringify({ version: "0.0.0" }),
+      },
+      error: /规则正文无效/,
     },
   ];
   const roots = fixtures.map(({ files }) => createPluginRoot(files));

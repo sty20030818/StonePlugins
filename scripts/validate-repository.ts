@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -99,6 +100,19 @@ function requireFile(file: string): void {
   assert.ok(existsSync(file), `缺少文件：${path.relative(REPO_ROOT, file)}`);
 }
 
+function requireTrackedFile(file: string): void {
+  requireFile(file);
+  const relative = path.relative(REPO_ROOT, file);
+  try {
+    execFileSync("git", ["ls-files", "--error-unmatch", "--", relative], {
+      cwd: REPO_ROOT,
+      stdio: "ignore",
+    });
+  } catch {
+    assert.fail(`发布文档必须由 Git 跟踪：${relative}`);
+  }
+}
+
 const manifestPath = path.join(
   PLUGIN_ROOT,
   ".codex-plugin",
@@ -112,6 +126,20 @@ const marketplacePath = path.join(
 );
 const repositoryPackagePath = path.join(REPO_ROOT, "package.json");
 const repositoryPackageLockPath = path.join(REPO_ROOT, "package-lock.json");
+const readmePath = path.join(REPO_ROOT, "README.md");
+const contextPath = path.join(REPO_ROOT, "CONTEXT.md");
+const decisionAdrPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "adr",
+  "0001-decision-centered-methodology-disclosure.md",
+);
+const decisionResearchPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "research",
+  "2026-08-29-engineering-rationale-copy-structure.md",
+);
 const hooksPath = path.join(PLUGIN_ROOT, "hooks", "hooks.json");
 const pluginPackagePath = path.join(PLUGIN_ROOT, "package.json");
 const hookSourcePath = path.join(PLUGIN_ROOT, "src", "inject-context.ts");
@@ -145,6 +173,7 @@ for (const file of [
   manifestPath,
   repositoryPackagePath,
   repositoryPackageLockPath,
+  readmePath,
   marketplacePath,
   hooksPath,
   pluginPackagePath,
@@ -153,6 +182,9 @@ for (const file of [
   skillPath,
   skillMetadataPath,
   methodologyIndexPath,
+  contextPath,
+  decisionAdrPath,
+  decisionResearchPath,
 ]) {
   requireFile(file);
 }
@@ -171,7 +203,20 @@ assert.equal(
   "生成的 .js Hook 必须在插件缓存中保持 ESM 语义",
 );
 assert.match(manifest.version, STRICT_SEMVER, "plugin version 必须是严格 SemVer");
-requireFile(path.join(REPO_ROOT, "docs", "evals", `v${manifest.version}.md`));
+const currentEvalPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "evals",
+  `v${manifest.version}.md`,
+);
+for (const file of [
+  currentEvalPath,
+  contextPath,
+  decisionAdrPath,
+  decisionResearchPath,
+]) {
+  requireTrackedFile(file);
+}
 for (const file of legacyHookPaths) {
   assert.equal(
     existsSync(file),
@@ -232,13 +277,54 @@ assert.match(
 );
 
 const skill = readFileSync(skillPath, "utf8");
+const disclosureHeading = "## 🧭 本次决策与方法论（石头鱼的工程规则）";
+assert.equal(
+  skill.split(disclosureHeading).length - 1,
+  1,
+  "公开决策标题必须且只能由核心 Skill 定义一次",
+);
+assert.doesNotMatch(skill, /工程依据（石头鱼的工程规则）/);
+assert.doesNotMatch(skill, /1～3 个独立影响/);
+assert.match(skill, /不设 `1～3` 项固定上限/);
+assert.match(skill, /更高优先级的输出约束优先/);
+assert.equal(
+  skill.trimEnd().endsWith("<!-- SF_END -->"),
+  true,
+  "核心 Skill 必须保留 EOF 完整性标记",
+);
+assert.equal(
+  skill.split("<!-- SF_END -->").length - 1,
+  1,
+  "核心 Skill 的 EOF 完整性标记必须唯一",
+);
+assert.match(skill, /每个方法或同作用、同分类的近义方法族单独一项/);
+assert.match(skill, /方法论 \| 分类 \| 本次作用/);
+assert.doesNotMatch(skill, /`\*\*\{[^`]+\}\*\*`/, "加粗格式示例不能被行内代码包裹");
+for (const field of [
+  "预期影响",
+  "验证计划",
+  "方案影响",
+  "验证证据",
+  "工程判断",
+  "用户明确约束",
+  "工程原则",
+  "架构方法",
+  "改造策略",
+  "验证方法",
+]) {
+  assert.match(skill, new RegExp(field), `核心 Skill 缺少输出契约：${field}`);
+}
 assert.doesNotMatch(
   skill,
-  /\*\*(?:结果|事实|决定|主要收益|未选方案)[：:]\*\*/,
-  "加粗标签的标点必须放在强调标记外，例如 **结果**：",
+  /\*\*(?:采用的方法论|为什么适用|预期影响|验证计划|方案影响|验证证据|未选方案|决策依据)[：:]\*\*/,
+  "加粗标签的标点必须放在强调标记外，例如 **方案影响**：",
 );
 for (const match of skill.matchAll(/\]\((references\/[^)]+)\)/g)) {
   requireFile(path.join(path.dirname(skillPath), match[1]));
 }
+
+const readme = readFileSync(readmePath, "utf8");
+assert.match(readme, /旧版石头鱼 Hook/);
+assert.match(readme, /近似 token 阈值/);
 
 console.log(`Repository validation passed: ${PLUGIN_NAME}@${manifest.version}`);
