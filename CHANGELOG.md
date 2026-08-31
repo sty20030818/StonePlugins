@@ -1,128 +1,147 @@
-# Changelog
+# 更新日志
 
-All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and use [Semantic Versioning](https://semver.org/).
+所有重要变更均遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 格式，并采用[语义化版本](https://semver.org/)。
 
-## [Unreleased]
+## [未发布]
+
+## [0.4.0] - 2026-08-31
+
+### 新增
+
+- 新增常驻工程执行契约，让所有常驻方法从理解、设计、实施到验证共同形成决定，而不是只在最后充当检查表。
+- 新增按真实信号选择条件方法和生成用户可见决策说明的聚焦运行时 reference，并新增不参与运行时注入的方法论治理文档。
+- 新增可重放的中性行为案例及六个决策质量评分维度，用于版本回归评测。
+- 新增发布态 Git 跟踪校验，避免本地存在但没有进入候选提交的运行时 reference 或版本评测造成假通过。
+
+### 变更
+
+- 将整洁架构与六边形架构的依赖原则设为常驻，同时让具体的 Port、Adapter、DDD 结构、迁移策略和验证方法继续按真实信号采用。
+- 将逐轮通用提醒改为连续性锚点，明确禁止事后检查规则或只复述方法名。
+- 把详细 Markdown 输出规则移出核心 Skill，并将原先多职责的方法论索引拆分给运行时选择、治理和评测三个所有者。
+- 让全局 `AGENTS.md` 示例专注日常协作及个人 Git/工具偏好，不再复制插件维护的工程方法论。
+- 更新仓库元数据和安装链接以适配更名后的 `StonePlugins` 仓库，并将 marketplace 展示名改为中文。
+- 将开发期 Node.js 类型定义更新到 26.4.0；插件运行时仍保持无 npm 依赖。
 
 ## [0.3.7] - 2026-08-29
 
-### Added
+### 新增
 
-- Added an always-on engineering check for ownership, cohesion, coupling, knowledge-level DRY, simplicity, causal scope, long-term coherence, and risk-proportionate evidence without forcing architecture patterns.
-- Added a project glossary, a focused ADR, and primary-source research for the public decision-summary contract.
-- Added installed-cache integrity checks so a truncated Skill cannot report successful rule loading.
+- 新增常驻工程检查，覆盖所有权、高内聚低耦合、知识级 DRY、简洁性、因果范围、长期一致性和风险相称证据，同时不强制套用架构模式。
+- 新增项目术语表、聚焦 ADR，以及关于公开决策说明契约的一手资料研究。
+- 新增安装缓存完整性检查，避免被截断的 Skill 错误报告规则已成功加载。
 
-### Changed
+### 变更
 
-- Replaced the generic engineering-rationale block with a decision-centered “本次决策与方法论” summary that classifies and explains methods that materially affect user judgment.
-- Added adaptive Markdown for simple, normal, and complex decisions, with separate proposal-stage and delivery-stage impact and verification fields.
-- Made large decision sets use a compact index, honor higher-priority output constraints, and disclose any omitted boundary instead of applying a fixed item cap.
-- Required compatibility deadlines to come from a confirmed contract or release plan instead of being invented during migration design.
-- Made the 5,800-byte repository target deterministic with a 128-byte plugin-root budget instead of the current checkout path, and distinguished it from Codex's approximate token spill threshold.
-- Kept one public Skill, four conditional references, one shared Hook adapter, and the existing `docs/research`, `docs/evals`, and deterministic test boundaries.
+- 将通用工程依据区块改为以决定为中心的“本次决策与方法论”摘要，对真正影响用户判断的方法进行分类和说明。
+- 为简单、普通和复杂决定提供自适应 Markdown，并区分方案阶段与交付阶段的影响和验证字段。
+- 大量决定改用紧凑索引；遵守更高优先级输出约束，并在无法完整列出时说明省略边界，不再设置固定条目上限。
+- 要求兼容截止时间必须来自已确认的合同或发布计划，不得在迁移设计中自行编造。
+- 以 128 字节插件根路径预算确定性执行 5,800 字节仓库目标，并将其与 Codex 的近似 token 溢出阈值明确区分。
+- 保持一个公共 Skill、四个条件 reference、一个共享 Hook Adapter，以及现有的 `docs/research`、`docs/evals` 和确定性测试边界。
 
-### Fixed
+### 修复
 
-- Documented duplicate old-Hook cleanup during upgrades so conflicting versions are not injected concurrently.
-- Reclassified the six model-behavior results as exploratory observations because the original prompts, instruction stack, and raw outputs were not preserved for independent replay.
+- 记录升级时清理旧 Hook 副本的步骤，避免多个冲突版本同时注入。
+- 将六个模型行为结果重新归类为探索性观察，因为原始 prompt、指令栈和完整输出没有保存，无法独立重放。
 
 ## [0.3.6] - 2026-08-28
 
-### Changed
+### 变更
 
-- Improved engineering rationale summaries with a bold Markdown heading, restrained semantic Emoji, plain-language decisions, accurate method names, adaptive detail, and tradeoffs only when real alternatives affect the choice.
-- Renamed the Hook source to `.ts` and its generated runtime to `.js`, while keeping the three lifecycle events in one shared, stateless handler.
+- 优化工程依据摘要：使用加粗 Markdown 标题、克制且有语义的 Emoji、通俗决定描述和准确的方法名；详情自适应展开，只有真实替代方案会影响选择时才说明取舍。
+- 将 Hook 源码改为 `.ts`、生成运行时改为 `.js`，三个生命周期事件继续共用一个无状态处理器。
 
-### Fixed
+### 修复
 
-- Moved punctuation outside bold engineering-rationale labels so Markdown renderers do not display the emphasis markers literally when body text follows immediately.
-- Made the per-prompt reminder neutral so a partial plugin-cache failure cannot falsely claim that the core rules loaded successfully.
+- 将加粗工程依据标签的标点移到强调标记外，避免正文紧随其后时渲染器直接显示 `**`。
+- 将逐轮提醒改为中性措辞，避免插件缓存部分损坏时错误宣称核心规则已成功加载。
 
 ## [0.3.5] - 2026-08-28
 
-### Changed
+### 变更
 
-- Added conditional, plain-language engineering rationale summaries that connect genuinely applied methods to project facts and concrete design or verification decisions without exposing chain-of-thought or forcing method-name checklists.
+- 新增按条件显示的通俗工程依据摘要，把真正采用的方法与项目事实、具体设计或验证决定关联起来，同时不暴露思维链，也不强制列出方法名清单。
 
 ## [0.3.4] - 2026-08-27
 
-### Changed
+### 变更
 
-- Made lifecycle Hooks the only automatic owner of the core engineering rules while keeping the Skill as an explicit invocation and fallback path.
-- Added an explicit context threshold for core Hook output and strict repository validation for the complete Hook configuration.
-- Added versioned rule-evaluation evidence and labeled research documents as historical decision snapshots.
+- 将生命周期 Hook 设为核心工程规则唯一的自动所有者，同时保留 Skill 作为显式调用和回退路径。
+- 为核心 Hook 输出增加明确的上下文阈值，并对完整 Hook 配置执行严格仓库校验。
+- 新增按版本保存的规则评测证据，并将研究文档标记为历史决策快照。
 
-### Fixed
+### 修复
 
-- Closed validation gaps that allowed extra Hook groups, handlers, or fields to pass unnoticed.
-- Expanded safe-failure tests for invalid Hook input and damaged plugin files.
+- 补上允许多余 Hook group、handler 或字段意外通过的校验缺口。
+- 扩展非法 Hook 输入和插件文件损坏场景的安全失败测试。
 
 ## [0.3.3] - 2026-08-27
 
-### Added
+### 新增
 
-- Added a maintenance-only methodology index with triggers, counter-signals, conflicts, source provenance, lifecycle gates, and decision-focused evaluation cases.
-- Added conditional guidance for substitutable behavior contracts and shared contract tests, legacy characterization tests, structure-versus-behavior sequencing, and migration strategy selection.
+- 新增仅供维护使用的方法论索引，记录触发信号、反触发信号、冲突、来源、生命周期门禁和面向决定的评测案例。
+- 新增按条件采用的指引，覆盖可替换行为契约与共享契约测试、遗留特征测试、结构与行为的实施顺序，以及迁移策略选择。
 
-### Changed
+### 变更
 
-- Added one concise core route for methodology comparison, rule maintenance, and fixed evaluations while keeping the full methodology material out of Hook injection.
+- 为方法论比较、规则维护和固定评测增加一个简洁的核心路由，同时不把完整方法论材料注入 Hook 上下文。
 
 ## [0.3.2] - 2026-08-27
 
-### Changed
+### 变更
 
-- Renamed the visible Skill to `Stonefish Engineering` while keeping the conversational name `石头鱼的工程规则` and the stable technical identifier `stonefish-engineering`.
-- Clarified compact-session, subagent, per-prompt, and multi-Hook behavior against the current Codex Hooks contract.
-- Added focused guidance for test integrity, flaky tests, failure semantics, security and privacy boundaries, lightweight threat modeling, external side effects, cross-module completion, documentation sync, accessibility basics, and evidence-stall recovery.
-- Kept task-external debt read-only by default instead of requiring automatic `TODO` edits.
-- Added release validation that keeps the repository package, lockfile, and plugin manifest versions aligned.
+- 将 Skill 展示名改为 `Stonefish Engineering`，同时保留对话名称“石头鱼的工程规则”和稳定技术标识 `stonefish-engineering`。
+- 根据当时的 Codex Hooks 契约，明确压缩后会话、子 Agent、逐轮提醒和多 Hook 行为。
+- 新增针对测试完整性、间歇性测试、失败语义、安全与隐私边界、轻量威胁建模、外部副作用、跨模块收尾、文档同步、可访问性基础和证据停滞恢复的聚焦指引。
+- 默认只读记录任务范围外的技术债，不再要求自动添加 `TODO`。
+- 新增发布校验，确保仓库 package、lockfile 和插件 manifest 的版本一致。
 
 ## [0.3.1] - 2026-08-27
 
-### Changed
+### 变更
 
-- Renamed the user-facing product from `石头鱼工程工作流` to `石头鱼的工程规则`.
-- Polished the Chinese descriptions, starter prompts, Hook messages, and Skill metadata.
+- 将面向用户的产品名称从“石头鱼工程工作流”改为“石头鱼的工程规则”。
+- 优化中文说明、起始 prompt、Hook 消息和 Skill 元数据。
 
 ## [0.3.0] - 2026-08-26
 
-### Changed
+### 变更
 
-- Localized the plugin page, starter prompts, capability labels, and Hook status messages into Chinese.
-- Renamed the visible Skill from `长期工程准则` to `工程设计、实现与验证` while keeping one routed engineering workflow.
+- 将插件页面、起始 prompt、能力标签和 Hook 状态消息中文化。
+- 将 Skill 展示名从“长期工程准则”改为“工程设计、实现与验证”，同时继续保持单一工程工作流入口。
 
 ## [0.2.1] - 2026-08-26
 
-### Added
+### 新增
 
-- Added a square plugin image shared by the composer icon and marketplace logo.
+- 新增方形插件图片，并由输入框图标与 marketplace Logo 共用。
 
 ## [0.2.0] - 2026-08-26
 
-### Changed
+### 变更
 
-- Migrated Hook development, tests, and repository validation to statically checked TypeScript.
-- Kept the published Hook dependency-free by committing its generated JavaScript runtime artifact.
+- 将 Hook 开发、测试和仓库校验迁移到静态检查的 TypeScript。
+- 继续提交生成后的 JavaScript 运行时产物，使发布的 Hook 保持零依赖。
 
 ## [0.1.0] - 2026-08-26
 
-### Added
+### 新增
 
-- `stonefish-engineering` Skill with architecture, change-boundary, and verification references.
-- Codex lifecycle Hooks for session start, subagent start, and lightweight per-prompt reminders.
-- Git-backed Codex marketplace metadata.
-- Dependency-free Hook tests and repository validation.
+- 新增 `stonefish-engineering` Skill，以及架构、修改边界和验证 reference。
+- 新增会话启动、子 Agent 启动和轻量逐轮提醒的 Codex 生命周期 Hook。
+- 新增以 Git 为后端的 Codex marketplace 元数据。
+- 新增无依赖的 Hook 测试和仓库校验。
 
-[Unreleased]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.7...HEAD
-[0.3.7]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.6...v0.3.7
-[0.3.6]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.5...v0.3.6
-[0.3.5]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.4...v0.3.5
-[0.3.4]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.3...v0.3.4
-[0.3.3]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.2...v0.3.3
-[0.3.2]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.1...v0.3.2
-[0.3.1]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.2.1...v0.3.0
-[0.2.1]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/sty20030818/stonefish-codex-plugins/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/sty20030818/stonefish-codex-plugins/releases/tag/v0.1.0
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/sty20030818/StonePlugins/compare/v0.3.7...v0.4.0
+[0.3.7]: https://github.com/sty20030818/StonePlugins/compare/v0.3.6...v0.3.7
+[0.3.6]: https://github.com/sty20030818/StonePlugins/compare/v0.3.5...v0.3.6
+[0.3.5]: https://github.com/sty20030818/StonePlugins/compare/v0.3.4...v0.3.5
+[0.3.4]: https://github.com/sty20030818/StonePlugins/compare/v0.3.3...v0.3.4
+[0.3.3]: https://github.com/sty20030818/StonePlugins/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/sty20030818/StonePlugins/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/sty20030818/StonePlugins/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/sty20030818/StonePlugins/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/sty20030818/StonePlugins/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/sty20030818/StonePlugins/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/sty20030818/StonePlugins/releases/tag/v0.1.0

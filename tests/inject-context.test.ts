@@ -123,17 +123,15 @@ test("SessionStart compact 与 SubagentStart 注入同一份有体积上限的�
     assert.doesNotMatch(context, /^# 架构与长期变更$/m);
     assert.doesNotMatch(context, /^# 修改边界、依赖与迁移$/m);
     assert.doesNotMatch(context, /^# 验证、诊断与审查$/m);
-    assert.match(context, /references\/methodology-index\.md/);
-    assert.doesNotMatch(context, /^# 方法论索引与晋升门槛$/m);
-    assert.match(context, /^## 常驻工程检查$/m);
-    assert.match(context, /^## 本次决策与方法论$/m);
-    assert.match(context, /## 🧭 本次决策与方法论（石头鱼的工程规则）/);
-    assert.match(context, /每个方法或同作用、同分类的近义方法族单独一项/);
-    assert.match(context, /不设 `1～3` 项固定上限/);
-    assert.match(context, /更高优先级的输出约束优先/);
+    assert.match(context, /references\/method-selection\.md/);
+    assert.match(context, /references\/decision-summary\.md/);
+    assert.doesNotMatch(context, /references\/methodology-index\.md/);
+    assert.match(context, /^## 常驻工程执行契约$/m);
+    assert.match(context, /必须共同参与每项工程决定的形成/);
+    assert.match(context, /不得先形成方案再做方法论签到/);
+    assert.match(context, /^## 公开决策说明$/m);
+    assert.doesNotMatch(context, /^## 🧭/m);
     assert.match(context, /<!-- SF_END -->$/);
-    assert.doesNotMatch(context, /`\*\*\{[^`]+\}\*\*`/);
-    assert.doesNotMatch(context, /工程依据（石头鱼的工程规则）/);
     assert.ok(
       budgetedContextBytes(context) <= CORE_CONTEXT_BYTE_TARGET,
       `核心注入在 ${PLUGIN_ROOT_BYTE_BUDGET}-byte 根路径预算下超过仓库目标 ${CORE_CONTEXT_BYTE_TARGET} bytes`,
@@ -180,17 +178,26 @@ test("UserPromptSubmit 固定注入短提醒且不读取或回显用户提示", 
     { hook_event_name: "UserPromptSubmit", prompt: "不读取插件文件" },
     { pluginRoot: undefined },
   );
+  const withoutPrompt = runHook({ hook_event_name: "UserPromptSubmit" });
+  const arbitraryPromptShape = runHook({
+    hook_event_name: "UserPromptSubmit",
+    prompt: { ignored: true },
+  });
 
   assert.equal(output.hookSpecificOutput.hookEventName, "UserPromptSubmit");
   assert.match(output.hookSpecificOutput.additionalContext, /^石头鱼的工程规则/);
+  assert.match(output.hookSpecificOutput.additionalContext, /完整常驻工程执行契约/);
+  assert.match(output.hookSpecificOutput.additionalContext, /从理解、设计、实施到验证共同形成/);
+  assert.match(output.hookSpecificOutput.additionalContext, /按真实信号采用条件方法/);
+  assert.match(output.hookSpecificOutput.additionalContext, /不证明核心规则已送达/);
+  assert.match(output.hookSpecificOutput.additionalContext, /不得退化为事后检查/);
+  assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /已注入/);
   assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /仍然生效/);
+  assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /第一性原则/);
+  assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /KISS/);
   assert.doesNotMatch(
     output.hookSpecificOutput.additionalContext,
     /\$stonefish-engineering/,
-  );
-  assert.doesNotMatch(
-    output.hookSpecificOutput.additionalContext,
-    /工程设计、实现与验证/,
   );
   assert.equal(
     output.hookSpecificOutput.additionalContext,
@@ -199,6 +206,14 @@ test("UserPromptSubmit 固定注入短提醒且不读取或回显用户提示", 
   assert.equal(
     output.hookSpecificOutput.additionalContext,
     withoutPluginRoot.output.hookSpecificOutput.additionalContext,
+  );
+  assert.equal(
+    output.hookSpecificOutput.additionalContext,
+    withoutPrompt.output.hookSpecificOutput.additionalContext,
+  );
+  assert.equal(
+    output.hookSpecificOutput.additionalContext,
+    arbitraryPromptShape.output.hookSpecificOutput.additionalContext,
   );
   assert.doesNotMatch(raw, new RegExp(secret));
 });
@@ -215,12 +230,8 @@ test("无效输入边界只返回安全 systemMessage", () => {
       error: /Hook 事件不受支持/,
     },
     {
-      result: runHook({
-        hook_event_name: "UserPromptSubmit",
-        prompt: 42,
-        secret,
-      }),
-      error: /提示内容类型无效/,
+      result: runHook({ secret }),
+      error: /Hook 事件不受支持/,
     },
     {
       result: runHook(

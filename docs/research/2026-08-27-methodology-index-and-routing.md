@@ -3,7 +3,7 @@
 > 日期：2026-08-27
 > 范围：核验现有 `stonefish-engineering` 的方法论覆盖，判断新增内容应进入核心规则、按需参考、项目级规则还是仅保留为研究材料。
 > 证据边界：结论只以原作者文章、作者/出版社官方资料、规范或项目原仓库为依据；`agent-rules-books` 只作为候选线索与压缩设计样本，不作为工程原则本身的权威来源。
-> 快照用途：本文是 `v0.3.3`（`cd769a8`）的方法论设计记录，候选状态不代表现行实现状态。当前采用范围、冲突规则和评测案例以 [方法论索引](../../plugins/stonefish-engineering/skills/stonefish-engineering/references/methodology-index.md) 为准。
+> 快照用途：本文是 `v0.3.3`（`cd769a8`）的方法论设计记录，候选状态不代表现行实现状态。当前运行时选择以 [条件方法选择器](../../plugins/stonefish-engineering/skills/stonefish-engineering/references/method-selection.md) 为准；完整目录与治理见 [方法论目录](../methodologies.md)，固定案例见 [行为评测](../evals/behavior-cases.md)。
 
 ## 结论先行
 

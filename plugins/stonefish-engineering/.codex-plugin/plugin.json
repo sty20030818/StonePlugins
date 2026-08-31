@@ -1,13 +1,13 @@
 {
   "name": "stonefish-engineering",
-  "version": "0.3.7",
-  "description": "一套重视长期维护、控制改动范围并用证据验证结果的 Codex 工程规则。",
+  "version": "0.4.0",
+  "description": "让常驻工程方法贯穿设计、实现与验证，并按真实信号采用具体方法。",
   "author": {
     "name": "石头鱼",
     "url": "https://github.com/sty20030818"
   },
-  "homepage": "https://github.com/sty20030818/stonefish-codex-plugins",
-  "repository": "https://github.com/sty20030818/stonefish-codex-plugins",
+  "homepage": "https://github.com/sty20030818/StonePlugins",
+  "repository": "https://github.com/sty20030818/StonePlugins",
   "license": "MIT",
   "keywords": [
     "codex",
@@ -19,21 +19,21 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "石头鱼的工程规则",
-    "shortDescription": "重视长期维护，控制改动范围，用证据验证结果",
-    "longDescription": "提供一套面向长期维护的工程规则：理解真实调用路径，在正确的职责边界修复根因，把改动限制在因果范围内，并用与风险相匹配的证据验证结果。",
+    "shortDescription": "让常驻工程方法贯穿设计、实现与验证",
+    "longDescription": "自动送达一份常驻工程执行契约：从真实路径和正确所有者形成长期方案，以单一职责、高内聚低耦合、DRY、KISS 等方法控制边界和复杂度，再按真实信号采用架构、迁移与验证方法。",
     "developerName": "石头鱼",
     "category": "Developer Tools",
     "capabilities": [
       "工程指引",
       "生命周期钩子"
     ],
-    "websiteURL": "https://github.com/sty20030818/stonefish-codex-plugins",
+    "websiteURL": "https://github.com/sty20030818/StonePlugins",
     "composerIcon": "./assets/icon.jpg",
     "logo": "./assets/icon.jpg",
     "defaultPrompt": [
-      "使用石头鱼的工程规则完成这个实现。",
-      "审查这次改动的职责归属、长期维护性和不必要的复杂度。",
-      "找到最小完整的修复，并给出可复现的验证证据。"
+      "使用石头鱼的工程规则形成并完成这个长期工程方案。",
+      "让常驻方法共同设计这次改动，并说明关键决定与取舍。",
+      "找到最小完整的根因修复，并给出可复现的验证证据。"
     ]
   }
 }

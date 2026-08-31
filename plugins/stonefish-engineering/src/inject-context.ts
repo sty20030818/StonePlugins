@@ -12,12 +12,11 @@ const ALLOWED_EVENTS = new Set([
   "UserPromptSubmit",
 ]);
 const PROMPT_REMINDER =
-  "石头鱼的工程规则提醒：项目明确约束优先；工程任务采用最小完整、长期连贯且可验证的方案。";
+  "石头鱼的工程规则：本轮工程决定须由完整常驻工程执行契约从理解、设计、实施到验证共同形成，并按真实信号采用条件方法；本提醒只维持连续性，不证明核心规则已送达。不得退化为事后检查、方法名签到，或先形成方案再补规则。";
 
 type HookEventName = "SessionStart" | "SubagentStart" | "UserPromptSubmit";
 type HookInput = {
   hook_event_name: HookEventName;
-  prompt?: string;
 };
 type HookEnvironment = Readonly<Record<string, string | undefined>>;
 
@@ -49,16 +48,8 @@ function parseHookInput(rawInput: string): HookInput {
   ) {
     throw new SafeHookError("Hook 事件不受支持");
   }
-  if (
-    record.hook_event_name === "UserPromptSubmit" &&
-    typeof record.prompt !== "string"
-  ) {
-    throw new SafeHookError("提示内容类型无效");
-  }
-
   return {
     hook_event_name: record.hook_event_name as HookEventName,
-    ...(typeof record.prompt === "string" ? { prompt: record.prompt } : {}),
   };
 }
 
@@ -117,6 +108,7 @@ async function readCoreContext(env: HookEnvironment) {
   const rules = stripFrontmatter(skill);
   if (
     !/^# 石头鱼的工程规则$/m.test(rules) ||
+    !/^## 常驻工程执行契约$/m.test(rules) ||
     !/^## 工作顺序$/m.test(rules) ||
     !rules.endsWith("<!-- SF_END -->")
   ) {

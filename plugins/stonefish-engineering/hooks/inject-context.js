@@ -8,7 +8,7 @@ const ALLOWED_EVENTS = new Set([
     "SubagentStart",
     "UserPromptSubmit",
 ]);
-const PROMPT_REMINDER = "石头鱼的工程规则提醒：项目明确约束优先；工程任务采用最小完整、长期连贯且可验证的方案。";
+const PROMPT_REMINDER = "石头鱼的工程规则：本轮工程决定须由完整常驻工程执行契约从理解、设计、实施到验证共同形成，并按真实信号采用条件方法；本提醒只维持连续性，不证明核心规则已送达。不得退化为事后检查、方法名签到，或先形成方案再补规则。";
 class SafeHookError extends Error {
     code;
     constructor(code) {
@@ -32,13 +32,8 @@ function parseHookInput(rawInput) {
         !ALLOWED_EVENTS.has(record.hook_event_name)) {
         throw new SafeHookError("Hook 事件不受支持");
     }
-    if (record.hook_event_name === "UserPromptSubmit" &&
-        typeof record.prompt !== "string") {
-        throw new SafeHookError("提示内容类型无效");
-    }
     return {
         hook_event_name: record.hook_event_name,
-        ...(typeof record.prompt === "string" ? { prompt: record.prompt } : {}),
     };
 }
 function stripFrontmatter(markdown) {
@@ -86,6 +81,7 @@ async function readCoreContext(env) {
     }
     const rules = stripFrontmatter(skill);
     if (!/^# 石头鱼的工程规则$/m.test(rules) ||
+        !/^## 常驻工程执行契约$/m.test(rules) ||
         !/^## 工作顺序$/m.test(rules) ||
         !rules.endsWith("<!-- SF_END -->")) {
         throw new SafeHookError("规则正文无效");

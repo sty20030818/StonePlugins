@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 const REPO_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PLUGIN_NAME = "stonefish-engineering";
 const PLUGIN_ROOT = path.join(REPO_ROOT, "plugins", PLUGIN_NAME);
+const RELEASE_MODE = process.argv.includes("--release");
 const STRICT_SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
 const HOOK_COMMAND = 'node "${PLUGIN_ROOT}/hooks/inject-context.js"';
 const CORE_CONTEXT_TOKEN_LIMIT = 6_000;
@@ -127,6 +128,7 @@ const marketplacePath = path.join(
 const repositoryPackagePath = path.join(REPO_ROOT, "package.json");
 const repositoryPackageLockPath = path.join(REPO_ROOT, "package-lock.json");
 const readmePath = path.join(REPO_ROOT, "README.md");
+const changelogPath = path.join(REPO_ROOT, "CHANGELOG.md");
 const contextPath = path.join(REPO_ROOT, "CONTEXT.md");
 const decisionAdrPath = path.join(
   REPO_ROOT,
@@ -134,11 +136,35 @@ const decisionAdrPath = path.join(
   "adr",
   "0001-decision-centered-methodology-disclosure.md",
 );
+const persistentContractAdrPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "adr",
+  "0002-persistent-execution-contract.md",
+);
 const decisionResearchPath = path.join(
   REPO_ROOT,
   "docs",
   "research",
   "2026-08-29-engineering-rationale-copy-structure.md",
+);
+const persistentContractResearchPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "research",
+  "2026-08-31-persistent-engineering-rules-and-evaluation.md",
+);
+const methodologiesPath = path.join(REPO_ROOT, "docs", "methodologies.md");
+const behaviorCasesPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "evals",
+  "behavior-cases.md",
+);
+const personalAgentsExamplePath = path.join(
+  REPO_ROOT,
+  "examples",
+  "AGENTS.stonefish.md",
 );
 const hooksPath = path.join(PLUGIN_ROOT, "hooks", "hooks.json");
 const pluginPackagePath = path.join(PLUGIN_ROOT, "package.json");
@@ -161,7 +187,21 @@ const skillMetadataPath = path.join(
   "agents",
   "openai.yaml",
 );
-const methodologyIndexPath = path.join(
+const methodSelectionPath = path.join(
+  PLUGIN_ROOT,
+  "skills",
+  PLUGIN_NAME,
+  "references",
+  "method-selection.md",
+);
+const decisionSummaryPath = path.join(
+  PLUGIN_ROOT,
+  "skills",
+  PLUGIN_NAME,
+  "references",
+  "decision-summary.md",
+);
+const legacyMethodologyIndexPath = path.join(
   PLUGIN_ROOT,
   "skills",
   PLUGIN_NAME,
@@ -174,6 +214,7 @@ for (const file of [
   repositoryPackagePath,
   repositoryPackageLockPath,
   readmePath,
+  changelogPath,
   marketplacePath,
   hooksPath,
   pluginPackagePath,
@@ -181,10 +222,16 @@ for (const file of [
   hookRuntimePath,
   skillPath,
   skillMetadataPath,
-  methodologyIndexPath,
+  methodSelectionPath,
+  decisionSummaryPath,
+  methodologiesPath,
+  behaviorCasesPath,
+  personalAgentsExamplePath,
   contextPath,
   decisionAdrPath,
+  persistentContractAdrPath,
   decisionResearchPath,
+  persistentContractResearchPath,
 ]) {
   requireFile(file);
 }
@@ -209,13 +256,33 @@ const currentEvalPath = path.join(
   "evals",
   `v${manifest.version}.md`,
 );
-for (const file of [
-  currentEvalPath,
-  contextPath,
-  decisionAdrPath,
-  decisionResearchPath,
-]) {
+requireFile(currentEvalPath);
+for (const file of [contextPath, decisionAdrPath, decisionResearchPath]) {
   requireTrackedFile(file);
+}
+if (RELEASE_MODE) {
+  for (const file of [
+    manifestPath,
+    marketplacePath,
+    hooksPath,
+    pluginPackagePath,
+    hookSourcePath,
+    hookRuntimePath,
+    skillPath,
+    skillMetadataPath,
+    methodSelectionPath,
+    decisionSummaryPath,
+    currentEvalPath,
+    methodologiesPath,
+    behaviorCasesPath,
+    personalAgentsExamplePath,
+    persistentContractAdrPath,
+    persistentContractResearchPath,
+    readmePath,
+    changelogPath,
+  ]) {
+    requireTrackedFile(file);
+  }
 }
 for (const file of legacyHookPaths) {
   assert.equal(
@@ -224,6 +291,11 @@ for (const file of legacyHookPaths) {
     `不得保留旧 Hook 文件：${path.relative(REPO_ROOT, file)}`,
   );
 }
+assert.equal(
+  existsSync(legacyMethodologyIndexPath),
+  false,
+  "多职责 methodology-index.md 必须拆分为运行时选择器与非运行时治理资料",
+);
 assert.equal(
   repositoryPackage.version,
   manifest.version,
@@ -277,16 +349,21 @@ assert.match(
 );
 
 const skill = readFileSync(skillPath, "utf8");
-const disclosureHeading = "## 🧭 本次决策与方法论（石头鱼的工程规则）";
 assert.equal(
-  skill.split(disclosureHeading).length - 1,
+  skill.split("## 常驻工程执行契约").length - 1,
   1,
-  "公开决策标题必须且只能由核心 Skill 定义一次",
+  "核心 Skill 必须且只能定义一次常驻工程执行契约",
 );
-assert.doesNotMatch(skill, /工程依据（石头鱼的工程规则）/);
-assert.doesNotMatch(skill, /1～3 个独立影响/);
-assert.match(skill, /不设 `1～3` 项固定上限/);
-assert.match(skill, /更高优先级的输出约束优先/);
+assert.doesNotMatch(skill, /## 常驻工程检查/);
+assert.match(skill, /必须共同参与每项工程决定的形成/);
+assert.match(skill, /不是交付前检查表/);
+assert.match(skill, /不得先形成方案再做方法论签到/);
+assert.match(skill, /知识级 DRY 消除必须同步变化的业务知识/);
+assert.match(skill, /整洁架构与六边形架构的领域独立、依赖方向和边界原则始终参与设计/);
+assert.match(skill, /允许推荐破坏性重构/);
+assert.match(skill, /references\/method-selection\.md/);
+assert.match(skill, /references\/decision-summary\.md/);
+assert.doesNotMatch(skill, /references\/methodology-index\.md/);
 assert.equal(
   skill.trimEnd().endsWith("<!-- SF_END -->"),
   true,
@@ -297,34 +374,100 @@ assert.equal(
   1,
   "核心 Skill 的 EOF 完整性标记必须唯一",
 );
-assert.match(skill, /每个方法或同作用、同分类的近义方法族单独一项/);
-assert.match(skill, /方法论 \| 分类 \| 本次作用/);
-assert.doesNotMatch(skill, /`\*\*\{[^`]+\}\*\*`/, "加粗格式示例不能被行内代码包裹");
-for (const field of [
-  "预期影响",
-  "验证计划",
-  "方案影响",
-  "验证证据",
-  "工程判断",
-  "用户明确约束",
-  "工程原则",
-  "架构方法",
-  "改造策略",
-  "验证方法",
-]) {
-  assert.match(skill, new RegExp(field), `核心 Skill 缺少输出契约：${field}`);
-}
-assert.doesNotMatch(
-  skill,
-  /\*\*(?:采用的方法论|为什么适用|预期影响|验证计划|方案影响|验证证据|未选方案|决策依据)[：:]\*\*/,
-  "加粗标签的标点必须放在强调标记外，例如 **方案影响**：",
-);
 for (const match of skill.matchAll(/\]\((references\/[^)]+)\)/g)) {
-  requireFile(path.join(path.dirname(skillPath), match[1]));
+  const referencePath = path.join(path.dirname(skillPath), match[1]);
+  requireFile(referencePath);
+  if (RELEASE_MODE) requireTrackedFile(referencePath);
 }
+
+const methodSelection = readFileSync(methodSelectionPath, "utf8");
+for (const method of [
+  "Functional Core / Imperative Shell",
+  "Bounded Context",
+  "REP、CCP、CRP、ADP、SDP、SAP",
+  "Tidy First",
+  "Strangler Fig",
+  "Characterization Testing",
+  "Threat Modeling",
+  "Fitness Functions",
+]) {
+  assert.match(
+    methodSelection,
+    new RegExp(method.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    `条件方法选择器缺少方法族：${method}`,
+  );
+}
+for (const match of methodSelection.matchAll(/\]\(([^)]+\.md)\)/g)) {
+  const referencePath = path.join(path.dirname(methodSelectionPath), match[1]);
+  requireFile(referencePath);
+  if (RELEASE_MODE) requireTrackedFile(referencePath);
+}
+
+const decisionSummary = readFileSync(decisionSummaryPath, "utf8");
+const disclosureHeading = "## 🧭 为什么这样做（石头鱼的工程规则）";
+assert.equal(
+  decisionSummary.split(disclosureHeading).length - 1,
+  1,
+  "公开决策标题必须且只能由 decision-summary.md 定义一次",
+);
+assert.match(decisionSummary, /完整常驻工程执行契约共同形成方案/);
+assert.match(decisionSummary, /事实与约束 → 方法的具体作用 → 决定 → 影响与取舍/);
+assert.match(decisionSummary, /关键决定 \| 方法论如何产生决定 \| 结果 \| 影响与取舍/);
+assert.doesNotMatch(decisionSummary, /本次决策与方法论（石头鱼的工程规则）/);
+assert.doesNotMatch(
+  decisionSummary,
+  /\*\*(?:为什么这样做|影响与取舍|验证证据)[：:]\*\*/,
+  "加粗标签的标点必须放在强调标记外",
+);
+
+const methodologies = readFileSync(methodologiesPath, "utf8");
+assert.match(methodologies, /### 常驻工程执行契约/);
+assert.match(methodologies, /### 条件方法/);
+assert.match(methodologies, /### 研究候选与评审视角/);
+assert.match(methodologies, /一手来源或真实失败/);
+
+const behaviorCases = readFileSync(behaviorCasesPath, "utf8");
+for (const id of [
+  "OWNER-1",
+  "DRY-1",
+  "SIMPLE-1",
+  "ARCH-1",
+  "MIGRATION-1",
+  "MIGRATION-2",
+  "REFACTOR-1",
+  "TEST-1",
+  "RISK-1",
+  "SCOPE-1",
+]) {
+  assert.match(behaviorCases, new RegExp(id), `行为评测缺少案例：${id}`);
+}
+assert.match(behaviorCases, /startup、UserPromptSubmit、SubagentStart、resume、clear、compact/);
+
+const personalAgentsExample = readFileSync(personalAgentsExamplePath, "utf8");
+assert.doesNotMatch(personalAgentsExample, /\$stonefish-engineering/);
+assert.doesNotMatch(personalAgentsExample, /^## 工程规则$/m);
+assert.match(personalAgentsExample, /Bun/);
 
 const readme = readFileSync(readmePath, "utf8");
 assert.match(readme, /旧版石头鱼 Hook/);
 assert.match(readme, /近似 token 阈值/);
+assert.match(readme, /常驻工程执行契约/);
+assert.match(readme, /规则送达/);
+assert.match(readme, /规则落实/);
+assert.match(readme, /sty20030818\/StonePlugins/);
+assert.match(
+  readme,
+  new RegExp(`--ref v${manifest.version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`),
+  "README 必须提供当前版本的固定安装示例",
+);
 
-console.log(`Repository validation passed: ${PLUGIN_NAME}@${manifest.version}`);
+const changelog = readFileSync(changelogPath, "utf8");
+assert.match(
+  changelog,
+  new RegExp(`^## \\[${manifest.version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\]`, "m"),
+  "CHANGELOG 必须包含当前版本",
+);
+
+console.log(
+  `Repository validation passed: ${PLUGIN_NAME}@${manifest.version}${RELEASE_MODE ? " (release)" : ""}`,
+);
