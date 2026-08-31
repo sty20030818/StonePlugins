@@ -4,6 +4,12 @@
 
 ## [未发布]
 
+## [0.4.1] - 2026-08-31
+
+### 变更
+
+- 调整公开决策说明的 Markdown：标题移出引用，一至两个决定使用三级标题并突出显示影响与取舍，三个以上决定保留表格。
+
 ## [0.4.0] - 2026-08-31
 
 ### 新增
@@ -132,7 +138,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.4.0...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/sty20030818/StonePlugins/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/sty20030818/StonePlugins/compare/v0.3.7...v0.4.0
 [0.3.7]: https://github.com/sty20030818/StonePlugins/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/sty20030818/StonePlugins/compare/v0.3.5...v0.3.6

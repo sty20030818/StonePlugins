@@ -404,20 +404,42 @@ for (const match of methodSelection.matchAll(/\]\(([^)]+\.md)\)/g)) {
 }
 
 const decisionSummary = readFileSync(decisionSummaryPath, "utf8");
-const disclosureHeading = "## 🧭 为什么这样做（石头鱼的工程规则）";
+const disclosureHeading = "## 🧭 为什么这么做（石头鱼的工程规则）";
 assert.equal(
-  decisionSummary.split(disclosureHeading).length - 1,
+  decisionSummary.split("\n").filter((line) => line === disclosureHeading).length,
   1,
-  "公开决策标题必须且只能由 decision-summary.md 定义一次",
+  "公开决策标题必须且只能由 decision-summary.md 以完整行定义一次",
 );
 assert.match(decisionSummary, /完整常驻工程执行契约共同形成方案/);
 assert.match(decisionSummary, /事实与约束 → 方法的具体作用 → 决定 → 影响与取舍/);
 assert.match(decisionSummary, /关键决定 \| 方法论如何产生决定 \| 结果 \| 影响与取舍/);
+assert.match(decisionSummary, /完整常驻契约共同形成方案；这里只列真正改变结果的决定。/);
+assert.match(decisionSummary, /^### \{决定一\}$/m);
+assert.match(decisionSummary, /^### \{决定二\}$/m);
+assert.match(
+  decisionSummary,
+  /^> \{方法（分类）\}依据\{事实与约束\}，使方案\{方法产生的具体作用\}。\n>\n> \*\*影响与取舍\*\*：\{当前收益、代价或剩余风险\}。$/m,
+  "一至两个决定必须把影响与取舍换行并加粗标签",
+);
+assert.match(
+  decisionSummary,
+  /\| \*\*\{决定\}\*\* \| \{方法（分类）\}：\{事实及具体作用\}/,
+);
+const decisionTemplateMarkdown = [
+  ...decisionSummary.matchAll(/```md\n([\s\S]*?)```/g),
+]
+  .map((match) => match[1])
+  .join("\n");
+assert.deepEqual(
+  [...decisionTemplateMarkdown.matchAll(/\*\*([^*]+)\*\*/g)].map((match) => match[1]),
+  ["影响与取舍", "影响与取舍", "{决定}"],
+  "公开决策模板的加粗位置不符合约定",
+);
 assert.doesNotMatch(decisionSummary, /本次决策与方法论（石头鱼的工程规则）/);
 assert.doesNotMatch(
   decisionSummary,
-  /\*\*(?:为什么这样做|影响与取舍|验证证据)[：:]\*\*/,
-  "加粗标签的标点必须放在强调标记外",
+  /^[ ]{0,3}>.*(?:为什么(?:这样|这么)做（石头鱼的工程规则）|完整常驻契约共同形成方案|\{决定[一二]\})/m,
+  "公开决策标题、决定标题和通用说明不得放入引用",
 );
 
 const methodologies = readFileSync(methodologiesPath, "utf8");

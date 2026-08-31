@@ -17,7 +17,7 @@
 
 多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；本插件的每次注入都自包含，不依赖其他 Hook 先后顺序。如果曾把旧版石头鱼 Hook 手动写入全局或项目配置，升级后应在 `/hooks` 核对来源并停用旧副本，避免新旧规则同时注入。`additionalContextLimit` 是触发落盘预览的近似 token 阈值，不是字节上限；仓库另外用字节预算控制核心正文。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
 
-Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)、[方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md)、[决策透明度研究](docs/research/2026-08-28-methodology-disclosure-and-decision-transparency.md)、[决策文案研究](docs/research/2026-08-29-engineering-rationale-copy-structure.md) 和[常驻行为研究](docs/research/2026-08-31-persistent-engineering-rules-and-evaluation.md)中。当前候选行为以核心 Skill、references、[行为评测集](docs/evals/behavior-cases.md)、测试、[ADR-0002](docs/adr/0002-persistent-execution-contract.md) 和 [v0.4.0 候选评测](docs/evals/v0.4.0.md)为准；[v0.3.7 评测](docs/evals/v0.3.7.md)保留已发布版本的历史证据。
+Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)、[方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md)、[决策透明度研究](docs/research/2026-08-28-methodology-disclosure-and-decision-transparency.md)、[决策文案研究](docs/research/2026-08-29-engineering-rationale-copy-structure.md) 和[常驻行为研究](docs/research/2026-08-31-persistent-engineering-rules-and-evaluation.md)中。当前版本行为以核心 Skill、references、[行为评测集](docs/evals/behavior-cases.md)、测试、[ADR-0002](docs/adr/0002-persistent-execution-contract.md) 和 [v0.4.1 发布评测](docs/evals/v0.4.1.md)为准；[v0.4.0 评测](docs/evals/v0.4.0.md)保留上一版本的证据。
 
 核心倾向：
 
@@ -79,7 +79,7 @@ codex plugin add stonefish-engineering@stonefish
 
 更新后先在 `/hooks` 确认只有预期来源的三个 Hook，再启动新任务。若 Hook 定义的 hash 发生变化，重新审查和信任。
 
-日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。`v0.4.0` 发布后，如需固定该版本，在添加 marketplace 时使用 `--ref v0.4.0`。
+日常安装跟踪 `main`，版本历史使用 Git tag 与 GitHub Release。`v0.4.1` 发布后，如需固定该版本，在添加 marketplace 时使用 `--ref v0.4.1`。
 
 ## 隐私与安全
 
