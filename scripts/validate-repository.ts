@@ -418,8 +418,8 @@ assert.match(decisionSummary, /^### \{决定一\}$/m);
 assert.match(decisionSummary, /^### \{决定二\}$/m);
 assert.match(
   decisionSummary,
-  /^> \{方法（分类）\}依据\{事实与约束\}，使方案\{方法产生的具体作用\}。\n>\n> \*\*影响与取舍\*\*：\{当前收益、代价或剩余风险\}。$/m,
-  "一至两个决定必须把影响与取舍换行并加粗标签",
+  /^> \*\*\{方法（分类）\}\*\* 依据\{事实与约束\}，使方案\{方法产生的具体作用\}。\n>\n> \*\*影响与取舍\*\*：\{当前收益、代价或剩余风险\}。$/m,
+  "一至两个决定必须加粗方法标签并保留后置空格，同时把影响与取舍换行并加粗标签",
 );
 assert.match(
   decisionSummary,
@@ -432,7 +432,7 @@ const decisionTemplateMarkdown = [
   .join("\n");
 assert.deepEqual(
   [...decisionTemplateMarkdown.matchAll(/\*\*([^*]+)\*\*/g)].map((match) => match[1]),
-  ["影响与取舍", "影响与取舍", "{决定}"],
+  ["{方法（分类）}", "影响与取舍", "{方法（分类）}", "影响与取舍", "{决定}"],
   "公开决策模板的加粗位置不符合约定",
 );
 assert.doesNotMatch(decisionSummary, /本次决策与方法论（石头鱼的工程规则）/);
