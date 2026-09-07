@@ -368,16 +368,6 @@ assert.match(skill, /允许推荐破坏性重构/);
 assert.match(skill, /references\/method-selection\.md/);
 assert.match(skill, /references\/decision-summary\.md/);
 assert.doesNotMatch(skill, /references\/methodology-index\.md/);
-assert.equal(
-  skill.trimEnd().endsWith("<!-- SF_END -->"),
-  true,
-  "核心 Skill 必须保留 EOF 完整性标记",
-);
-assert.equal(
-  skill.split("<!-- SF_END -->").length - 1,
-  1,
-  "核心 Skill 的 EOF 完整性标记必须唯一",
-);
 for (const match of skill.matchAll(/\]\((references\/[^)]+)\)/g)) {
   const referencePath = path.join(path.dirname(skillPath), match[1]);
   requireFile(referencePath);

@@ -10,14 +10,14 @@
 
 - [独立 Skill](skills/stonefish-engineering/SKILL.md)：完整核心契约和 references 位于根目录 `skills/stonefish-engineering/`，是运行时规则的唯一来源，允许隐式调用。
 - Hook 插件：位于 `plugins/stonefish-engineering/`，不再携带或注册 Skill，也不注入规则正文。
-- `SessionStart`：在 startup、resume、clear、compact 时发送明确的 Skill 加载要求；`source: "compact"` 在压缩后的下一次模型请求前触发，不重复注册 `PostCompact`。
-- `SubagentStart`：向每个子 Agent 发送同一加载要求，子 Agent 按自己的有效上下文判断是否需要加载。
-- `UserPromptSubmit`：每轮发送加载要求，不根据提示内容做启发式匹配，也不回显用户输入。
-- 工程任务形成决定前，Agent 必须完整加载核心 `SKILL.md`；同一有效上下文已完整加载时不重复读取。references 仍根据事实按需加载，纯文案等无工程决定的任务不强制加载。
+- `SessionStart`：startup、resume、clear 只在工程正文缺失时要求加载；`source: "compact"` 在压缩后的下一次模型请求前要求无条件重新完整读取，不重复注册 `PostCompact`。
+- `SubagentStart`：提醒子 Agent 的上下文独立；工程任务必须自行加载核心，不能沿用父 Agent 的加载声明。
+- `UserPromptSubmit`：每轮发送精简的语义边界提醒，不读取提示内容做关键词路由，也不回显用户输入。
+- 所有任务继续遵守各宿主的全局协作规则。需要改变或评价软件行为、代码、配置、依赖、数据、接口、测试、架构或发布的任务加载工程 Skill；边界不清时按工程任务处理。同一有效上下文已完整加载时不重复读取，references 仍根据事实按需加载。
 - Skill references：根据项目事实按需读取[条件方法选择](skills/stonefish-engineering/references/method-selection.md)、架构、修改边界、验证和[公开决策说明](skills/stonefish-engineering/references/decision-summary.md)。
 - [方法论目录与治理](docs/methodologies.md)：保存完整方法目录、来源、冲突和晋升规则，不参与每轮运行时注入。
 
-多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；每次加载要求都自包含，不依赖其他 Hook 先后顺序。`additionalContextLimit` 是 Hook 上下文触发落盘预览的近似 token 阈值，不是字节上限，也不证明 Skill 已加载。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
+多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；每个事件的加载要求都自包含，不依赖其他 Hook 先后顺序。`additionalContextLimit` 是 Hook 上下文触发落盘预览的近似 token 阈值，不是字节上限，也不证明 Skill 已加载。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
 
 Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)、[方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md)、[决策透明度研究](docs/research/2026-08-28-methodology-disclosure-and-decision-transparency.md)、[决策文案研究](docs/research/2026-08-29-engineering-rationale-copy-structure.md) 和[常驻行为研究](docs/research/2026-08-31-persistent-engineering-rules-and-evaluation.md)中。当前开发态行为以核心 Skill、references、[行为评测集](docs/evals/behavior-cases.md)、测试和 [ADR-0003](docs/adr/0003-independent-skill-and-loader-hooks.md) 为准；[ADR-0002](docs/adr/0002-persistent-execution-contract.md) 的常驻契约语义继续保留。
 
@@ -95,7 +95,7 @@ $stonefish-engineering 按石头鱼的工程规则处理这个重构，并加载
 也可以将以下短约定加入各 CLI 实际使用的全局规则文件；请先确认对应 CLI 的规则路径。本仓库只提供示例，不自动写入配置：
 
 ```text
-工程任务形成决定前，通过宿主 Skill 入口完整加载 stonefish-engineering 的 SKILL.md；同一有效上下文已完整加载时不重复读取。找不到 Skill 或读取失败时明确报告并暂停依赖该规则的工程决定，不自动安装；纯文案任务不强制加载。
+所有任务继续遵守全局协作规则。需要改变或评价软件行为、代码、配置、依赖、数据、接口、测试、架构或发布时，通过宿主 Skill 入口完整加载 stonefish-engineering 的 SKILL.md；边界不清时加载，同一有效上下文已完整加载时不重复读取。压缩后重新完整读取。找不到 Skill 或读取失败时明确报告并暂停依赖该规则的工程决定，不自动安装或回退旧缓存。
 ```
 
 ## 更新与旧版迁移

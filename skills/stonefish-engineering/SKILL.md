@@ -55,5 +55,3 @@ description: "Use for software implementation, debugging, testing, review, refac
 回复含实质工程决定时，在结果或推荐后说明规则如何形成决定，并先读 [references/decision-summary.md](references/decision-summary.md)；纯事实、纯文案或无工程决定时不显示。
 
 以“事实与约束 → 方法作用 → 决定 → 影响与取舍”说明可观察作用；不把读取 reference、事后贴名或隐藏思维冒充采用。更高优先级的输出约束优先。
-
-<!-- SF_END -->
