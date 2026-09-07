@@ -9,10 +9,10 @@ import { fileURLToPath } from "node:url";
 const REPO_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PLUGIN_NAME = "stonefish-engineering";
 const PLUGIN_ROOT = path.join(REPO_ROOT, "plugins", PLUGIN_NAME);
+const SKILL_ROOT = path.join(REPO_ROOT, "skills", PLUGIN_NAME);
 const RELEASE_MODE = process.argv.includes("--release");
 const STRICT_SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
 const HOOK_COMMAND = 'node "${PLUGIN_ROOT}/hooks/inject-context.js"';
-const CORE_CONTEXT_TOKEN_LIMIT = 6_000;
 const EXPECTED_HOOK_CONFIG = {
   hooks: {
     SessionStart: [
@@ -23,8 +23,7 @@ const EXPECTED_HOOK_CONFIG = {
             type: "command",
             command: HOOK_COMMAND,
             timeout: 5,
-            additionalContextLimit: CORE_CONTEXT_TOKEN_LIMIT,
-            statusMessage: "正在加载石头鱼的工程规则……",
+            statusMessage: "正在提醒加载石头鱼的工程规则……",
           },
         ],
       },
@@ -36,8 +35,7 @@ const EXPECTED_HOOK_CONFIG = {
             type: "command",
             command: HOOK_COMMAND,
             timeout: 5,
-            additionalContextLimit: CORE_CONTEXT_TOKEN_LIMIT,
-            statusMessage: "正在加载石头鱼的工程规则……",
+            statusMessage: "正在提醒加载石头鱼的工程规则……",
           },
         ],
       },
@@ -59,7 +57,7 @@ const EXPECTED_HOOK_CONFIG = {
 type PluginManifest = {
   name: string;
   version: string;
-  skills: string;
+  skills?: unknown;
   hooks?: unknown;
   author?: { name?: string };
   license: string;
@@ -142,6 +140,12 @@ const persistentContractAdrPath = path.join(
   "adr",
   "0002-persistent-execution-contract.md",
 );
+const independentSkillAdrPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "adr",
+  "0003-independent-skill-and-loader-hooks.md",
+);
 const decisionResearchPath = path.join(
   REPO_ROOT,
   "docs",
@@ -174,37 +178,24 @@ const legacyHookPaths = [
   path.join(PLUGIN_ROOT, "src", "inject-context.mts"),
   path.join(PLUGIN_ROOT, "hooks", "inject-context.mjs"),
 ];
-const skillPath = path.join(
-  PLUGIN_ROOT,
-  "skills",
-  PLUGIN_NAME,
-  "SKILL.md",
-);
+const skillPath = path.join(SKILL_ROOT, "SKILL.md");
 const skillMetadataPath = path.join(
-  PLUGIN_ROOT,
-  "skills",
-  PLUGIN_NAME,
+  SKILL_ROOT,
   "agents",
   "openai.yaml",
 );
 const methodSelectionPath = path.join(
-  PLUGIN_ROOT,
-  "skills",
-  PLUGIN_NAME,
+  SKILL_ROOT,
   "references",
   "method-selection.md",
 );
 const decisionSummaryPath = path.join(
-  PLUGIN_ROOT,
-  "skills",
-  PLUGIN_NAME,
+  SKILL_ROOT,
   "references",
   "decision-summary.md",
 );
 const legacyMethodologyIndexPath = path.join(
-  PLUGIN_ROOT,
-  "skills",
-  PLUGIN_NAME,
+  SKILL_ROOT,
   "references",
   "methodology-index.md",
 );
@@ -230,6 +221,7 @@ for (const file of [
   contextPath,
   decisionAdrPath,
   persistentContractAdrPath,
+  independentSkillAdrPath,
   decisionResearchPath,
   persistentContractResearchPath,
 ]) {
@@ -277,6 +269,7 @@ if (RELEASE_MODE) {
     behaviorCasesPath,
     personalAgentsExamplePath,
     persistentContractAdrPath,
+    independentSkillAdrPath,
     persistentContractResearchPath,
     readmePath,
     changelogPath,
@@ -311,7 +304,12 @@ assert.equal(
   manifest.version,
   "package-lock 根包与 plugin manifest 版本必须一致",
 );
-assert.equal(manifest.skills, "./skills/");
+assert.ok(!Object.hasOwn(manifest, "skills"), "插件只提供 Hook，不声明独立安装的 Skill");
+assert.equal(
+  existsSync(path.join(PLUGIN_ROOT, "skills", PLUGIN_NAME, "SKILL.md")),
+  false,
+  "插件不得保留独立 Skill 的副本",
+);
 assert.ok(!Object.hasOwn(manifest, "hooks"), "默认 hooks/hooks.json 不应在 manifest 重复声明");
 assert.notEqual(manifest.author?.name, "Local developer");
 assert.equal(manifest.license, "MIT");
@@ -344,11 +342,17 @@ assert.deepEqual(
 const skillMetadata = readFileSync(skillMetadataPath, "utf8");
 assert.match(
   skillMetadata,
-  /^\s*allow_implicit_invocation:\s*false\s*$/m,
-  "Hook 是唯一自动规则所有者，Skill 只能显式调用",
+  /^\s*allow_implicit_invocation:\s*true\s*$/m,
+  "独立 Skill 必须允许宿主按任务自动发现和加载",
 );
 
 const skill = readFileSync(skillPath, "utf8");
+const frontmatter = skill.match(/^\uFEFF?---\r?\n([\s\S]*?)\r?\n---\r?\n/);
+assert.ok(frontmatter, "独立 Skill 必须包含完整 frontmatter");
+assert.match(frontmatter[1], /^name: stonefish-engineering\s*$/m);
+assert.match(frontmatter[1], /^description:\s*\S.+$/m);
+assert.match(skill, /^# 石头鱼的工程规则$/m);
+assert.match(skill, /^## 工作顺序$/m);
 assert.equal(
   skill.split("## 常驻工程执行契约").length - 1,
   1,
@@ -466,22 +470,22 @@ for (const id of [
 assert.match(behaviorCases, /startup、UserPromptSubmit、SubagentStart、resume、clear、compact/);
 
 const personalAgentsExample = readFileSync(personalAgentsExamplePath, "utf8");
-assert.doesNotMatch(personalAgentsExample, /\$stonefish-engineering/);
-assert.doesNotMatch(personalAgentsExample, /^## 工程规则$/m);
+assert.match(personalAgentsExample, /stonefish-engineering/);
+assert.doesNotMatch(personalAgentsExample, /^## 常驻工程执行契约$/m);
 assert.match(personalAgentsExample, /Bun/);
 
 const readme = readFileSync(readmePath, "utf8");
-assert.match(readme, /旧版石头鱼 Hook/);
-assert.match(readme, /近似 token 阈值/);
 assert.match(readme, /常驻工程执行契约/);
-assert.match(readme, /规则送达/);
-assert.match(readme, /规则落实/);
 assert.match(readme, /sty20030818\/StonePlugins/);
-assert.match(
-  readme,
-  new RegExp(`--ref v${manifest.version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`),
-  "README 必须提供当前版本的固定安装示例",
-);
+assert.ok(readme.includes("skills/stonefish-engineering/SKILL.md"));
+assert.ok(readme.includes("docs/adr/0003-independent-skill-and-loader-hooks.md"));
+if (RELEASE_MODE) {
+  assert.match(
+    readme,
+    new RegExp(`--ref v${manifest.version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`),
+    "发布 README 必须提供与 manifest 版本一致的固定安装示例",
+  );
+}
 
 const changelog = readFileSync(changelogPath, "utf8");
 assert.match(

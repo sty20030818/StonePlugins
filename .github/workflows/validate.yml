@@ -29,5 +29,8 @@ jobs:
       - run: npm run build
       - run: git ls-files --error-unmatch plugins/stonefish-engineering/hooks/inject-context.js
       - run: git diff --exit-code -- plugins/stonefish-engineering/hooks/inject-context.js
-      - run: npm run validate:release
+      - run: npm run validate
+      - name: Validate release artifacts
+        if: github.ref_type == 'tag'
+        run: npm run validate:release
       - run: node --test tests/inject-context.test.ts

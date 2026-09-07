@@ -1,7 +1,7 @@
 {
   "name": "stonefish-engineering",
-  "version": "0.4.1",
-  "description": "让常驻工程方法贯穿设计、实现与验证，并按真实信号采用具体方法。",
+  "version": "0.5.0",
+  "description": "在 Codex 生命周期提醒加载独立安装的石头鱼工程规则 Skill。",
   "author": {
     "name": "石头鱼",
     "url": "https://github.com/sty20030818"
@@ -16,11 +16,10 @@
     "refactoring",
     "verification"
   ],
-  "skills": "./skills/",
   "interface": {
     "displayName": "石头鱼的工程规则",
-    "shortDescription": "让常驻工程方法贯穿设计、实现与验证",
-    "longDescription": "自动送达一份常驻工程执行契约：从真实路径和正确所有者形成长期方案，以单一职责、高内聚低耦合、DRY、KISS 等方法控制边界和复杂度，再按真实信号采用架构、迁移与验证方法。",
+    "shortDescription": "提醒加载独立的石头鱼工程规则 Skill",
+    "longDescription": "先通过 Skills CLI 安装 stonefish-engineering Skill。本插件只在会话、子 Agent 和逐轮生命周期发送加载要求，不包含规则正文。工程任务通过宿主 Skill 入口完整加载核心，再按需读取细则；加载要求送达不代表正文已经加载或规则已经落实。",
     "developerName": "石头鱼",
     "category": "Developer Tools",
     "capabilities": [

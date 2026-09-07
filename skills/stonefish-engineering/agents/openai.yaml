@@ -4,4 +4,4 @@ interface:
   default_prompt: "使用 $stonefish-engineering，让完整常驻工程执行契约共同形成这个工程任务的方案、实现与验证，并说明关键决定。"
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

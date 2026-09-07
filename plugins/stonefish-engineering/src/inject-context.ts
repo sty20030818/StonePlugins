@@ -1,163 +1,56 @@
 #!/usr/bin/env node
 
 import { readFileSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 
-// `npm run build` generates the dependency-free JavaScript Hook runtime in ../hooks/.
+// npm run build 生成无依赖的 JavaScript Hook；规则正文由独立 Skill 持有。
+const LOAD_REQUIREMENT = [
+  "石头鱼的工程规则：这是 Skill 加载要求，不证明正文已加载或规则已落实。",
+  "工程任务须先通过宿主的 Skill 入口使用 $stonefish-engineering，完整读取该入口的 SKILL.md，再形成工程决定；不得跳过核心直接读取 references。",
+  "同一技能正文已完整加载且仍在当前有效上下文中时，无需重复读取；按正文信号加载 references，并以该 Skill 所在目录解析相对路径。",
+  "若未发现该技能或读取失败，先报告并暂停依赖它的工程决定，不得假装已采用；不要自动安装，也不要回退到旧插件缓存。",
+  "纯文案、翻译、格式调整等非工程任务不强制加载。",
+].join("\n");
 
-const ALLOWED_EVENTS = new Set([
-  "SessionStart",
-  "SubagentStart",
-  "UserPromptSubmit",
-]);
-const PROMPT_REMINDER =
-  "石头鱼的工程规则：本轮工程决定须由完整常驻工程执行契约从理解、设计、实施到验证共同形成，并按真实信号采用条件方法；本提醒只维持连续性，不证明核心规则已送达。不得退化为事后检查、方法名签到，或先形成方案再补规则。";
+const EVENT_CONTEXT = {
+  SessionStart: "会话启动、恢复或压缩后的工程工作应先确认 Skill 正文仍完整可用。",
+  SubagentStart: "本子 Agent 不得假定父 Agent 已加载的 Skill 正文存在于自己的上下文。",
+  UserPromptSubmit: "本轮工程工作沿用已完整加载的契约；若当前上下文缺失正文，先加载 Skill。",
+} as const;
 
-type HookEventName = "SessionStart" | "SubagentStart" | "UserPromptSubmit";
-type HookInput = {
-  hook_event_name: HookEventName;
-};
-type HookEnvironment = Readonly<Record<string, string | undefined>>;
+type HookEventName = keyof typeof EVENT_CONTEXT;
 
-class SafeHookError extends Error {
-  readonly code: string;
+class SafeHookError extends Error {}
 
-  constructor(code: string) {
-    super(code);
-    this.code = code;
-  }
-}
-
-function parseHookInput(rawInput: string): HookInput {
+function parseHookEvent(rawInput: string): HookEventName {
   let input: unknown;
   try {
     input = JSON.parse(rawInput.replace(/^\uFEFF/, ""));
   } catch {
     throw new SafeHookError("输入不是有效 JSON");
   }
-
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     throw new SafeHookError("输入必须是 JSON 对象");
   }
-
-  const record = input as Record<string, unknown>;
-  if (
-    typeof record.hook_event_name !== "string" ||
-    !ALLOWED_EVENTS.has(record.hook_event_name)
-  ) {
+  const event = (input as Record<string, unknown>).hook_event_name;
+  if (typeof event !== "string" || !Object.hasOwn(EVENT_CONTEXT, event)) {
     throw new SafeHookError("Hook 事件不受支持");
   }
-  return {
-    hook_event_name: record.hook_event_name as HookEventName,
-  };
-}
-
-function stripFrontmatter(markdown: string): string {
-  const normalized = markdown.replace(/^\uFEFF/, "");
-  if (!normalized.startsWith("---\n") && !normalized.startsWith("---\r\n")) {
-    return normalized.trim();
-  }
-
-  const match = normalized.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
-  if (!match) {
-    throw new SafeHookError("规则文件 frontmatter 无效");
-  }
-  return normalized.slice(match[0].length).trim();
-}
-
-function pluginRootFromEnv(env: HookEnvironment): string {
-  const pluginRoot = env.PLUGIN_ROOT?.trim();
-  if (!pluginRoot || !path.isAbsolute(pluginRoot)) {
-    throw new SafeHookError("PLUGIN_ROOT 无效");
-  }
-  return pluginRoot;
-}
-
-async function readCoreContext(env: HookEnvironment) {
-  const pluginRoot = pluginRootFromEnv(env);
-  const skillPath = path.join(
-    pluginRoot,
-    "skills",
-    "stonefish-engineering",
-    "SKILL.md",
-  );
-  const manifestPath = path.join(pluginRoot, ".codex-plugin", "plugin.json");
-
-  let skill;
-  let manifest;
-  try {
-    [skill, manifest] = await Promise.all([
-      readFile(skillPath, "utf8"),
-      readFile(manifestPath, "utf8"),
-    ]);
-  } catch {
-    throw new SafeHookError("插件规则或 manifest 不可读");
-  }
-
-  let version;
-  try {
-    version = JSON.parse(manifest).version;
-  } catch {
-    throw new SafeHookError("manifest 不是有效 JSON");
-  }
-  if (typeof version !== "string" || !version) {
-    throw new SafeHookError("manifest 缺少版本");
-  }
-
-  const rules = stripFrontmatter(skill);
-  if (
-    !/^# 石头鱼的工程规则$/m.test(rules) ||
-    !/^## 常驻工程执行契约$/m.test(rules) ||
-    !/^## 工作顺序$/m.test(rules) ||
-    !rules.endsWith("<!-- SF_END -->")
-  ) {
-    throw new SafeHookError("规则正文无效");
-  }
-  const skillRoot = path.dirname(skillPath);
-  return {
-    version,
-    context: [
-      `STONEFISH ENGINEERING ACTIVE — v${version}`,
-      `Skill source: ${skillPath}`,
-      `Resolve bundled relative references from: ${skillRoot}`,
-      "以下是已安装的 $stonefish-engineering 核心规则；需要细则时，按正文说明读取 references 中的对应文件。",
-      "",
-      rules,
-    ].join("\n"),
-  };
-}
-
-async function buildHookOutput(
-  input: HookInput,
-  env: HookEnvironment = process.env,
-) {
-  if (input.hook_event_name === "UserPromptSubmit") {
-    return {
-      hookSpecificOutput: {
-        hookEventName: input.hook_event_name,
-        additionalContext: PROMPT_REMINDER,
-      },
-    };
-  }
-
-  const { context } = await readCoreContext(env);
-  return {
-    hookSpecificOutput: {
-      hookEventName: input.hook_event_name,
-      additionalContext: context,
-    },
-  };
+  return event as HookEventName;
 }
 
 let output;
 try {
-  const input = parseHookInput(readFileSync(0, "utf8"));
-  output = await buildHookOutput(input);
-} catch (error: unknown) {
-  const code = error instanceof SafeHookError ? error.code : "未知错误";
+  const event = parseHookEvent(readFileSync(0, "utf8"));
   output = {
-    systemMessage: `未能加载石头鱼的工程规则：${code}。`,
+    hookSpecificOutput: {
+      hookEventName: event,
+      additionalContext: `${EVENT_CONTEXT[event]}\n${LOAD_REQUIREMENT}`,
+    },
+  };
+} catch (error: unknown) {
+  const reason = error instanceof SafeHookError ? error.message : "未知错误";
+  output = {
+    systemMessage: `未能发送石头鱼的工程规则加载要求：${reason}。`,
   };
 }
 
