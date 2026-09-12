@@ -43,15 +43,15 @@ Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/
 - Hook 插件需要支持 Plugins 和 Hooks 的当前 Codex CLI 或 ChatGPT 桌面版 Codex；
 - Hook 运行环境的 `PATH` 中存在 Node.js 22.18 或更高版本。
 
-当前候选版本为 `0.5.0`，用于下载安装验证，尚未正式发布。提交推送到 GitHub `main` 后才能按远端命令安装；未推送时，可先在本仓库根目录安装本地 Skill：
+当前稳定版本为 `0.5.0`，用于独立 Skill 与 Hook 分发。未从 GitHub 安装时，可先在本仓库根目录安装本地 Skill：
 
 ```bash
 npx skills add . --skill stonefish-engineering -g -a codex -a grok
 ```
 
-本地目录来源不能当作可从 GitHub 更新的安装记录；要转为远端更新，在改造推送后按下面的远端命令重新安装并确认来源。隔离本地安装与核心加载记录见[开发态验证](docs/evals/independent-skill-development.md)，`0.5.0` 的下载安装与剩余验收见[候选验证](docs/evals/v0.5.0.md)。
+本地目录来源不能当作可从 GitHub 更新的安装记录；要转为远端更新，按下面的远端命令重新安装并确认来源。隔离本地安装与核心加载记录见[开发态验证](docs/evals/independent-skill-development.md)，`0.5.0` 的候选证据见[候选验证](docs/evals/v0.5.0.md)。
 
-改造推送后，从 GitHub 安装 Skill：
+从 GitHub 安装 Skill：
 
 ```bash
 npx skills add sty20030818/StonePlugins --skill stonefish-engineering -g -a codex -a grok

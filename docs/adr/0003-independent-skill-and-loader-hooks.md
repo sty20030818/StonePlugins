@@ -2,7 +2,7 @@
 
 ## 状态
 
-已接受，进入 `0.5.0` 候选提交与安装验证阶段，尚未正式发布。替代 [ADR-0002](0002-persistent-execution-contract.md) 中 Hook 直接送达规则正文的实现；保留其常驻工程执行契约与按需 references 的语义。
+已接受，进入 `0.5.0` 正式发布。替代 [ADR-0002](0002-persistent-execution-contract.md) 中 Hook 直接送达规则正文的实现；保留其常驻工程执行契约与按需 references 的语义。
 
 ## 背景
 
