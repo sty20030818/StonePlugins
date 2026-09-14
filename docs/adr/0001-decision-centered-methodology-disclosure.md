@@ -2,7 +2,7 @@
 
 ## 状态
 
-历史决策，原位归档。按决定解释真实影响的原则继续保留；详细披露模板的所有权与旧标题已被 [ADR-0002](0002-persistent-execution-contract.md) 及现行 `decision-summary.md` 替代。当前目标见 [ADR-0004](0004-codex-first-bundled-engineering.md)，运行态与资源入口见 [文档索引](../README.md)。以下正文仅记录 v0.3.7 当时的取舍。
+历史决策，原位归档。按决定解释真实影响的原则继续保留；其后演进见 [ADR-0002](0002-persistent-execution-contract.md)，现行公开说明由 [SKILL.md](../../plugins/stoneplugins/skills/engineering/SKILL.md) 持有。当前目标见 [ADR-0004](0004-codex-first-bundled-engineering.md)，运行态与资源入口见 [文档索引](../README.md)。以下正文仅记录 v0.3.7 当时的取舍。
 
 ## 历史决定
 

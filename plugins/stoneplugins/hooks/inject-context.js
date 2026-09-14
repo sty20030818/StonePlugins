@@ -55,10 +55,6 @@ function loadCoreContext() {
     if (!body.trim()) {
         throw new SafeHookError("包内 Skill 正文为空");
     }
-    const headings = ["# 石头鱼的工程规则", "## 常驻工程执行契约", "## 工作顺序", "## 完成条件"];
-    if (!headings.every((heading) => body.split(/\r?\n/).includes(heading))) {
-        throw new SafeHookError("包内 Skill 缺少必要结构");
-    }
     const context = [
         "石头鱼的工程核心已通过本次上下文完整送达，仅适用于工程任务；恢复、压缩或子 Agent 以本次正文为准。已完整收到时不为展示调用重复读取核心，细则仍按需读取。",
         `Skill 入口：$stoneplugins:engineering；文件：${fileURLToPath(skillUrl)}`,

@@ -93,6 +93,22 @@ test("frontmatter 字段换序或 name 加引号不改变完整正文送达", (t
   }
 });
 
+test("合法正文改写标题、措辞或不使用标题时仍原样完整送达", (t) => {
+  const fixture = installedFixture(t);
+  const original = readFileSync(fixture.skillPath, "utf8");
+  const frontmatter = original.slice(0, original.indexOf("\n---\n", 4) + "\n---\n".length);
+  for (const body of [
+    "# 工程协作\n\n先核对真实消费者，在共同所有者修复并验证。\n",
+    "确认输入边界与失败语义；保留用户修改，只报告有证据的结果。\n",
+  ]) {
+    writeFileSync(fixture.skillPath, `${frontmatter}\n${body}`);
+    for (const hook_event_name of ["SessionStart", "SubagentStart"]) {
+      const { output } = runHook({ hook_event_name }, { script: fixture.script });
+      assertCompleteContext(output, hook_event_name, fixture.skillPath);
+    }
+  }
+});
+
 test("每轮只发送工程执行提醒，不重复展开核心", () => {
   const { output } = runHook({ hook_event_name: "UserPromptSubmit" });
   assert.deepEqual(Object.keys(output), ["hookSpecificOutput"]);
@@ -100,7 +116,7 @@ test("每轮只发送工程执行提醒，不重复展开核心", () => {
   const context = output.hookSpecificOutput.additionalContext as string;
   assert.match(context, /工程/);
   assert.match(context, /stoneplugins:engineering/);
-  assert.doesNotMatch(context, /^# 石头鱼的工程规则$/m);
+  assert.ok(!context.includes(coreBody()));
   assert.ok(Buffer.byteLength(context, "utf8") <= 300);
 });
 
@@ -128,7 +144,7 @@ test("完整插件移到含空格缓存后以 ESM 运行，核心和全部细则
     assert.ok(!raw.includes(PLUGIN_ROOT));
     const body = coreBody(fixture.skillPath);
     const references = [...body.matchAll(/\]\((references\/[^)]+)\)/g)];
-    assert.equal(references.length, 5);
+    assert.ok(references.length > 0);
     for (const [, relativePath] of references) {
       assert.ok(relativePath);
       const resource = path.resolve(path.dirname(fixture.skillPath), relativePath);
@@ -143,7 +159,7 @@ test("完整插件移到含空格缓存后以 ESM 运行，核心和全部细则
   );
 });
 
-test("核心缺失、不可读、结构损坏、逃逸或超限时安全暂停，prompt 不读取核心", (t) => {
+test("核心缺失、不可读、元数据损坏、空白、逃逸或超限时安全暂停，prompt 不读取核心", (t) => {
   const fixture = installedFixture(t);
   const original = readFileSync(fixture.skillPath, "utf8");
   const frontmatter = original.slice(0, original.indexOf("\n---\n", 4) + "\n---\n".length);
@@ -158,7 +174,6 @@ test("核心缺失、不可读、结构损坏、逃逸或超限时安全暂停�
     { name: "frontmatter 错 name", content: original.replace(/^name: .*$/m, "name: other") },
     { name: "frontmatter 重复 name", content: original.replace(/^name: .*$/m, "name: engineering\nname: engineering") },
     { name: "空正文", content: `${frontmatter}\n \n` },
-    { name: "缺必要结构", content: original.replace("## 常驻工程执行契约", "") },
     { name: "超过预算", content: `${original}\n${SECRET}\n${"规则".repeat(8_000)}` },
   ];
 
@@ -179,7 +194,7 @@ test("核心缺失、不可读、结构损坏、逃逸或超限时安全暂停�
       assert.match(output.systemMessage, /暂停工程决定/, name);
       assert.equal(output.hookSpecificOutput.hookEventName, hook_event_name, name);
       assert.match(output.hookSpecificOutput.additionalContext, /暂停工程决定/, name);
-      assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /^# 石头鱼的工程规则$/m, name);
+      assert.ok(!output.hookSpecificOutput.additionalContext.includes(coreBody()), name);
       assert.ok(!raw.includes(SECRET), name);
       assert.ok(!raw.includes(fixture.skillPath), name);
     }

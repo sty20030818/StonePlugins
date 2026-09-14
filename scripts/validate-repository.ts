@@ -203,21 +203,6 @@ const skillMetadataPath = path.join(
   "agents",
   "openai.yaml",
 );
-const methodSelectionPath = path.join(
-  SKILL_ROOT,
-  "references",
-  "method-selection.md",
-);
-const decisionSummaryPath = path.join(
-  SKILL_ROOT,
-  "references",
-  "decision-summary.md",
-);
-const legacyMethodologyIndexPath = path.join(
-  SKILL_ROOT,
-  "references",
-  "methodology-index.md",
-);
 
 for (const file of [
   manifestPath,
@@ -232,8 +217,6 @@ for (const file of [
   hookRuntimePath,
   skillPath,
   skillMetadataPath,
-  methodSelectionPath,
-  decisionSummaryPath,
   methodologiesPath,
   behaviorCasesPath,
   personalAgentsExamplePath,
@@ -283,8 +266,6 @@ if (RELEASE_MODE) {
     hookRuntimePath,
     skillPath,
     skillMetadataPath,
-    methodSelectionPath,
-    decisionSummaryPath,
     currentEvalPath,
     methodologiesPath,
     behaviorCasesPath,
@@ -307,11 +288,6 @@ for (const file of legacyHookPaths) {
     `不得保留旧 Hook 文件：${path.relative(REPO_ROOT, file)}`,
   );
 }
-assert.equal(
-  existsSync(legacyMethodologyIndexPath),
-  false,
-  "多职责 methodology-index.md 必须拆分为运行时选择器与非运行时治理资料",
-);
 assert.equal(
   repositoryPackage.version,
   manifest.version,
@@ -397,96 +373,20 @@ const skillFields = frontmatter[1].replace(/\r\n/g, "\n");
 assert.equal(skillFields.split("\n").length, 2, "本包 Skill 元数据只包含 name、description 两个单行字段");
 assert.match(skillFields, new RegExp(`^name: (?:${SKILL_NAME}|"${SKILL_NAME}"|'${SKILL_NAME}')$`, "m"));
 assert.match(skillFields, /^description: "[^"\r\n]+"$/m);
-assert.match(skill, /^# 石头鱼的工程规则$/m);
-assert.match(skill, /^## 工作顺序$/m);
-assert.equal(
-  skill.split("## 常驻工程执行契约").length - 1,
-  1,
-  "核心 Skill 必须且只能定义一次常驻工程执行契约",
-);
-assert.doesNotMatch(skill, /## 常驻工程检查/);
-assert.match(skill, /必须共同参与每项工程决定的形成/);
-assert.match(skill, /不是交付前检查表/);
-assert.match(skill, /不得先形成方案再做方法论签到/);
-assert.match(skill, /知识级 DRY 消除必须同步变化的业务知识/);
-assert.match(skill, /整洁架构与六边形架构的领域独立、依赖方向和边界原则始终参与设计/);
-assert.match(skill, /允许推荐破坏性重构/);
-assert.match(skill, /references\/method-selection\.md/);
-assert.match(skill, /references\/decision-summary\.md/);
-assert.doesNotMatch(skill, /references\/methodology-index\.md/);
-for (const match of skill.matchAll(/\]\((references\/[^)]+)\)/g)) {
-  const referencePath = path.join(path.dirname(skillPath), match[1]);
-  requireFile(referencePath);
-  if (RELEASE_MODE) requireTrackedFile(referencePath);
-}
-
-const methodSelection = readFileSync(methodSelectionPath, "utf8");
-for (const method of [
-  "Functional Core / Imperative Shell",
-  "Bounded Context",
-  "REP、CCP、CRP、ADP、SDP、SAP",
-  "Tidy First",
-  "Strangler Fig",
-  "Characterization Testing",
-  "Threat Modeling",
-  "Fitness Functions",
-]) {
-  assert.match(
-    methodSelection,
-    new RegExp(method.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
-    `条件方法选择器缺少方法族：${method}`,
+const body = skill.slice(frontmatter[0].length);
+assert.ok(body.trim(), "Skill 正文不得为空");
+const references = [...body.matchAll(/\]\((references\/[^)]+)\)/g)];
+assert.ok(references.length > 0, "Skill 必须提供按需细则入口");
+for (const match of references) {
+  const referencePath = path.resolve(SKILL_ROOT, match[1]);
+  assert.ok(
+    referencePath.startsWith(`${PLUGIN_ROOT}${path.sep}`),
+    `Skill 引用不得逃逸插件包：${match[1]}`,
   );
-}
-for (const match of methodSelection.matchAll(/\]\(([^)]+\.md)\)/g)) {
-  const referencePath = path.join(path.dirname(methodSelectionPath), match[1]);
   requireFile(referencePath);
+  assert.ok(readFileSync(referencePath, "utf8").trim(), `Skill 引用不得为空：${match[1]}`);
   if (RELEASE_MODE) requireTrackedFile(referencePath);
 }
-
-const decisionSummary = readFileSync(decisionSummaryPath, "utf8");
-const disclosureHeading = "## 🧭 为什么这么做（石头鱼的工程规则）";
-assert.equal(
-  decisionSummary.split("\n").filter((line) => line === disclosureHeading).length,
-  1,
-  "公开决策标题必须且只能由 decision-summary.md 以完整行定义一次",
-);
-assert.match(decisionSummary, /完整常驻工程执行契约共同形成方案/);
-assert.match(decisionSummary, /事实与约束 → 方法的具体作用 → 决定 → 影响与取舍/);
-assert.match(decisionSummary, /关键决定 \| 方法论如何产生决定 \| 结果 \| 影响与取舍/);
-assert.match(decisionSummary, /完整常驻契约共同形成方案；这里只列真正改变结果的决定。/);
-assert.match(decisionSummary, /^### \{决定一\}$/m);
-assert.match(decisionSummary, /^### \{决定二\}$/m);
-assert.match(
-  decisionSummary,
-  /^> \*\*\{方法（分类）\}\*\* 依据\{事实与约束\}，使方案\{方法产生的具体作用\}。\n>\n> \*\*影响与取舍\*\*：\{当前收益、代价或剩余风险\}。$/m,
-  "一至两个决定必须加粗方法标签并保留后置空格，同时把影响与取舍换行并加粗标签",
-);
-assert.match(
-  decisionSummary,
-  /\| \*\*\{决定\}\*\* \| \{方法（分类）\}：\{事实及具体作用\}/,
-);
-const decisionTemplateMarkdown = [
-  ...decisionSummary.matchAll(/```md\n([\s\S]*?)```/g),
-]
-  .map((match) => match[1])
-  .join("\n");
-assert.deepEqual(
-  [...decisionTemplateMarkdown.matchAll(/\*\*([^*]+)\*\*/g)].map((match) => match[1]),
-  ["{方法（分类）}", "影响与取舍", "{方法（分类）}", "影响与取舍", "{决定}"],
-  "公开决策模板的加粗位置不符合约定",
-);
-assert.doesNotMatch(decisionSummary, /本次决策与方法论（石头鱼的工程规则）/);
-assert.doesNotMatch(
-  decisionSummary,
-  /^[ ]{0,3}>.*(?:为什么(?:这样|这么)做（石头鱼的工程规则）|完整常驻契约共同形成方案|\{决定[一二]\})/m,
-  "公开决策标题、决定标题和通用说明不得放入引用",
-);
-
-const methodologies = readFileSync(methodologiesPath, "utf8");
-assert.match(methodologies, /### 常驻工程执行契约/);
-assert.match(methodologies, /### 条件方法/);
-assert.match(methodologies, /### 研究候选与评审视角/);
-assert.match(methodologies, /一手来源或真实失败/);
 
 const behaviorCases = readFileSync(behaviorCasesPath, "utf8");
 for (const id of [
@@ -503,15 +403,11 @@ for (const id of [
 ]) {
   assert.match(behaviorCases, new RegExp(id), `行为评测缺少案例：${id}`);
 }
-assert.match(behaviorCases, /startup、UserPromptSubmit、SubagentStart、resume、clear、compact/);
 
 const personalAgentsExample = readFileSync(personalAgentsExamplePath, "utf8");
 assert.match(personalAgentsExample, /\$stoneplugins:engineering/);
-assert.doesNotMatch(personalAgentsExample, /^## 常驻工程执行契约$/m);
-assert.match(personalAgentsExample, /Bun/);
 
 const readme = readFileSync(readmePath, "utf8");
-assert.match(readme, /常驻工程执行契约/);
 assert.match(readme, /sty20030818\/StonePlugins/);
 assert.ok(readme.includes("plugins/stoneplugins/skills/engineering/SKILL.md"));
 assert.ok(readme.includes("docs/adr/0004-codex-first-bundled-engineering.md"));

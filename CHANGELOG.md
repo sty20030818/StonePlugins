@@ -4,6 +4,18 @@
 
 ## [未发布]
 
+## [0.5.2] - 2026-09-15
+
+### 变更
+
+- 保留全部常驻工程原则共同形成决定，恢复各方法独有的动作、适用边界和退出条件，合并重复表达；核心直接指向三份主题细则，删除二级方法选择器和独立格式模板。
+- 将简短决策说明并入核心，保留标题外置、引用和突出显示的影响与取舍，取消通用固定前言。
+- 合并个人协作规则中的重复表达，保留暂存分界、依赖提交约定及外部操作授权；插件不自动修改个人全局文件。
+
+### 文档
+
+- 增加旧要求到运行时正文的语义映射，活动评测从少量针对性正反案例开始，出现异常再扩测；沿用当时默认模型并记录实际配置，不以字节下降或方法名数量证明规则完整。
+
 ## [0.5.1] - 2026-09-14
 
 ### 升级注意
@@ -179,7 +191,9 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.5.0...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/sty20030818/StonePlugins/compare/v0.5.1...v0.5.2
+[0.5.1]: https://github.com/sty20030818/StonePlugins/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/sty20030818/StonePlugins/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/sty20030818/StonePlugins/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/sty20030818/StonePlugins/compare/v0.3.7...v0.4.0

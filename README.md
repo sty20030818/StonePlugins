@@ -4,30 +4,31 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ## 当前状态
 
-`v0.5.1` 改为 Codex 优先的完整插件：一次安装取得工程 Skill、五份细则和生命周期 Hook。Skill 展示名为 `Engineering`，限定入口为 `$stoneplugins:engineering`。从 `v0.5.0` 升级涉及插件 ID 和 Skill 来源迁移，请勿直接叠加启用旧插件。
+`v0.5.2` 保留 Codex 优先的完整插件：一次安装取得工程 Skill、三份细则和生命周期 Hook。Skill 展示名为 `Engineering`，限定入口为 `$stoneplugins:engineering`。从 `v0.5.1` 升级无需更换插件 ID；从 `v0.5.0` 升级仍须迁移插件 ID 和 Skill 来源，请勿直接叠加启用旧插件。
 
-本版本的实际验收记录见 [v0.5.1 验证](docs/evals/v0.5.1.md)。核心生命周期验证是发布门槛；60 次行为/token 对照经用户确认后置，不声称新方案已证明行为等价或节省 token。设计依据见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，迁移和后置适配见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)，历史资料见[文档索引](docs/README.md)。
+本版完整保留常驻原则与方法独有动作，合并重复表达，让核心直接指向三份主题细则。检查结果及未验证边界见 [v0.5.2 验证](docs/evals/v0.5.2.md)，正式发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.5.2) 为准；不继承旧版本的宿主验收或声称固定 token 收益。设计见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，执行记录见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)，历史资料见[文档索引](docs/README.md)。
 
 ## 规则与加载
 
-唯一正文位于 [plugins/stoneplugins/skills/engineering/SKILL.md](plugins/stoneplugins/skills/engineering/SKILL.md)。插件 ID 为 `stoneplugins`，Skill 名为 `engineering`，Codex 限定入口为 `$stoneplugins:engineering`；marketplace ID 仍为 `stonefish`。对话中称为“石头鱼的工程规则”，不把作者的语言、称呼或包管理器偏好强加给其他用户。
+唯一核心正文位于 [plugins/stoneplugins/skills/engineering/SKILL.md](plugins/stoneplugins/skills/engineering/SKILL.md)，与包内三份细则共同持有运行时规则。插件 ID 为 `stoneplugins`，Skill 名为 `engineering`，Codex 限定入口为 `$stoneplugins:engineering`；marketplace ID 仍为 `stonefish`。对话中称为“石头鱼的工程规则”，不把作者的语言、称呼或包管理器偏好强加给其他用户。
 
-- `SessionStart` 的 startup、resume、clear、compact，以及 `SubagentStart`，从实际运行的插件缓存读取包内 Skill，移除 frontmatter 后送达完整核心，并给出当前资源路径；不展开五份 references。
+- `SessionStart` 的 startup、resume、clear、compact，以及 `SubagentStart`，从实际运行的插件缓存读取包内 Skill，移除 frontmatter 后送达完整核心，并给出当前资源路径；不展开 references。
 - `UserPromptSubmit` 每轮只发送不超过 300 UTF-8 bytes 的执行提醒，不根据用户提示关键词路由，也不重复注入核心。
-- 工程任务沿用当前上下文已完整收到的核心，根据新事实按需读取[条件方法选择](plugins/stoneplugins/skills/engineering/references/method-selection.md)、架构、修改边界、验证和[公开决策说明](plugins/stoneplugins/skills/engineering/references/decision-summary.md)。不为显示调用徽标重复读取同一核心。
+- 工程任务沿用当前上下文已完整收到的核心，按当前任务直接读取[架构](plugins/stoneplugins/skills/engineering/references/architecture.md)、[修改边界](plugins/stoneplugins/skills/engineering/references/change-boundaries.md)或[验证](plugins/stoneplugins/skills/engineering/references/verification.md)细则，不经过二级选择器；多个主题可以同时读取，不为显示调用徽标重复读取同一核心。
 - 所有任务继续遵守宿主的全局协作规则；纯聊天、翻译等非工程任务不因此变成工程任务，也不强制输出工程决策说明。
-- [方法论目录与治理](docs/methodologies.md)用于维护和研究，不参与运行时注入。
+- [方法论解释与治理](docs/methodologies.md)供维护者查阅，不参与运行时注入或任务必读。
 
 生命周期上下文上限为 8,000 UTF-8 bytes；超限显式失败，不截断后声称成功。这不是 tokenizer 计数，也不保证宿主完整接收。Codex 的 `additionalContextLimit` 仍用默认有限阈值，没有设为 `0`。多个同事件命令 Hook 可能并发，不能依赖完成顺序。宿主协议见 [OpenAI Hooks 文档](https://learn.chatgpt.com/docs/hooks)。
 
-规则的核心倾向不因包装变化而改变：
+全部常驻原则共同参与理解、设计、实施与验证；具体结构和动作按事实采用，可以组合，不要求只选一个主方法，也不为证明采用而增加层级：
 
-- 常驻方法共同参与理解、设计、实施和验证：第一性原则、正确所有者、SRP、高内聚低耦合、知识级 DRY、KISS/YAGNI、长期单轨、因果范围和风险相称证据。
-- 整洁架构与六边形架构的领域独立、依赖方向和边界原则常驻；Port、Adapter、DDD 和迁移模式等具体结构只按真实信号增加。
+- 从真实路径找到共同所有者，共享业务知识，不合并变化原因独立的代码，也不为假想消费者预建抽象。
+- SRP、高内聚低耦合、整洁与六边形架构的领域独立和依赖方向持续参与设计；按真实消费、隔离价值和已确认演进选择结构，不以实现数量设置门槛。
+- KISS 与 YAGNI 控制概念、状态和维护成本；TDD、特征测试、契约测试、迁移策略等保留各自适用条件和具体动作，详见[语义映射](docs/methodologies.md#语义保留与改写映射)。
 - 可以推荐破坏性长期方案，但实施仍受消费者、迁移、数据、恢复和当前授权约束。
-- 不靠弱化断言、跳过测试或盲目重试制造通过；实质工程决定按“事实 → 方法作用 → 决定 → 影响与取舍”说明可观察作用。
+- 输入校验、可信端授权和失败语义不能因简化被省略；不靠弱化断言、跳过测试或盲目重试制造通过。必要检查通过且没有新增风险后停止重复验证；公开说明只展开真正改变结果的决定，不要求复述全部方法。
 
-**插件已安装、Hook 输出、宿主完整接收、规则落实**是不同证据。单元测试不能替代真实客户端轨迹或行为评测；调用徽标、使用次数也不能证明规则落实。命令权限、不可逆操作和 CI 仍由 Codex 审批、沙箱、`.rules` 和项目检查负责。
+**插件已安装、Hook 输出、宿主完整接收、规则落实** 是不同证据。单元测试不能替代真实客户端轨迹或行为评测；调用徽标、使用次数也不能证明规则落实。命令权限、不可逆操作和 CI 仍由 Codex 审批、沙箱、`.rules` 和项目检查负责。
 
 ## 安装
 
@@ -35,11 +36,11 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ### Codex：一次安装完整插件
 
-以下固定版本命令面向**尚未配置 `stonefish` 来源、未安装旧工程插件**的新用户：
+以下固定版本命令面向**尚未配置 `stonefish` 来源、未安装旧工程插件** 的新用户：
 
 ```bash
 node --version
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.1
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.2
 codex plugin add stoneplugins@stonefish
 ```
 
@@ -51,7 +52,7 @@ codex plugin add stoneplugins@stonefish
 
 ### 其他 CLI：只安装同源 Skill
 
-检出 `v0.5.1` 后，在仓库根目录中以 Grok 为例：
+检出 `v0.5.2` 后，在仓库根目录中以 Grok 为例：
 
 ```bash
 npx skills add ./plugins/stoneplugins --skill engineering -g -a grok --copy
@@ -71,7 +72,7 @@ $stoneplugins:engineering 按石头鱼的工程规则处理这个重构，并加
 
 核心未完整送达时，通过正常 Skill 入口完整加载；已经完整收到时不为调用展示重复读取。独立 CLI 没有这些 Hook，需要由其 Skill 入口加载，压缩后重新确认完整核心。
 
-包内 Skill 缺失、不可读、frontmatter 损坏、核心为空、缺少必要结构或超过预算时，Hook 输出脱敏错误与工程暂停要求。不自动安装、不回退旧缓存或硬编码规则。暂停要求仍需 Agent 遵守，不能把错误输出当作宿主已经机械阻断；若 Node 在入口执行前失败，则需先修复运行环境。
+包内 Skill 缺失、不可读、frontmatter 损坏、核心为空或超过预算时，Hook 输出脱敏错误与工程暂停要求。不自动安装、不回退旧缓存或硬编码规则。暂停要求仍需 Agent 遵守，不能把错误输出当作宿主已经机械阻断；若 Node 在入口执行前失败，则需先修复运行环境。
 
 插件不修改全局 `AGENTS.md`。工程规则只在包内维护；全局文件继续承载日常交互、权限、Git 分界和工具偏好。作者的[个人规则示例](examples/AGENTS.stonefish.md)仅供选择性合并，不应复制核心形成第二来源。
 
@@ -116,7 +117,7 @@ npm run check
 
 源码为 `plugins/stoneplugins/src/inject-context.ts`；`npm run build` 生成实际执行的 `hooks/inject-context.js`，同包 `package.json` 保证缓存中仍按 ESM 运行。不要手改生成物。唯一 Skill 树为 `plugins/stoneplugins/skills/engineering/`，不保留根目录镜像、旧插件或兼容副本。
 
-发布另行授权后，同步根 package、lock、插件 manifest、CHANGELOG、固定 ref 示例与版本评测。按[十个行为案例](docs/evals/behavior-cases.md)和全部生命周期保留原始证据，区分字节预算、模型 token、缓存口径、正文完整与行为落实。新文件按正常流程进入 Git 跟踪后再运行 `npm run validate:release`，不能为使检查通过擅自暂存。
+发布另行授权后，同步根 package、lock、插件 manifest、CHANGELOG、固定 ref 示例与版本评测。按[活动评测规范](docs/evals/behavior-cases.md)选择正反触发和关键行为案例，涉及加载变化时补齐相关生命周期；记录实际模型与推理强度，不要求指定某个模型。区分字节预算、模型 token、缓存口径、正文完整与行为落实。新文件按正常流程进入 Git 跟踪后再运行 `npm run validate:release`，不能为使检查通过擅自暂存。
 
 推送候选提交和与 manifest 相同版本的 tag，等待该 tag 的 CI 通过，再创建并回读 GitHub Release；CI 验证不会自动发布。历史研究与版本评测原位归档，不重写旧结果为新版本通过。
 

@@ -2,7 +2,7 @@
 
 ## 状态
 
-原则继续有效，旧实现记录原位归档。常驻工程执行契约、条件 references 和公开说明的职责分离继续沿用；当时的直接注入实现曾被 [ADR-0003](0003-independent-skill-and-loader-hooks.md) 替代。当前 Codex 优先目标由 [ADR-0004](0004-codex-first-bundled-engineering.md) 持有，尚未实施，不代表重新启用当时的旧 Hook、EOF 标记或预算。本文取代 ADR-0001 中“公开决策说明由核心 Skill 持有”的部分；ADR-0001 保留为 v0.3.7 历史记录。
+原则继续有效，旧实现记录原位归档。常驻工程执行契约、条件 references 和公开说明的职责分离继续沿用；当时的直接注入实现曾被 [ADR-0003](0003-independent-skill-and-loader-hooks.md) 替代。Codex 优先的完整插件已按 [ADR-0004](0004-codex-first-bundled-engineering.md) 在 `0.5.1` 发布；后续未发布的内容恢复、一级路由与公开说明归属也由 ADR-0004 持有，不代表重新启用当时的旧 Hook、EOF 标记或预算。下文保留当时把选择器和格式独立成文件的决定，不作为当前文件布局要求；ADR-0001 保留为 v0.3.7 历史记录。
 
 ## 背景
 

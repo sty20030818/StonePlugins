@@ -1,6 +1,6 @@
 {
   "name": "stoneplugins",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "为 Codex 提供完整的石头鱼工程规则 Skill 与生命周期 Hook。",
   "skills": "./skills/",
   "author": {
