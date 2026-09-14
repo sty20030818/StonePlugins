@@ -1,7 +1,8 @@
 {
-  "name": "stonefish-engineering",
-  "version": "0.5.0",
-  "description": "在 Codex 生命周期提醒加载独立安装的石头鱼工程规则 Skill。",
+  "name": "stoneplugins",
+  "version": "0.5.1",
+  "description": "为 Codex 提供完整的石头鱼工程规则 Skill 与生命周期 Hook。",
+  "skills": "./skills/",
   "author": {
     "name": "石头鱼",
     "url": "https://github.com/sty20030818"
@@ -17,9 +18,9 @@
     "verification"
   ],
   "interface": {
-    "displayName": "石头鱼的工程规则",
-    "shortDescription": "提醒加载独立的石头鱼工程规则 Skill",
-    "longDescription": "先通过 Skills CLI 安装 stonefish-engineering Skill。本插件只在会话、子 Agent 和逐轮生命周期发送加载要求，不包含规则正文。工程任务通过宿主 Skill 入口完整加载核心，再按需读取细则；加载要求送达不代表正文已经加载或规则已经落实。",
+    "displayName": "StonePlugins",
+    "shortDescription": "一次安装工程规则 Skill 与生命周期 Hook",
+    "longDescription": "包内 engineering Skill 是工程规则的唯一来源。会话启动、恢复、压缩和子 Agent Hook 送达完整核心，逐轮保留短提醒，细则按需读取。也可显式调用 stoneplugins:engineering；完整送达不等于规则已经落实，仍须验证实际行为。",
     "developerName": "石头鱼",
     "category": "Developer Tools",
     "capabilities": [

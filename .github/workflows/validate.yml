@@ -23,12 +23,12 @@ jobs:
       - name: Verify release tag matches plugin version
         if: github.ref_type == 'tag'
         run: |
-          expected="v$(node -p "require('./plugins/stonefish-engineering/.codex-plugin/plugin.json').version")"
+          expected="v$(node -p "require('./plugins/stoneplugins/.codex-plugin/plugin.json').version")"
           test "$GITHUB_REF_NAME" = "$expected"
       - run: npm run typecheck
       - run: npm run build
-      - run: git ls-files --error-unmatch plugins/stonefish-engineering/hooks/inject-context.js
-      - run: git diff --exit-code -- plugins/stonefish-engineering/hooks/inject-context.js
+      - run: git ls-files --error-unmatch plugins/stoneplugins/hooks/inject-context.js
+      - run: git diff --exit-code -- plugins/stoneplugins/hooks/inject-context.js
       - run: npm run validate
       - name: Validate release artifacts
         if: github.ref_type == 'tag'

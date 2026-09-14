@@ -1,9 +1,11 @@
 # 石头鱼的工程规则审计：Codex Hooks 与工程约束
 
+状态：历史研究快照，原位归档。下文的“当前实现”、技术结论和建议仅对应研究时点，不作为现行运行规范或活动待办。现行文档见[文档索引](../README.md)；后续目标与执行边界见 [ADR-0004](../adr/0004-codex-first-bundled-engineering.md) 和[重构计划](../plans/2026-09-14-codex-first-refactor.md)，不代表已实现或验收。
+
 > 日期：2026-08-27
 > 范围：Codex Hooks 生命周期、当前插件注入行为，以及可纳入工程代理规则的约束。
 > 方法：以 OpenAI、OWASP、Google、Microsoft、GitHub、W3C、IETF 等一手资料为依据，并对当前仓库做只读静态核对。本文中的“事实”指官方契约或本地可重复观察；“建议”是基于这些事实作出的工程取舍，不冒充官方要求。
-> 快照基线：本文首次记录于 `v0.3.2`（`b1a9bc8`），其中体积和“当前状态”只代表当时快照。现行行为以 [核心 Skill](../../plugins/stonefish-engineering/skills/stonefish-engineering/SKILL.md)、references、测试和版本化评测记录为准。
+> 快照基线：本文首次记录于 `v0.3.2`（`b1a9bc8`），其中体积和“当前状态”只代表当时快照。现行核心 Skill、references、测试和版本化评测入口见[文档索引](../README.md)。
 
 ## 结论摘要
 

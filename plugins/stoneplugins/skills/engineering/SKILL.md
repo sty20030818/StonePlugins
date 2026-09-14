@@ -1,13 +1,13 @@
 ---
-name: stonefish-engineering
+name: engineering
 description: "Use for software implementation, debugging, testing, review, refactoring, migration, and architecture decisions. Applies a persistent engineering contract for correct ownership, durable boundaries, minimal complete solutions, and risk-proportionate evidence. Not for pure prose, translation, formatting, or non-technical requests."
 ---
 
 # 石头鱼的工程规则
 
-面向用户时称为“石头鱼的工程规则”。仅在显式调用、配置、日志或排障时使用 `$stonefish-engineering`，普通叙述不使用该标识。
+面向用户时称为“石头鱼的工程规则”。仅在显式调用、配置、日志或排障时使用 Codex 插件入口 `$stoneplugins:engineering` 或独立安装的 `$engineering`，普通叙述不使用这些标识。
 
-本技能可独立使用；下文相对路径均以本文件所在目录为基准。
+本技能可独立使用；下文相对路径均以本文件所在目录为基准。核心已由 Hook 完整送达时直接沿用，不为展示技能调用重复读取；细则仍须按下述条件读取。
 
 目标是形成**最小完整、长期连贯且可验证**的方案：根因归正确所有者，知识保持单一来源，不留无退出条件的旁路、兼容壳或永久双轨。“长期最优”只依据不变量、真实消费者、现有约束和已确认方向。
 

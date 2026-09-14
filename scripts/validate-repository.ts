@@ -2,14 +2,15 @@
 
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const PLUGIN_NAME = "stonefish-engineering";
+const PLUGIN_NAME = "stoneplugins";
+const SKILL_NAME = "engineering";
 const PLUGIN_ROOT = path.join(REPO_ROOT, "plugins", PLUGIN_NAME);
-const SKILL_ROOT = path.join(REPO_ROOT, "skills", PLUGIN_NAME);
+const SKILL_ROOT = path.join(PLUGIN_ROOT, "skills", SKILL_NAME);
 const RELEASE_MODE = process.argv.includes("--release");
 const STRICT_SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
 const HOOK_COMMAND = 'node "${PLUGIN_ROOT}/hooks/inject-context.js"';
@@ -23,7 +24,7 @@ const EXPECTED_HOOK_CONFIG = {
             type: "command",
             command: HOOK_COMMAND,
             timeout: 5,
-            statusMessage: "正在提醒加载石头鱼的工程规则……",
+            statusMessage: "正在加载石头鱼的工程规则……",
           },
         ],
       },
@@ -35,7 +36,7 @@ const EXPECTED_HOOK_CONFIG = {
             type: "command",
             command: HOOK_COMMAND,
             timeout: 5,
-            statusMessage: "正在提醒加载石头鱼的工程规则……",
+            statusMessage: "正在加载石头鱼的工程规则……",
           },
         ],
       },
@@ -97,6 +98,12 @@ function readJson<T>(file: string): T {
 
 function requireFile(file: string): void {
   assert.ok(existsSync(file), `缺少文件：${path.relative(REPO_ROOT, file)}`);
+  if (file.startsWith(`${PLUGIN_ROOT}${path.sep}`)) {
+    assert.ok(
+      realpathSync(file).startsWith(`${realpathSync(PLUGIN_ROOT)}${path.sep}`),
+      `插件资源不得通过软链接逃逸包根：${path.relative(PLUGIN_ROOT, file)}`,
+    );
+  }
 }
 
 function requireTrackedFile(file: string): void {
@@ -145,6 +152,18 @@ const independentSkillAdrPath = path.join(
   "docs",
   "adr",
   "0003-independent-skill-and-loader-hooks.md",
+);
+const bundledSkillAdrPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "adr",
+  "0004-codex-first-bundled-engineering.md",
+);
+const bundledDevelopmentEvalPath = path.join(
+  REPO_ROOT,
+  "docs",
+  "evals",
+  "codex-first-bundled-development.md",
 );
 const decisionResearchPath = path.join(
   REPO_ROOT,
@@ -222,6 +241,8 @@ for (const file of [
   decisionAdrPath,
   persistentContractAdrPath,
   independentSkillAdrPath,
+  bundledSkillAdrPath,
+  bundledDevelopmentEvalPath,
   decisionResearchPath,
   persistentContractResearchPath,
 ]) {
@@ -270,6 +291,8 @@ if (RELEASE_MODE) {
     personalAgentsExamplePath,
     persistentContractAdrPath,
     independentSkillAdrPath,
+    bundledSkillAdrPath,
+    bundledDevelopmentEvalPath,
     persistentContractResearchPath,
     readmePath,
     changelogPath,
@@ -304,12 +327,23 @@ assert.equal(
   manifest.version,
   "package-lock 根包与 plugin manifest 版本必须一致",
 );
-assert.ok(!Object.hasOwn(manifest, "skills"), "插件只提供 Hook，不声明独立安装的 Skill");
-assert.equal(
-  existsSync(path.join(PLUGIN_ROOT, "skills", PLUGIN_NAME, "SKILL.md")),
-  false,
-  "插件不得保留独立 Skill 的副本",
+assert.equal(manifest.skills, "./skills/", "插件必须声明包内 Skill 目录");
+assert.deepEqual(
+  readdirSync(path.join(PLUGIN_ROOT, "skills")),
+  [SKILL_NAME],
+  "工程 Skill 必须只有唯一包内来源",
 );
+for (const legacyPath of [
+  path.join(REPO_ROOT, "plugins", "stonefish-engineering"),
+  path.join(REPO_ROOT, "skills", "stonefish-engineering"),
+  path.join(REPO_ROOT, "skills", SKILL_NAME),
+]) {
+  assert.equal(
+    existsSync(legacyPath),
+    false,
+    `不得保留旧入口或根目录 Skill 副本：${path.relative(REPO_ROOT, legacyPath)}`,
+  );
+}
 assert.ok(!Object.hasOwn(manifest, "hooks"), "默认 hooks/hooks.json 不应在 manifest 重复声明");
 assert.notEqual(manifest.author?.name, "Local developer");
 assert.equal(manifest.license, "MIT");
@@ -324,8 +358,13 @@ for (const prompt of manifest.interface.defaultPrompt) {
 
 const marketplace = readJson<Marketplace>(marketplacePath);
 assert.equal(marketplace.name, "stonefish");
-const entry = marketplace.plugins.find((plugin) => plugin.name === PLUGIN_NAME);
-assert.ok(entry, `marketplace 缺少 ${PLUGIN_NAME}`);
+const entries = marketplace.plugins.filter((plugin) => plugin.name === PLUGIN_NAME);
+assert.equal(entries.length, 1, `marketplace 必须且只能包含一个 ${PLUGIN_NAME}`);
+assert.ok(
+  marketplace.plugins.every((plugin) => plugin.name !== "stonefish-engineering"),
+  "marketplace 不得保留旧插件入口",
+);
+const entry = entries[0];
 assert.deepEqual(entry.source, {
   source: "local",
   path: `./plugins/${PLUGIN_NAME}`,
@@ -343,14 +382,21 @@ const skillMetadata = readFileSync(skillMetadataPath, "utf8");
 assert.match(
   skillMetadata,
   /^\s*allow_implicit_invocation:\s*true\s*$/m,
-  "独立 Skill 必须允许宿主按任务自动发现和加载",
+  "Skill 必须允许宿主按任务自动发现和加载",
+);
+assert.match(
+  skillMetadata,
+  /^\s*default_prompt:.*\$engineering\b/m,
+  "Skill 默认提示必须使用可独立调用的 $engineering 名称",
 );
 
 const skill = readFileSync(skillPath, "utf8");
 const frontmatter = skill.match(/^\uFEFF?---\r?\n([\s\S]*?)\r?\n---\r?\n/);
-assert.ok(frontmatter, "独立 Skill 必须包含完整 frontmatter");
-assert.match(frontmatter[1], /^name: stonefish-engineering\s*$/m);
-assert.match(frontmatter[1], /^description:\s*\S.+$/m);
+assert.ok(frontmatter, "Skill 必须包含完整 frontmatter");
+const skillFields = frontmatter[1].replace(/\r\n/g, "\n");
+assert.equal(skillFields.split("\n").length, 2, "本包 Skill 元数据只包含 name、description 两个单行字段");
+assert.match(skillFields, new RegExp(`^name: (?:${SKILL_NAME}|"${SKILL_NAME}"|'${SKILL_NAME}')$`, "m"));
+assert.match(skillFields, /^description: "[^"\r\n]+"$/m);
 assert.match(skill, /^# 石头鱼的工程规则$/m);
 assert.match(skill, /^## 工作顺序$/m);
 assert.equal(
@@ -460,15 +506,15 @@ for (const id of [
 assert.match(behaviorCases, /startup、UserPromptSubmit、SubagentStart、resume、clear、compact/);
 
 const personalAgentsExample = readFileSync(personalAgentsExamplePath, "utf8");
-assert.match(personalAgentsExample, /stonefish-engineering/);
+assert.match(personalAgentsExample, /\$stoneplugins:engineering/);
 assert.doesNotMatch(personalAgentsExample, /^## 常驻工程执行契约$/m);
 assert.match(personalAgentsExample, /Bun/);
 
 const readme = readFileSync(readmePath, "utf8");
 assert.match(readme, /常驻工程执行契约/);
 assert.match(readme, /sty20030818\/StonePlugins/);
-assert.ok(readme.includes("skills/stonefish-engineering/SKILL.md"));
-assert.ok(readme.includes("docs/adr/0003-independent-skill-and-loader-hooks.md"));
+assert.ok(readme.includes("plugins/stoneplugins/skills/engineering/SKILL.md"));
+assert.ok(readme.includes("docs/adr/0004-codex-first-bundled-engineering.md"));
 if (RELEASE_MODE) {
   assert.match(
     readme,

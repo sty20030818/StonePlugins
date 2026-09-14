@@ -12,7 +12,7 @@
     "skipLibCheck": true
   },
   "include": [
-    "plugins/stonefish-engineering/src/**/*.ts",
+    "plugins/stoneplugins/src/**/*.ts",
     "scripts/**/*.ts",
     "tests/**/*.ts"
   ]

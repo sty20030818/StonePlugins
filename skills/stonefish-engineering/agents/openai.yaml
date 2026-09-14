@@ -1,7 +1,0 @@
-interface:
-  display_name: "Stonefish Engineering"
-  short_description: "让常驻工程方法贯穿设计、实现与验证，并按场景采用具体方法"
-  default_prompt: "使用 $stonefish-engineering，让完整常驻工程执行契约共同形成这个工程任务的方案、实现与验证，并说明关键决定。"
-
-policy:
-  allow_implicit_invocation: true

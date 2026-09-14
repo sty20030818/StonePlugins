@@ -2,7 +2,9 @@
 
 ## 状态
 
-已接受，进入 `0.5.0` 正式发布。替代 [ADR-0002](0002-persistent-execution-contract.md) 中 Hook 直接送达规则正文的实现；保留其常驻工程执行契约与按需 references 的语义。
+工作树实现已被 [ADR-0004](0004-codex-first-bundled-engineering.md) 替代；本文仍准确记录 `0.5.0` 已发布实现，不代表未发布候选的安装或宿主验收状态。原位保留，不再用本文阻止完整插件重构。它在当时替代了 [ADR-0002](0002-persistent-execution-contract.md) 的直接正文送达实现。
+
+明确废弃为长期约束的三点是：插件不得携带 Skill、Codex 必须两次安装、Hook 只能发送读取要求。继续保留单一事实源、独立 Skill 分发能力、按需 references、失败显式报告、用户授权和证据边界。具体迁移见 [重构计划](../plans/2026-09-14-codex-first-refactor.md)；以下各节是历史决定，不是新实现的验收结果。
 
 ## 背景
 

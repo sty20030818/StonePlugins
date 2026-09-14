@@ -4,6 +4,28 @@
 
 ## [未发布]
 
+## [0.5.1] - 2026-09-14
+
+### 升级注意
+
+- Codex 插件改为 `stoneplugins@stonefish`，一次安装包含完整 Skill 和 Hooks；升级时停用旧 `stonefish-engineering@stonefish`，在 Codex 禁用旧外置 Skill，保留其他 CLI 使用的共享文件。
+
+### 变更
+
+- 将工程 Skill 与五份 references 移入 `plugins/stoneplugins/skills/engineering/`，由 `stoneplugins@stonefish` 同包分发 Skill 和 Hooks；Codex 入口改为 `stoneplugins:engineering`，其他 CLI 可独立安装同源 `engineering`。
+- 生命周期 Hook 从实际运行的插件目录完整送达去除 frontmatter 的核心，逐轮保留短提醒；增加包内路径、正文结构及 8,000-byte 预算检查，失败脱敏报告并要求暂停工程决定，不自动安装、截断或回退旧缓存。
+- Skill 展示名简化为 `Engineering`；保留限定入口、工程正文语义、按需细则和 Markdown 说明格式。
+
+### 修复
+
+- 修复仅调整 frontmatter 字段顺序就导致 Hook 拒绝加载的问题，接受 name 的普通及单双引号形式，并同步包内格式检查和回归测试。
+
+### 文档
+
+- 落实 Codex 优先的完整工作流 ADR 与执行计划，更新固定版本安装、旧版迁移和版本验收记录。
+- 将旧研究、候选验证和被替代 ADR 原位归档，统一文档所有权与导航；保留历史失败、未验证边界和旧版安装说明，不将其改写为新方案通过。
+- 将领域术语和活动行为评测与具体加载方式解耦，记录 Claude/Grok 原生适配后置。
+
 ## [0.5.0] - 2026-09-12
 
 本版本完成独立 Skill 与 Hook 分发改造，并用于远端下载安装与生命周期验证。
@@ -157,7 +179,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.4.1...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/sty20030818/StonePlugins/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/sty20030818/StonePlugins/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/sty20030818/StonePlugins/compare/v0.3.7...v0.4.0
 [0.3.7]: https://github.com/sty20030818/StonePlugins/compare/v0.3.6...v0.3.7

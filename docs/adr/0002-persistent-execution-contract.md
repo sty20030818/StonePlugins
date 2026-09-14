@@ -2,7 +2,7 @@
 
 ## 状态
 
-已接受。常驻工程执行契约语义继续有效；本文中由 Hook 直接送达正文的实现已被 [ADR-0003](0003-independent-skill-and-loader-hooks.md) 替代，以下保留当时的决策记录。本文取代 ADR-0001 中“公开决策说明由核心 Skill 持有”的部分；ADR-0001 继续保留为 v0.3.7 的历史决策记录。
+原则继续有效，旧实现记录原位归档。常驻工程执行契约、条件 references 和公开说明的职责分离继续沿用；当时的直接注入实现曾被 [ADR-0003](0003-independent-skill-and-loader-hooks.md) 替代。当前 Codex 优先目标由 [ADR-0004](0004-codex-first-bundled-engineering.md) 持有，尚未实施，不代表重新启用当时的旧 Hook、EOF 标记或预算。本文取代 ADR-0001 中“公开决策说明由核心 Skill 持有”的部分；ADR-0001 保留为 v0.3.7 历史记录。
 
 ## 背景
 

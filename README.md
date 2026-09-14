@@ -1,154 +1,124 @@
-# 石头鱼的工程规则与 Codex 插件
+# StonePlugins：石头鱼的工程规则
 
-`stonefish-engineering` 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。完整规则作为独立 Skill 安装；Codex Hook 插件负责在生命周期中要求 Agent 加载它，让用户不再为每个工程请求重复追加方法论。
+StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-> 规则正文和插件说明以中文为主，Skill 展示名为 `Stonefish Engineering`，技术标识保持 `stonefish-engineering`。这些规则会尊重项目上下文，不会把作者个人的语言、称呼、包管理器或项目约定强加给其他用户。
+## 当前状态
 
-## 石头鱼的工程规则
+`v0.5.1` 改为 Codex 优先的完整插件：一次安装取得工程 Skill、五份细则和生命周期 Hook。Skill 展示名为 `Engineering`，限定入口为 `$stoneplugins:engineering`。从 `v0.5.0` 升级涉及插件 ID 和 Skill 来源迁移，请勿直接叠加启用旧插件。
 
-规则与加载要求分别由两个组件持有：
+本版本的实际验收记录见 [v0.5.1 验证](docs/evals/v0.5.1.md)。核心生命周期验证是发布门槛；60 次行为/token 对照经用户确认后置，不声称新方案已证明行为等价或节省 token。设计依据见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，迁移和后置适配见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)，历史资料见[文档索引](docs/README.md)。
 
-- [独立 Skill](skills/stonefish-engineering/SKILL.md)：完整核心契约和 references 位于根目录 `skills/stonefish-engineering/`，是运行时规则的唯一来源，允许隐式调用。
-- Hook 插件：位于 `plugins/stonefish-engineering/`，不再携带或注册 Skill，也不注入规则正文。
-- `SessionStart`：startup、resume、clear 只在工程正文缺失时要求加载；`source: "compact"` 在压缩后的下一次模型请求前要求无条件重新完整读取，不重复注册 `PostCompact`。
-- `SubagentStart`：提醒子 Agent 的上下文独立；工程任务必须自行加载核心，不能沿用父 Agent 的加载声明。
-- `UserPromptSubmit`：每轮发送精简的语义边界提醒，不读取提示内容做关键词路由，也不回显用户输入。
-- 所有任务继续遵守各宿主的全局协作规则。需要改变或评价软件行为、代码、配置、依赖、数据、接口、测试、架构或发布的任务加载工程 Skill；边界不清时按工程任务处理。同一有效上下文已完整加载时不重复读取，references 仍根据事实按需加载。
-- Skill references：根据项目事实按需读取[条件方法选择](skills/stonefish-engineering/references/method-selection.md)、架构、修改边界、验证和[公开决策说明](skills/stonefish-engineering/references/decision-summary.md)。
-- [方法论目录与治理](docs/methodologies.md)：保存完整方法目录、来源、冲突和晋升规则，不参与每轮运行时注入。
+## 规则与加载
 
-多个来源的同事件命令 Hook 可能并发运行，完成顺序不保证；每个事件的加载要求都自包含，不依赖其他 Hook 先后顺序。`additionalContextLimit` 是 Hook 上下文触发落盘预览的近似 token 阈值，不是字节上限，也不证明 Skill 已加载。事件语义以 [OpenAI Docs 的 Hooks 文档](https://learn.chatgpt.com/docs/hooks) 为准。
+唯一正文位于 [plugins/stoneplugins/skills/engineering/SKILL.md](plugins/stoneplugins/skills/engineering/SKILL.md)。插件 ID 为 `stoneplugins`，Skill 名为 `engineering`，Codex 限定入口为 `$stoneplugins:engineering`；marketplace ID 仍为 `stonefish`。对话中称为“石头鱼的工程规则”，不把作者的语言、称呼或包管理器偏好强加给其他用户。
 
-Hook 契约与方法论取舍的形成过程保留在 [工程规则审计](docs/research/2026-08-27-stonefish-engineering-audit.md)、[方法论研究](docs/research/2026-08-27-methodology-index-and-routing.md)、[决策透明度研究](docs/research/2026-08-28-methodology-disclosure-and-decision-transparency.md)、[决策文案研究](docs/research/2026-08-29-engineering-rationale-copy-structure.md) 和[常驻行为研究](docs/research/2026-08-31-persistent-engineering-rules-and-evaluation.md)中。当前开发态行为以核心 Skill、references、[行为评测集](docs/evals/behavior-cases.md)、测试和 [ADR-0003](docs/adr/0003-independent-skill-and-loader-hooks.md) 为准；[ADR-0002](docs/adr/0002-persistent-execution-contract.md) 的常驻契约语义继续保留。
+- `SessionStart` 的 startup、resume、clear、compact，以及 `SubagentStart`，从实际运行的插件缓存读取包内 Skill，移除 frontmatter 后送达完整核心，并给出当前资源路径；不展开五份 references。
+- `UserPromptSubmit` 每轮只发送不超过 300 UTF-8 bytes 的执行提醒，不根据用户提示关键词路由，也不重复注入核心。
+- 工程任务沿用当前上下文已完整收到的核心，根据新事实按需读取[条件方法选择](plugins/stoneplugins/skills/engineering/references/method-selection.md)、架构、修改边界、验证和[公开决策说明](plugins/stoneplugins/skills/engineering/references/decision-summary.md)。不为显示调用徽标重复读取同一核心。
+- 所有任务继续遵守宿主的全局协作规则；纯聊天、翻译等非工程任务不因此变成工程任务，也不强制输出工程决策说明。
+- [方法论目录与治理](docs/methodologies.md)用于维护和研究，不参与运行时注入。
 
-`docs/research/` 和按版本命名的 `docs/evals/v*.md` 是历史快照，其中旧目录和全文注入方式只描述当时版本。[v0.4.1 发布评测](docs/evals/v0.4.1.md)不证明本次拆分改造通过。
+生命周期上下文上限为 8,000 UTF-8 bytes；超限显式失败，不截断后声称成功。这不是 tokenizer 计数，也不保证宿主完整接收。Codex 的 `additionalContextLimit` 仍用默认有限阈值，没有设为 `0`。多个同事件命令 Hook 可能并发，不能依赖完成顺序。宿主协议见 [OpenAI Hooks 文档](https://learn.chatgpt.com/docs/hooks)。
 
-核心倾向：
+规则的核心倾向不因包装变化而改变：
 
-- 所有常驻方法共同参与理解、设计、实施和验证：第一性原则、正确所有者、SRP、高内聚低耦合、模块化、知识级 DRY、KISS/YAGNI、长期单轨、因果范围和风险相称证据。
-- 整洁架构与六边形架构的领域独立、依赖方向和边界原则始终参与设计；Port、Adapter、DDD、迁移模式等具体结构只在真实信号出现时采用。
-- 知识级 DRY 让同一业务知识只有一个权威来源，不把变化原因独立的相似代码强行合并。
-- 可以主动推荐破坏性长期方案；实际执行仍需满足消费者、迁移、数据、恢复和当前授权。
-- 外科手术式修改限定因果范围，Boy Scout Rule 只改善范围内阻碍正确实现或验证的结构。
-- 失败测试不能靠弱化断言、跳过或盲目重试变绿；完成声明区分实际验证、静态推断和待人工验收。
-- 存在实质工程决定时，用“事实 → 方法作用 → 决定 → 影响与取舍”解释石头鱼的工程规则如何形成方案；完整常驻契约始终共同生效，公开说明只展开可观察影响。
+- 常驻方法共同参与理解、设计、实施和验证：第一性原则、正确所有者、SRP、高内聚低耦合、知识级 DRY、KISS/YAGNI、长期单轨、因果范围和风险相称证据。
+- 整洁架构与六边形架构的领域独立、依赖方向和边界原则常驻；Port、Adapter、DDD 和迁移模式等具体结构只按真实信号增加。
+- 可以推荐破坏性长期方案，但实施仍受消费者、迁移、数据、恢复和当前授权约束。
+- 不靠弱化断言、跳过测试或盲目重试制造通过；实质工程决定按“事实 → 方法作用 → 决定 → 影响与取舍”说明可观察作用。
 
-**加载要求送达、规则正文加载、规则落实**是三种证据：Hook 单元测试证明输出协议，真实客户端记录证明要求送达，完整读取轨迹证明正文加载，固定工程案例评测产物中的规则落实。CLI 是否显示技能调用或累计使用次数由宿主决定；计数、Hook 成功或加载要求出现都不能互相替代，也不能证明规则已落实。命令权限、不可逆操作和 CI 仍由 Codex 审批、沙箱、`.rules` 和项目检查负责。
+**插件已安装、Hook 输出、宿主完整接收、规则落实**是不同证据。单元测试不能替代真实客户端轨迹或行为评测；调用徽标、使用次数也不能证明规则落实。命令权限、不可逆操作和 CI 仍由 Codex 审批、沙箱、`.rules` 和项目检查负责。
 
 ## 安装
 
-先安装 Skill，再安装 Hook 插件。需要：
+需要支持 Plugins 和 Hooks 的 Codex，以及在 `PATH` 中可用的 Node.js 22.18 或更高版本。Hook 运行时没有 npm 依赖。
 
-- 使用 `npx skills` 或 `bunx skills` 安装独立 Skill；本次验证的 Skills CLI `1.5.24` 要求 Node.js 22.20 或更高版本；
-- Hook 插件需要支持 Plugins 和 Hooks 的当前 Codex CLI 或 ChatGPT 桌面版 Codex；
-- Hook 运行环境的 `PATH` 中存在 Node.js 22.18 或更高版本。
+### Codex：一次安装完整插件
 
-当前稳定版本为 `0.5.0`，用于独立 Skill 与 Hook 分发。未从 GitHub 安装时，可先在本仓库根目录安装本地 Skill：
-
-```bash
-npx skills add . --skill stonefish-engineering -g -a codex -a grok
-```
-
-本地目录来源不能当作可从 GitHub 更新的安装记录；要转为远端更新，按下面的远端命令重新安装并确认来源。隔离本地安装与核心加载记录见[开发态验证](docs/evals/independent-skill-development.md)，`0.5.0` 的候选证据见[候选验证](docs/evals/v0.5.0.md)。
-
-从 GitHub 安装 Skill：
-
-```bash
-npx skills add sty20030818/StonePlugins --skill stonefish-engineering -g -a codex -a grok
-```
-
-上述命令也可将 `npx` 换成 `bunx`。根目录布局可被默认发现，不需要 `--full-depth`；`-a codex -a grok` 选择两个 Skill 安装目标，Hook 插件仍只面向 Codex。命令语法见 [Skills CLI 官方说明](https://github.com/vercel-labs/skills#readme) 和 [Bun 的 bunx 文档](https://bun.com/docs/pm/bunx)。
-
-然后检查 Node 并安装对应新版 Hook 插件：
+以下固定版本命令面向**尚未配置 `stonefish` 来源、未安装旧工程插件**的新用户：
 
 ```bash
 node --version
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.1
+codex plugin add stoneplugins@stonefish
 ```
+
+不需要另跑 Skills CLI 给 Codex 安装 `engineering`，插件包已经包含核心、元数据与细则。开发试验可在仓库根目录使用 `codex plugin marketplace add .`；本地来源与 GitHub 来源不能在同一 marketplace ID 下混用，固定 ref 也不会自动跟随未来版本。
+
+安装后，在新任务中审查并信任 `SessionStart`、`SubagentStart`、`UserPromptSubmit` 三个 Hook，核对原生入口 `$stoneplugins:engineering` 和资源位置；再分别验证生命周期送达、完整核心和按需读取细则。插件安装不自动信任 Hook，配置变化后可能需要重新审核。当前任务里已加载的旧上下文不能作为新安装验收证据。
+
+如果已经安装旧版，不要直接叠加运行；先按下面的迁移顺序核对来源。
+
+### 其他 CLI：只安装同源 Skill
+
+检出 `v0.5.1` 后，在仓库根目录中以 Grok 为例：
 
 ```bash
-codex plugin marketplace add sty20030818/StonePlugins --ref main
-codex plugin add stonefish-engineering@stonefish
+npx skills add ./plugins/stoneplugins --skill engineering -g -a grok --copy
 ```
 
-安装后：
+可以将 `npx` 换成 `bunx`。此处直接选择插件目录内的同源 Skill，`--copy` 避免额外建立 Codex 也会扫描的共享 Skill 来源；不安装 Codex Hooks。其他宿主应选其实际支持的安装目标，Claude/Grok 原生工作流适配不属于本版本。命令说明见 [Skills CLI](https://github.com/vercel-labs/skills#readme)。
 
-1. 启动一个新任务。
-2. 在 Codex 中打开 `/hooks`。
-3. 审查并信任 `SessionStart`、`SubagentStart` 和 `UserPromptSubmit` 三个 Hook。
-4. 确认可用 Skill 中只有一份 `stonefish-engineering`，并核对实际安装路径。
-5. 再开一个工程任务，分别检查 Hook 加载要求、完整 `SKILL.md` 读取轨迹和按需读取的 references。
+独立安装后的入口为 `$engineering`，不带 Codex 插件限定名。不要删除其他 CLI 仍在使用的旧共享目录或链接；旧名字和新名字的迁移须逐个核对。
 
-插件安装不会自动信任 Hook；Hook 内容变化后也可能需要重新审查。旧版插件自带 Skill，升级必须替换旧缓存后再启用新版，不能同时保留同名 Skill 的两份注册或让旧全文 Hook 与新加载 Hook 一起运行。
+## 使用与失败边界
 
-## 使用
-
-安装并信任后，Hook 持续要求工程任务加载 Skill；Skill 自身设置 `allow_implicit_invocation: true`，宿主也可以按任务选择它。当 Hook 未信任、被禁用、运行失败、宿主不支持 Hooks，或需要主动重读规则时，可以显式调用：
+安装并信任后，生命周期 Hook 负责送达核心；Skill 保留 `allow_implicit_invocation: true`，也可以显式调用：
 
 ```text
-$stonefish-engineering 按石头鱼的工程规则处理这个重构，并加载匹配的参考文件。
+$stoneplugins:engineering 按石头鱼的工程规则处理这个重构，并加载匹配的参考文件。
 ```
 
-显式调用只影响当前任务，不能替代生命周期提醒。Skill 缺失、不可读或加载失败时，Agent 应明确说明并暂停依赖该规则的工程决定，不能声称已加载；不自动下载或安装 Skill，也不回退到旧插件缓存中的正文。
+核心未完整送达时，通过正常 Skill 入口完整加载；已经完整收到时不为调用展示重复读取。独立 CLI 没有这些 Hook，需要由其 Skill 入口加载，压缩后重新确认完整核心。
 
-插件不会自动改变你的全局 `AGENTS.md`。工程方法论与最佳实践由独立 Skill 维护；全局文件适合保留日常交互、权限、Git 边界、项目工具优先和 Bun 等个人偏好，避免复制规则正文形成第二事实源。作者示例位于 [examples/AGENTS.stonefish.md](examples/AGENTS.stonefish.md)，仅供选择性合并。
+包内 Skill 缺失、不可读、frontmatter 损坏、核心为空、缺少必要结构或超过预算时，Hook 输出脱敏错误与工程暂停要求。不自动安装、不回退旧缓存或硬编码规则。暂停要求仍需 Agent 遵守，不能把错误输出当作宿主已经机械阻断；若 Node 在入口执行前失败，则需先修复运行环境。
 
-也可以将以下短约定加入各 CLI 实际使用的全局规则文件；请先确认对应 CLI 的规则路径。本仓库只提供示例，不自动写入配置：
-
-```text
-所有任务继续遵守全局协作规则。需要改变或评价软件行为、代码、配置、依赖、数据、接口、测试、架构或发布时，通过宿主 Skill 入口完整加载 stonefish-engineering 的 SKILL.md；边界不清时加载，同一有效上下文已完整加载时不重复读取。压缩后重新完整读取。找不到 Skill 或读取失败时明确报告并暂停依赖该规则的工程决定，不自动安装或回退旧缓存。
-```
+插件不修改全局 `AGENTS.md`。工程规则只在包内维护；全局文件继续承载日常交互、权限、Git 分界和工具偏好。作者的[个人规则示例](examples/AGENTS.stonefish.md)仅供选择性合并，不应复制核心形成第二来源。
 
 ## 更新与旧版迁移
 
-独立 Skill 使用 Skills CLI 更新；远端安装来源必须已经包含本次改造。要保持 Codex/Grok 两个安装目标，重复执行带明确目标的安装命令即可更新内容：
+升级前先记录已有 `stonefish` marketplace 的来源、旧插件、共享 Skill 使用者和可恢复配置。切换来源会影响这个 marketplace 的后续更新，不能仅凭相同 ID 假定本地目录与远端来源等价。具体执行与验收记录见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)及 [v0.5.1 验证](docs/evals/v0.5.1.md)。
 
-```bash
-npx skills add sty20030818/StonePlugins --skill stonefish-engineering -g -a codex -a grok
-```
+迁移顺序：
 
-也可以将 `npx` 换成 `bunx`。Skills CLI `1.5.24` 的 `skills update stonefish-engineering -g` 会重新检测宿主，不保证保留初次安装的目标范围，见[上游更新实现](https://github.com/vercel-labs/skills/blob/1682051d48c34f5eb135e6475c1a965dce05e820/src/update.ts#L710-L712)。更新 Skill 不会更新 Hook 插件；Hook 仍通过 Codex marketplace 更新：
+1. 验证新包和目标安装来源，然后停止旧 `stonefish-engineering@stonefish` 插件，再启用新 `stoneplugins@stonefish`，避免两个 Hook 同时注入。
+2. 通过 Codex 的精确 Skill 路径配置禁用旧外置工程入口；保留其他 CLI 使用的共享文件及链接。只改明确属于 Codex 的旧强制加载约定，不覆盖个人规则。
+3. 开启新任务，重新审核 Hook，检查唯一入口、当前缓存路径、完整正文与细则。验收失败时停止切换，不维持新旧混合状态。
 
-```bash
-codex plugin marketplace upgrade stonefish
-codex plugin add stonefish-engineering@stonefish
-```
+本地来源更新时，先更新对应 checkout，再执行 `codex plugin add stoneplugins@stonefish`；版本变化后回读缓存和 Skill 入口。GitHub 固定 ref 来源需显式切换到目标版本，不能假定重新安装会自动升级。其他 CLI 可重复执行上面的明确目标安装命令，更新其副本不会更新 Codex 插件。
 
-从旧版迁移时，先安装独立 Skill，再替换带有旧 Skill 的插件缓存。检查 `/hooks` 的来源并停用曾手动写入全局或项目配置的旧副本，确认只有新版插件的三个 Hook，且没有同名 Skill 重复注册，再启动新任务。若 Hook 定义的 hash 发生变化，重新审查和信任；本仓库不会自动修改全局配置。
+### 已发布 v0.5.0 的历史安装
 
-停用时先禁用或卸载 Hook 插件，再按需移除独立 Skill；只移除 Skill 而保留 Hook，会按设计暂停依赖该规则的工程决定。升级失败时不要继续使用旧新混合状态，先停用 Hook 并核对实际安装来源。
-
-日常远端安装跟踪仓库来源，Hook marketplace 示例显式跟踪 `main`；版本历史使用 Git tag 与 GitHub Release。旧 `v0.4.1` tag 不包含本次改造，不能用它验证新版安装流程。正式创建 `v0.5.0` tag 后，才可使用以下固定版本示例；固定来源不跟随 `main` 更新：
+旧版采用两步安装，完整说明保留在 [v0.5.0 README](https://github.com/sty20030818/StonePlugins/blob/v0.5.0/README.md)。旧 Hook 的固定版本来源如下；这是旧实现或回退使用的示例，且依赖旧外置 `stonefish-engineering` Skill 已安装：
 
 ```bash
 codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.0
 codex plugin add stonefish-engineering@stonefish
 ```
 
+不能与新插件并行启用。回退须恢复事先记录的插件与 Skill 配置，重新信任并开新任务；不恢复或覆盖用户的其他配置。
+
 ## 隐私与安全
 
 - Hook 不联网、不写日志、不保存状态。
-- `UserPromptSubmit` 不使用用户 prompt 做路由，也不会把它回显到输出。
-- Hook 不读取或输出规则正文；Skill 的发现与加载由 Agent 和宿主完成。
-- Hook 入口校验输入，失败只输出不含原始输入的安全错误标识，不读取插件 manifest，也不绑定用户安装路径。Hook 正常返回不证明 Skill 已安装、可读或已加载；若 Node 在入口执行前退出，需要修复运行环境或重新安装插件。
+- 不读取 transcript，也不使用或回显用户 prompt；只验证输入事件并读取当前包内核心。
+- 从实际运行脚本位置解析同包资源，不信任项目 cwd 或用户传入的 `PLUGIN_ROOT` 来查找正文，不搜索其他版本缓存。
+- 失败只输出安全原因；无自动下载、权限扩张、信任哈希修改或安装器。
 
-## 本地开发
+## 本地开发与发布
 
-插件运行时没有 npm 依赖。仓库开发使用 TypeScript，首次检查先安装开发依赖：
+沿用 TypeScript、npm 和现有构建流程：
 
 ```bash
 npm ci
 npm run check
 ```
 
-Hook 源码是 `plugins/stonefish-engineering/src/inject-context.ts`；`npm run build` 会生成安装时实际执行的 `hooks/inject-context.js`，插件自己的 `package.json` 保证它进入独立缓存后仍按 ESM 运行。不要直接编辑生成物。三个生命周期事件共用这个无状态入口，因为输入校验、错误脱敏和输出协议相同；只有某个事件出现独立依赖或复杂流程时才拆分。完整 Skill 仅维护在 `skills/stonefish-engineering/`，不要再复制进插件目录。
+源码为 `plugins/stoneplugins/src/inject-context.ts`；`npm run build` 生成实际执行的 `hooks/inject-context.js`，同包 `package.json` 保证缓存中仍按 ESM 运行。不要手改生成物。唯一 Skill 树为 `plugins/stoneplugins/skills/engineering/`，不保留根目录镜像、旧插件或兼容副本。
 
-发布新版本时：
+发布另行授权后，同步根 package、lock、插件 manifest、CHANGELOG、固定 ref 示例与版本评测。按[十个行为案例](docs/evals/behavior-cases.md)和全部生命周期保留原始证据，区分字节预算、模型 token、缓存口径、正文完整与行为落实。新文件按正常流程进入 Git 跟踪后再运行 `npm run validate:release`，不能为使检查通过擅自暂存。
 
-1. 同步更新根 `package.json`、`package-lock.json` 与 `.codex-plugin/plugin.json` 的 SemVer。
-2. 更新 `CHANGELOG.md`。
-3. 规则语义或加载流程变化时重放 [固定行为案例](docs/evals/behavior-cases.md) 并新增对应版本评测；完成独立 Skill 安装/更新、旧缓存替换，以及 startup、逐轮、子 Agent、resume、clear 和 compact 的真实客户端冒烟，分开记录要求送达、正文加载和行为落实。
-4. 运行本地验证并等待 GitHub Actions 通过；普通分支运行常规校验，发布 tag 额外运行 `validate:release`，发布前需补齐与版本一致的固定安装示例及版本评测。
-5. 创建与 manifest 相同版本的 tag，再创建 GitHub Release。
+推送候选提交和与 manifest 相同版本的 tag，等待该 tag 的 CI 通过，再创建并回读 GitHub Release；CI 验证不会自动发布。历史研究与版本评测原位归档，不重写旧结果为新版本通过。
 
 ## 许可
 

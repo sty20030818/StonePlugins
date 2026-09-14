@@ -2,8 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "rootDir": "plugins/stonefish-engineering/src",
-    "outDir": "plugins/stonefish-engineering/hooks"
+    "rootDir": "plugins/stoneplugins/src",
+    "outDir": "plugins/stoneplugins/hooks"
   },
-  "include": ["plugins/stonefish-engineering/src/**/*.ts"]
+  "include": ["plugins/stoneplugins/src/**/*.ts"]
 }

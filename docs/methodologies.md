@@ -1,6 +1,6 @@
 # 石头鱼的工程规则：方法论目录与治理
 
-本文件服务规则维护、研究和版本评审，不由 Hook 注入，也不是普通任务的运行时清单。运行时以独立 Skill 的核心 [SKILL.md](../skills/stonefish-engineering/SKILL.md) 和短选择器 [method-selection.md](../skills/stonefish-engineering/references/method-selection.md) 为准。Hook 插件只发送加载要求；工程决定前须完整加载核心，同一有效上下文不重复读取，条件 references 仍按事实加载。安装、更新和旧版迁移见 [README](../README.md)。
+本文件服务规则维护、研究和版本评审，不由 Hook 注入，也不是普通任务的运行时清单。工作树候选的唯一资源为包内核心 [SKILL.md](../plugins/stoneplugins/skills/engineering/SKILL.md) 和短选择器 [method-selection.md](../plugins/stoneplugins/skills/engineering/references/method-selection.md)；生命周期 Hook 送达核心正文，细则按需读取。候选已实现但未发布，宿主验收见[开发验证](evals/codex-first-bundled-development.md)；已发布 `v0.5.0` 的短加载要求属于历史实现。决定与后续工作由 [ADR-0004](adr/0004-codex-first-bundled-engineering.md) 和 [重构计划](plans/2026-09-14-codex-first-refactor.md) 持有。下述方法分类与晋升规则继续有效，不以正文必须由模型读文件作为方法论不变量。当前安装说明见 [README](../README.md)。
 
 方法名用于定位思想来源，不能替代项目证据。规则只有在能改变所有者、边界、抽象、兼容、风险或验证时才有运行价值。
 

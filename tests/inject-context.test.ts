@@ -1,18 +1,19 @@
 import assert from "node:assert/strict";
-import { cpSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import test from "node:test";
+import test, { type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
 
 const REPO_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const PLUGIN_ROOT = path.join(REPO_ROOT, "plugins", "stonefish-engineering");
+const PLUGIN_ROOT = path.join(REPO_ROOT, "plugins", "stoneplugins");
 const SCRIPT = path.join(PLUGIN_ROOT, "hooks", "inject-context.js");
+const SKILL_PATH = path.join(PLUGIN_ROOT, "skills", "engineering", "SKILL.md");
 const EVENTS = ["SessionStart", "SubagentStart", "UserPromptSubmit"];
-const CONTEXT_BYTE_LIMIT = 300;
+const SECRET = "TOKEN_SENTINEL_MUST_NOT_LEAK";
 
-type RunHookOptions = { pluginRoot?: string; script?: string };
+type RunHookOptions = { pluginRoot?: string; script?: string; cwd?: string };
 
 function runHook(input: unknown, options: RunHookOptions = {}) {
   const env = { ...process.env };
@@ -22,6 +23,7 @@ function runHook(input: unknown, options: RunHookOptions = {}) {
   const result = spawnSync(process.execPath, [options.script ?? SCRIPT], {
     encoding: "utf8",
     env,
+    cwd: options.cwd,
     input: typeof input === "string" ? input : JSON.stringify(input),
   });
 
@@ -30,106 +32,178 @@ function runHook(input: unknown, options: RunHookOptions = {}) {
   return { output: JSON.parse(result.stdout), raw: result.stdout };
 }
 
-test("所有事件发送精简、自包含且彼此不同的加载要求", () => {
-  const contexts = new Set<string>();
-  for (const hook_event_name of EVENTS) {
-    const { output } = runHook({ hook_event_name });
-    assert.deepEqual(Object.keys(output), ["hookSpecificOutput"]);
-    assert.equal(output.hookSpecificOutput.hookEventName, hook_event_name);
-    const context = output.hookSpecificOutput.additionalContext as string;
-    contexts.add(context);
-    for (const requirement of [
-      "宿主 Skill 入口",
-      "$stonefish-engineering",
-      "SKILL.md",
-      "读取失败",
-      "报告并暂停工程决定",
-      "不自动安装",
-      "不回退旧缓存",
-    ]) {
-      assert.ok(context.includes(requirement), `加载要求缺少：${requirement}`);
-    }
-    assert.doesNotMatch(
-      context,
-      /STONEFISH ENGINEERING ACTIVE|^# 石头鱼的工程规则$|references/m,
-    );
-    assert.ok(!context.includes(PLUGIN_ROOT));
-    assert.ok(
-      Buffer.byteLength(context, "utf8") <= CONTEXT_BYTE_LIMIT,
-      `加载要求超过 ${CONTEXT_BYTE_LIMIT} bytes`,
-    );
+function coreBody(skillPath = SKILL_PATH) {
+  const skill = readFileSync(skillPath, "utf8");
+  assert.ok(skill.startsWith("---\n"));
+  const end = skill.indexOf("\n---\n", 4);
+  assert.notEqual(end, -1);
+  return skill.slice(end + "\n---\n".length).replace(/^\n/, "");
+}
 
-    for (const pluginRoot of [PLUGIN_ROOT, "relative-plugin-root", "/missing-plugin-root"]) {
-      assert.deepEqual(runHook({ hook_event_name }, { pluginRoot }).output, output);
-    }
-  }
-  assert.equal(contexts.size, EVENTS.length);
-});
-
-test("SessionStart 普通来源按需加载，compact 无条件重新完整读取", () => {
-  const expected = runHook({ hook_event_name: "SessionStart" }).output;
-  const regularContext = expected.hookSpecificOutput.additionalContext as string;
-  assert.match(regularContext, /工程任务若.*尚未完整加载/);
-  assert.match(regularContext, /已加载.*沿用/);
-  assert.match(regularContext, /边界不清时加载/);
-
-  for (const source of ["startup", "resume", "clear"]) {
-    assert.deepEqual(runHook({ hook_event_name: "SessionStart", source }).output, expected);
-  }
-
-  const compact = runHook({ hook_event_name: "SessionStart", source: "compact" }).output;
-  const compactContext = compact.hookSpecificOutput.additionalContext as string;
-  assert.notDeepEqual(compact, expected);
-  assert.match(compactContext, /压缩已发生.*无条件.*重新完整读取/s);
-  assert.match(compactContext, /形成工程决定前/);
-  assert.doesNotMatch(compactContext, /已加载.*不重复|边界不清/);
-  assert.ok(Buffer.byteLength(compactContext, "utf8") <= CONTEXT_BYTE_LIMIT);
-});
-
-test("子 Agent 加载要求不假定已继承父 Agent 的规则", () => {
-  const { output } = runHook({ hook_event_name: "SubagentStart", agent_type: "worker" });
-  assert.match(output.hookSpecificOutput.additionalContext, /上下文独立.*不得沿用父 Agent/);
-  assert.match(output.hookSpecificOutput.additionalContext, /工程任务须先/);
-});
-
-test("UserPromptSubmit 只在工程正文缺失或边界不清时要求加载", () => {
-  const { output } = runHook({ hook_event_name: "UserPromptSubmit" });
-  const context = output.hookSpecificOutput.additionalContext as string;
-  assert.match(context, /工程任务若尚未完整加载/);
-  assert.match(context, /已加载.*沿用/);
-  assert.match(context, /边界不清时加载/);
-});
-
-test("生成的 .js Hook 在无 manifest 或 Skill 的独立缓存中保持 ESM 语义", (t) => {
-  const cacheRoot = mkdtempSync(path.join(tmpdir(), "stonefish-plugin-cache-"));
+function installedFixture(t: TestContext) {
+  const cacheRoot = mkdtempSync(path.join(tmpdir(), "stoneplugins-hook-test-"));
   t.after(() => rmSync(cacheRoot, { recursive: true, force: true }));
-  const installedPluginRoot = path.join(cacheRoot, "plugin with spaces");
-  mkdirSync(path.join(installedPluginRoot, "hooks"), { recursive: true });
-  cpSync(path.join(PLUGIN_ROOT, "package.json"), path.join(installedPluginRoot, "package.json"));
-  const script = path.join(installedPluginRoot, "hooks", "inject-context.js");
-  cpSync(SCRIPT, script);
+  const pluginRoot = path.join(cacheRoot, "plugin with spaces");
+  cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
+  return {
+    pluginRoot,
+    script: path.join(pluginRoot, "hooks", "inject-context.js"),
+    skillPath: path.join(pluginRoot, "skills", "engineering", "SKILL.md"),
+  };
+}
 
-  for (const hook_event_name of EVENTS) {
-    assert.deepEqual(
-      runHook({ hook_event_name }, { script }).output,
-      runHook({ hook_event_name }).output,
-    );
+function assertCompleteContext(output: ReturnType<typeof runHook>["output"], event: string, skillPath = SKILL_PATH) {
+  assert.deepEqual(Object.keys(output), ["hookSpecificOutput"]);
+  assert.equal(output.hookSpecificOutput.hookEventName, event);
+  const context = output.hookSpecificOutput.additionalContext as string;
+  const body = coreBody(skillPath);
+  assert.ok(context.includes(skillPath));
+  assert.ok(context.includes(path.join(path.dirname(skillPath), "references")));
+  assert.equal(context.slice(context.indexOf(body)), body);
+  assert.equal(context.indexOf(body), context.lastIndexOf(body));
+  assert.doesNotMatch(context, /^name: engineering$/m);
+  assert.ok(Buffer.byteLength(context, "utf8") <= 8_000);
+}
+
+test("所有 SessionStart 来源及子 Agent 完整收到同包核心和当前资源位置", () => {
+  for (const source of [undefined, "startup", "resume", "clear", "compact", "future-source"]) {
+    const { output } = runHook({ hook_event_name: "SessionStart", source });
+    assertCompleteContext(output, "SessionStart");
+  }
+  const { output } = runHook({ hook_event_name: "SubagentStart", agent_type: "worker" });
+  assertCompleteContext(output, "SubagentStart");
+});
+
+test("frontmatter 字段换序或 name 加引号不改变完整正文送达", (t) => {
+  const fixture = installedFixture(t);
+  const original = readFileSync(fixture.skillPath, "utf8");
+  const body = coreBody(fixture.skillPath);
+  const description = original.match(/^description: .+$/m)![0];
+  for (const metadata of [
+    `${description}\nname: engineering`,
+    `name: "engineering"\n${description}`,
+    `${description}\nname: 'engineering'`,
+  ]) {
+    writeFileSync(fixture.skillPath, `---\n${metadata}\n---\n\n${body}`);
+    assert.equal(coreBody(fixture.skillPath), body);
+    for (const hook_event_name of ["SessionStart", "SubagentStart"]) {
+      const { output } = runHook({ hook_event_name }, { script: fixture.script });
+      assertCompleteContext(output, hook_event_name, fixture.skillPath);
+    }
   }
 });
 
-test("所有事件忽略用户提示、transcript 和未知字段，不回显或依赖内容", () => {
-  const secret = "TOKEN_SENTINEL_MUST_NOT_LEAK";
+test("每轮只发送工程执行提醒，不重复展开核心", () => {
+  const { output } = runHook({ hook_event_name: "UserPromptSubmit" });
+  assert.deepEqual(Object.keys(output), ["hookSpecificOutput"]);
+  assert.equal(output.hookSpecificOutput.hookEventName, "UserPromptSubmit");
+  const context = output.hookSpecificOutput.additionalContext as string;
+  assert.match(context, /工程/);
+  assert.match(context, /stoneplugins:engineering/);
+  assert.doesNotMatch(context, /^# 石头鱼的工程规则$/m);
+  assert.ok(Buffer.byteLength(context, "utf8") <= 300);
+});
+
+test("读取实际脚本所在安装包，不依赖 cwd 或 PLUGIN_ROOT 环境变量", () => {
   for (const hook_event_name of EVENTS) {
     const expected = runHook({ hook_event_name }).output;
-    for (const prompt of [secret, "完全不同的架构讨论", { ignored: secret }]) {
+    for (const pluginRoot of [PLUGIN_ROOT, "relative-plugin-root", "/missing-plugin-root"]) {
+      assert.deepEqual(
+        runHook({ hook_event_name }, { pluginRoot, cwd: tmpdir() }).output,
+        expected,
+      );
+    }
+  }
+});
+
+test("完整插件移到含空格缓存后以 ESM 运行，核心和全部细则均来自该副本", (t) => {
+  const fixture = installedFixture(t);
+  // manifest 不参与运行时路径或版本解析。
+  rmSync(path.join(fixture.pluginRoot, ".codex-plugin"), { recursive: true });
+  writeFileSync(fixture.skillPath, `${readFileSync(fixture.skillPath, "utf8")}\n缓存副本独有正文。\n`);
+
+  for (const hook_event_name of ["SessionStart", "SubagentStart"]) {
+    const { output, raw } = runHook({ hook_event_name }, { script: fixture.script, cwd: tmpdir() });
+    assertCompleteContext(output, hook_event_name, fixture.skillPath);
+    assert.ok(!raw.includes(PLUGIN_ROOT));
+    const body = coreBody(fixture.skillPath);
+    const references = [...body.matchAll(/\]\((references\/[^)]+)\)/g)];
+    assert.equal(references.length, 5);
+    for (const [, relativePath] of references) {
+      assert.ok(relativePath);
+      const resource = path.resolve(path.dirname(fixture.skillPath), relativePath);
+      assert.ok(resource.startsWith(`${fixture.pluginRoot}${path.sep}`));
+      assert.ok(realpathSync(resource).startsWith(`${realpathSync(fixture.pluginRoot)}${path.sep}`));
+      assert.ok(readFileSync(resource, "utf8").length > 0);
+    }
+  }
+  assert.deepEqual(
+    runHook({ hook_event_name: "UserPromptSubmit" }, { script: fixture.script }).output,
+    runHook({ hook_event_name: "UserPromptSubmit" }).output,
+  );
+});
+
+test("核心缺失、不可读、结构损坏、逃逸或超限时安全暂停，prompt 不读取核心", (t) => {
+  const fixture = installedFixture(t);
+  const original = readFileSync(fixture.skillPath, "utf8");
+  const frontmatter = original.slice(0, original.indexOf("\n---\n", 4) + "\n---\n".length);
+  const invalidCores = [
+    { name: "缺失", content: undefined },
+    { name: "不可读目录", content: null },
+    { name: "软链接逃逸", content: false },
+    { name: "无 frontmatter", content: coreBody() },
+    { name: "frontmatter 未闭合", content: `---\nname: engineering\n${SECRET}` },
+    { name: "frontmatter 缺 name", content: original.replace(/^name: .*\n/m, "") },
+    { name: "frontmatter 缺 description", content: original.replace(/^description: .*\n/m, "") },
+    { name: "frontmatter 错 name", content: original.replace(/^name: .*$/m, "name: other") },
+    { name: "frontmatter 重复 name", content: original.replace(/^name: .*$/m, "name: engineering\nname: engineering") },
+    { name: "空正文", content: `${frontmatter}\n \n` },
+    { name: "缺必要结构", content: original.replace("## 常驻工程执行契约", "") },
+    { name: "超过预算", content: `${original}\n${SECRET}\n${"规则".repeat(8_000)}` },
+  ];
+
+  for (const { name, content } of invalidCores) {
+    rmSync(fixture.skillPath, { recursive: true, force: true });
+    if (content === null) mkdirSync(fixture.skillPath);
+    else if (content === false) {
+      const outside = path.join(path.dirname(fixture.pluginRoot), "outside-SKILL.md");
+      writeFileSync(outside, original);
+      symlinkSync(outside, fixture.skillPath);
+    } else if (typeof content === "string") writeFileSync(fixture.skillPath, content);
+
+    for (const hook_event_name of ["SessionStart", "SubagentStart"]) {
+      const { output, raw } = runHook(
+        { hook_event_name, prompt: SECRET, transcript_path: SECRET },
+        { script: fixture.script },
+      );
+      assert.match(output.systemMessage, /暂停工程决定/, name);
+      assert.equal(output.hookSpecificOutput.hookEventName, hook_event_name, name);
+      assert.match(output.hookSpecificOutput.additionalContext, /暂停工程决定/, name);
+      assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /^# 石头鱼的工程规则$/m, name);
+      assert.ok(!raw.includes(SECRET), name);
+      assert.ok(!raw.includes(fixture.skillPath), name);
+    }
+
+    assert.deepEqual(
+      runHook({ hook_event_name: "UserPromptSubmit" }, { script: fixture.script }).output,
+      runHook({ hook_event_name: "UserPromptSubmit" }).output,
+      name,
+    );
+  }
+});
+
+test("所有事件忽略 prompt、transcript 和未知字段，不泄漏或依赖其内容", () => {
+  for (const hook_event_name of EVENTS) {
+    const expected = runHook({ hook_event_name }).output;
+    for (const prompt of [SECRET, "完全不同的架构讨论", { ignored: SECRET }]) {
       const { output, raw } = runHook({
         hook_event_name,
         prompt,
-        transcript_path: secret,
-        unknown: { private: secret },
+        transcript_path: SECRET,
+        unknown: { private: SECRET },
       });
       assert.deepEqual(output, expected);
-      assert.ok(!raw.includes(secret));
+      assert.ok(!raw.includes(SECRET));
     }
   }
 });
@@ -143,17 +217,16 @@ test("合法 JSON 输入允许 BOM", () => {
   }
 });
 
-test("无效输入边界只返回安全 systemMessage", () => {
-  const secret = "private-token-value";
+test("无效输入与非法原型事件仅返回安全 systemMessage，不伪造事件", () => {
   const cases = [
-    { input: `{"token":"${secret}"`, error: "输入不是有效 JSON" },
+    { input: `{"token":"${SECRET}"`, error: "输入不是有效 JSON" },
     { input: "", error: "输入不是有效 JSON" },
-    ...[null, [], true, 42, JSON.stringify(secret)].map((input) => ({
+    ...[null, [], true, 42, JSON.stringify(SECRET)].map((input) => ({
       input,
       error: "输入必须是 JSON 对象",
     })),
     ...[undefined, "UnknownEvent", "constructor", "__proto__", 42].map((hook_event_name) => ({
-      input: { hook_event_name, secret },
+      input: { hook_event_name, secret: SECRET },
       error: "Hook 事件不受支持",
     })),
   ];
@@ -161,7 +234,8 @@ test("无效输入边界只返回安全 systemMessage", () => {
   for (const { input, error } of cases) {
     const { output, raw } = runHook(input);
     assert.deepEqual(Object.keys(output), ["systemMessage"]);
-    assert.equal(output.systemMessage, `未能发送石头鱼的工程规则加载要求：${error}。`);
-    assert.ok(!raw.includes(secret));
+    assert.ok(output.systemMessage.includes(error));
+    assert.match(output.systemMessage, /暂停工程决定/);
+    assert.ok(!raw.includes(SECRET));
   }
 });
