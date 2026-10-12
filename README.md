@@ -4,9 +4,9 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ## 当前状态
 
-`v0.5.2` 保留 Codex 优先的完整插件：一次安装取得工程 Skill、三份细则和生命周期 Hook。Skill 展示名为 `Engineering`，限定入口为 `$stoneplugins:engineering`。从 `v0.5.1` 升级无需更换插件 ID；从 `v0.5.0` 升级仍须迁移插件 ID 和 Skill 来源，请勿直接叠加启用旧插件。
+`v0.5.3` 保留 Codex 优先的完整插件：一次安装取得工程 Skill、三份细则和生命周期 Hook。Skill 展示名为 `Engineering`，限定入口为 `$stoneplugins:engineering`。从 `v0.5.1` 或 `v0.5.2` 升级无需更换插件 ID；从 `v0.5.0` 升级仍须迁移插件 ID 和 Skill 来源，请勿直接叠加启用旧插件。
 
-本版完整保留常驻原则与方法独有动作，合并重复表达，让核心直接指向三份主题细则。检查结果及未验证边界见 [v0.5.2 验证](docs/evals/v0.5.2.md)，正式发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.5.2) 为准；不继承旧版本的宿主验收或声称固定 token 收益。设计见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，执行记录见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)，历史资料见[文档索引](docs/README.md)。
+本版明确公开决策说明中方法标签的加粗边界与空格位置，增加正反例；工程方法、适用范围和 Hook 加载行为保持不变。检查结果及未验证边界见 [v0.5.3 验证](docs/evals/v0.5.3.md)，正式发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.5.3) 为准；不继承旧版本的宿主验收或声称固定 token 收益。设计见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，执行记录见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)，历史资料见[文档索引](docs/README.md)。
 
 ## 规则与加载
 
@@ -40,7 +40,7 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ```bash
 node --version
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.2
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.3
 codex plugin add stoneplugins@stonefish
 ```
 
@@ -52,7 +52,7 @@ codex plugin add stoneplugins@stonefish
 
 ### 其他 CLI：只安装同源 Skill
 
-检出 `v0.5.2` 后，在仓库根目录中以 Grok 为例：
+检出 `v0.5.3` 后，在仓库根目录中以 Grok 为例：
 
 ```bash
 npx skills add ./plugins/stoneplugins --skill engineering -g -a grok --copy
