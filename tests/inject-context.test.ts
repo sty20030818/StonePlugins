@@ -116,6 +116,8 @@ test("每轮只发送工程执行提醒，不重复展开核心", () => {
   const context = output.hookSpecificOutput.additionalContext as string;
   assert.match(context, /工程/);
   assert.match(context, /stoneplugins:engineering/);
+  assert.match(context, /回复前检查核心“回复格式”/);
+  assert.match(context, /全部加粗/);
   assert.ok(!context.includes(coreBody()));
   assert.ok(Buffer.byteLength(context, "utf8") <= 300);
 });

@@ -4,16 +4,16 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ## 当前状态
 
-`v0.5.3` 保留 Codex 优先的完整插件：一次安装取得工程 Skill、三份细则和生命周期 Hook。Skill 展示名为 `Engineering`，限定入口为 `$stoneplugins:engineering`。从 `v0.5.1` 或 `v0.5.2` 升级无需更换插件 ID；从 `v0.5.0` 升级仍须迁移插件 ID 和 Skill 来源，请勿直接叠加启用旧插件。
+`v0.5.4` 保留 Codex 优先的完整插件：一次安装取得工程 Skill、三份细则和生命周期 Hook。Skill 展示名为 `Engineering`，限定入口为 `$stoneplugins:engineering`。从 `v0.5.1`、`v0.5.2` 或 `v0.5.3` 升级无需更换插件 ID；从 `v0.5.0` 升级仍须迁移插件 ID 和 Skill 来源，请勿直接叠加启用旧插件。
 
-本版明确公开决策说明中方法标签的加粗边界与空格位置，增加正反例；工程方法、适用范围和 Hook 加载行为保持不变。检查结果及未验证边界见 [v0.5.3 验证](docs/evals/v0.5.3.md)，正式发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.5.3) 为准；不继承旧版本的宿主验收或声称固定 token 收益。设计见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，执行记录见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)，历史资料见[文档索引](docs/README.md)。
+本版将加粗格式规则扩展到所有工程回复，并在每轮 Hook 提醒中要求发送前检查；工程方法与生命周期加载行为保持不变。检查结果及未验证边界见 [v0.5.4 验证](docs/evals/v0.5.4.md)，正式发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.5.4) 为准；不继承旧版本的宿主验收或声称固定 token 收益。设计见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，执行记录见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)，历史资料见[文档索引](docs/README.md)。
 
 ## 规则与加载
 
 唯一核心正文位于 [plugins/stoneplugins/skills/engineering/SKILL.md](plugins/stoneplugins/skills/engineering/SKILL.md)，与包内三份细则共同持有运行时规则。插件 ID 为 `stoneplugins`，Skill 名为 `engineering`，Codex 限定入口为 `$stoneplugins:engineering`；marketplace ID 仍为 `stonefish`。对话中称为“石头鱼的工程规则”，不把作者的语言、称呼或包管理器偏好强加给其他用户。
 
 - `SessionStart` 的 startup、resume、clear、compact，以及 `SubagentStart`，从实际运行的插件缓存读取包内 Skill，移除 frontmatter 后送达完整核心，并给出当前资源路径；不展开 references。
-- `UserPromptSubmit` 每轮只发送不超过 300 UTF-8 bytes 的执行提醒，不根据用户提示关键词路由，也不重复注入核心。
+- `UserPromptSubmit` 每轮只发送不超过 300 UTF-8 bytes 的执行提醒，指向核心“回复格式”并检查全部加粗；不根据用户提示关键词路由，也不重复注入核心。
 - 工程任务沿用当前上下文已完整收到的核心，按当前任务直接读取[架构](plugins/stoneplugins/skills/engineering/references/architecture.md)、[修改边界](plugins/stoneplugins/skills/engineering/references/change-boundaries.md)或[验证](plugins/stoneplugins/skills/engineering/references/verification.md)细则，不经过二级选择器；多个主题可以同时读取，不为显示调用徽标重复读取同一核心。
 - 所有任务继续遵守宿主的全局协作规则；纯聊天、翻译等非工程任务不因此变成工程任务，也不强制输出工程决策说明。
 - [方法论解释与治理](docs/methodologies.md)供维护者查阅，不参与运行时注入或任务必读。
@@ -40,7 +40,7 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ```bash
 node --version
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.3
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.4
 codex plugin add stoneplugins@stonefish
 ```
 
@@ -52,7 +52,7 @@ codex plugin add stoneplugins@stonefish
 
 ### 其他 CLI：只安装同源 Skill
 
-检出 `v0.5.3` 后，在仓库根目录中以 Grok 为例：
+检出 `v0.5.4` 后，在仓库根目录中以 Grok 为例：
 
 ```bash
 npx skills add ./plugins/stoneplugins --skill engineering -g -a grok --copy

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const CONTEXT_BYTE_LIMIT = 8_000;
 const FAILURE_CONTEXT = "暂停工程决定并报告加载失败，不自动安装，也不回退旧缓存。";
 const EVENTS = ["SessionStart", "SubagentStart", "UserPromptSubmit"];
-const PROMPT_CONTEXT = "工程任务沿用本次完整送达的石头鱼工程核心，按新事实读取细则；核心缺失时通过 $stoneplugins:engineering 完整加载，失败则暂停工程决定。非工程任务遵循个人常驻约定。";
+const PROMPT_CONTEXT = "工程任务沿用完整核心，按新事实读细则；回复前检查核心“回复格式”，覆盖全部加粗。核心缺失时通过 $stoneplugins:engineering 完整加载，失败则暂停工程决定。非工程任务遵循个人常驻约定。";
 class SafeHookError extends Error {
 }
 function parseHookInput(rawInput) {

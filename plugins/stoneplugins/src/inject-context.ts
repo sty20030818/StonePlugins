@@ -11,7 +11,7 @@ const FAILURE_CONTEXT =
 
 const EVENTS = ["SessionStart", "SubagentStart", "UserPromptSubmit"] as const;
 const PROMPT_CONTEXT =
-  "工程任务沿用本次完整送达的石头鱼工程核心，按新事实读取细则；核心缺失时通过 $stoneplugins:engineering 完整加载，失败则暂停工程决定。非工程任务遵循个人常驻约定。";
+  "工程任务沿用完整核心，按新事实读细则；回复前检查核心“回复格式”，覆盖全部加粗。核心缺失时通过 $stoneplugins:engineering 完整加载，失败则暂停工程决定。非工程任务遵循个人常驻约定。";
 
 type HookEventName = (typeof EVENTS)[number];
 
