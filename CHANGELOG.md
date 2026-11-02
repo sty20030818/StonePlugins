@@ -4,6 +4,12 @@
 
 ## [未发布]
 
+## [0.5.5] - 2026-11-02
+
+### 修复
+
+- 明确“为什么这么做”的公开决策说明只在本轮最终回复展示，避免在执行进展中提前展开；必要风险与待确认事项仍及时说明，每轮提醒同步这一边界。
+
 ## [0.5.4] - 2026-10-14
 
 ### 修复
@@ -207,7 +213,10 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.5.2...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.5.5...HEAD
+[0.5.5]: https://github.com/sty20030818/StonePlugins/compare/v0.5.4...v0.5.5
+[0.5.4]: https://github.com/sty20030818/StonePlugins/compare/v0.5.3...v0.5.4
+[0.5.3]: https://github.com/sty20030818/StonePlugins/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/sty20030818/StonePlugins/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/sty20030818/StonePlugins/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/sty20030818/StonePlugins/compare/v0.4.1...v0.5.0
