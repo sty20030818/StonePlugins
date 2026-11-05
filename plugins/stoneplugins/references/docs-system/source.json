@@ -1,17 +1,17 @@
 {
   "sourceRepository": "https://github.com/sty20030818/StoneDocs",
-  "baseCommit": "4c7998f0720813fd05df65f15ad4aa78f0e0fa1a",
+  "baseCommit": "df82d30ccbb6c9ffc21b7a886009665e40ee56b9",
   "sourceState": "commit",
   "files": [
     {
       "sourcePath": "docs/conventions.md",
       "bundledPath": "conventions.md",
-      "sha256": "eee6d6992be82b53e15b36ef52a86d5a4dbbe68c221aae4aa4567f1c76e4378d"
+      "sha256": "e032bba08fd416159a511198dd9ede17f7ffa5b4294920b3809c50a6b38f8e7f"
     },
     {
       "sourcePath": "docs/sop/README.md",
       "bundledPath": "sop/README.md",
-      "sha256": "1287b0c0467e28aa836217de5f6703e9a9684d768798d2889d53f728d469fbf6"
+      "sha256": "80e53dcb85bf70d83fd72978b28357b55a83637570c442739ca5d005c1ca97c9"
     },
     {
       "sourcePath": "docs/sop/idea.md",
@@ -31,17 +31,17 @@
     {
       "sourcePath": "docs/sop/story.md",
       "bundledPath": "sop/story.md",
-      "sha256": "678cf27c8d78b4a28e72161e610122f730347c361ac21bbe9dcb71084c3288ad"
+      "sha256": "c7de9a18a2ad9a6173b38c5868698ec8e641b4fc422b20b58a694b66ef6ecc78"
     },
     {
       "sourcePath": "docs/sop/plan.md",
       "bundledPath": "sop/plan.md",
-      "sha256": "69a3bbe487af1884ad134161d5106736aeeef4c73865e057b2b934e6b6cffad1"
+      "sha256": "6e3cdc38ba77b084c7c80b467613d52ca84738a8aa1a4368735348ebf043c54d"
     },
     {
       "sourcePath": "docs/sop/design.md",
       "bundledPath": "sop/design.md",
-      "sha256": "b3a124ef8c48b11a4fcc1bed71dbe2fab7c2c80484ff259ef982768cbe77f960"
+      "sha256": "99cf23b94e42525f6acbc49a1e58837877e395487c923425b1e5588b49c4cf22"
     },
     {
       "sourcePath": "docs/sop/task.md",

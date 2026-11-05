@@ -1,0 +1,7 @@
+interface:
+  display_name: "Plan"
+  short_description: "规划可交付的项目阶段，明确范围、退出条件、依赖和推进关系，复用现有阶段"
+  default_prompt: "使用 $plan 根据已确认目标规划成果阶段，明确范围、退出条件和依赖，按授权写回。"
+
+policy:
+  allow_implicit_invocation: true

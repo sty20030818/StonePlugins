@@ -4,9 +4,10 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ## 当前版本
 
-`v0.6.1` 同包提供 `engineering`、`task`、`verify`、`review`。工程规则继续由原有生命周期 Hook 送达；三个文档工作流按需接续任务、验收交付和审阅阶段。共同约定、SOP 导航和九项独立流程组成十一份固定资源；操作、输出结构和完成判断由对应 SOP 统一维护。作者源在 StoneDocs，技能在本仓库维护。
+`v0.7.0` 同包提供 `engineering` 与 `story`、`plan`、`design`、`task`、`verify`、`review` 六项文档工作流。每项可依据明确输入单独使用，也可通过文档接续；操作、输出结构与完成判断统一由固定 SOP 维护。工程规则与原有生命周期 Hook 保持原样。
 
-[文档工作流](docs/document-workflow.md)说明职责、调用和来源约定，[v0.6.1 验证](docs/evals/v0.6.1.md)分别记录包检查、发布、本地安装和实际宿主行为；正式发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.6.1) 为准。旧版结果保留在 [v0.6.0 验证](docs/evals/v0.6.0.md)，不继承为本版结论。
+[文档工作流](docs/document-workflow.md)说明职责与来源，[v0.7.0 验证](docs/evals/v0.7.0.md)分别记录包检查、发布、本地安装与正式宿主结果；发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.7.0) 为准。[P007 开发记录](docs/evals/planning-skills-development.md)保留项目范围候选实测，不替代正式插件验收。旧安装结果见 [v0.6.1](docs/evals/v0.6.1.md)。
+
 从 v0.5.1–v0.5.5 升级无需更换插件 ID；从 v0.5.0 升级仍须迁移插件 ID 和 Skill 来源。已有设计见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，历史资料见[文档索引](docs/README.md)。
 
 ## 规则与加载
@@ -42,11 +43,11 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ```bash
 node --version
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.6.1
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.7.0
 codex plugin add stoneplugins@stonefish
 ```
 
-不需要另跑 Skills CLI 给 Codex 安装这些技能，插件包已包含四个入口、元数据及所需资源。文档工作流目前按完整插件分发，不支持单独复制其中一个技能目录。开发试验可在仓库根目录使用 `codex plugin marketplace add .`；本地来源与 GitHub 来源不能在同一 marketplace ID 下混用，固定 ref 也不会自动跟随未来版本。
+不需要另跑 Skills CLI 给 Codex 安装这些技能，插件包已包含七个入口、元数据及所需资源。文档工作流目前按完整插件分发，不支持单独复制其中一个技能目录。开发试验可在仓库根目录使用 `codex plugin marketplace add .`；本地来源与 GitHub 来源不能在同一 marketplace ID 下混用，固定 ref 也不会自动跟随未来版本。
 
 安装后，在新任务中审查并信任 `SessionStart`、`SubagentStart`、`UserPromptSubmit` 三个 Hook，核对原生入口 `$stoneplugins:engineering` 和资源位置；再分别验证生命周期送达、完整核心和按需读取细则。插件安装不自动信任 Hook，配置变化后可能需要重新审核。当前任务里已加载的旧上下文不能作为新安装验收证据。
 
@@ -54,7 +55,7 @@ codex plugin add stoneplugins@stonefish
 
 ### 其他 CLI：只安装同源 Skill
 
-检出 `v0.6.1` 后，在仓库根目录中以 Grok 为例：
+检出 `v0.7.0` 后，在仓库根目录中以 Grok 为例：
 
 ```bash
 npx skills add ./plugins/stoneplugins --skill engineering -g -a grok --copy

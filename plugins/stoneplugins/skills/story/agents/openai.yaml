@@ -1,0 +1,7 @@
+interface:
+  display_name: "Story"
+  short_description: "把项目目标转成用户故事、行为规则及可验收场景，保留边界与未决问题"
+  default_prompt: "使用 $story 根据现有目标梳理用户故事和行为场景，按本次授权提供草案或写回。"
+
+policy:
+  allow_implicit_invocation: true

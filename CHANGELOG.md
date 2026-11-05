@@ -4,6 +4,22 @@
 
 ## [未发布]
 
+## [0.7.0] - 2026-11-05
+
+### 新增
+
+- 提供 story、plan、design，连同 task、verify、review 形成六项独立文档工作流，输入依赖项目事实而非上游技能调用。
+- 固定共同约定、导航与九项 SOP 共十一份资源的真实作者源，明确独立入口、单步授权及按文档接续。
+
+### 变更
+
+- task/review 协作直接引用 SOP，保持轻量适配和唯一规则所有者。
+- 七项技能精确发现与新增入口负例进入既有检查；保留原工程核心与生命周期 Hook。
+
+### 文档
+
+- 补充九项流程独立入口及组合、返工、恢复、并行路线；候选结果与正式插件结果分开记录。
+
 ## [0.6.1] - 2026-11-05
 
 ### 变更
@@ -237,7 +253,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.6.1...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/sty20030818/StonePlugins/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/sty20030818/StonePlugins/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/sty20030818/StonePlugins/compare/v0.5.5...v0.6.0
 [0.5.5]: https://github.com/sty20030818/StonePlugins/compare/v0.5.4...v0.5.5

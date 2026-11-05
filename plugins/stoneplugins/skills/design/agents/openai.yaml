@@ -1,0 +1,7 @@
+interface:
+  display_name: "Design"
+  short_description: "为明确交付目标形成技术实施设计，说明结构、契约、关键风险、恢复与验证安排"
+  default_prompt: "使用 $design 根据已有目标、约束和实现形成实施方案，说明关键取舍与验证安排。"
+
+policy:
+  allow_implicit_invocation: true
