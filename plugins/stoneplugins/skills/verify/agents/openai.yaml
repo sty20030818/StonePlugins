@@ -1,0 +1,7 @@
+interface:
+  display_name: "Verify"
+  short_description: "对明确交付执行验收或复验，固定对象与标准版本，记录结果、证据与验证局限"
+  default_prompt: "使用 $verify 验收本次交付，记录实际结果与证据，明确未满足条件。"
+
+policy:
+  allow_implicit_invocation: true

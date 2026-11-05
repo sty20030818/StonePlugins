@@ -2,9 +2,10 @@
 
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, realpathSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { validateDocumentWorkflow } from "./validate-document-workflow.ts";
 
 const REPO_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PLUGIN_NAME = "stoneplugins";
@@ -304,15 +305,15 @@ assert.equal(
   "package-lock 根包与 plugin manifest 版本必须一致",
 );
 assert.equal(manifest.skills, "./skills/", "插件必须声明包内 Skill 目录");
-assert.deepEqual(
-  readdirSync(path.join(PLUGIN_ROOT, "skills")),
-  [SKILL_NAME],
-  "工程 Skill 必须只有唯一包内来源",
-);
+const workflowResources = validateDocumentWorkflow(PLUGIN_ROOT, { release: RELEASE_MODE });
+if (RELEASE_MODE) {
+  for (const file of workflowResources) requireTrackedFile(file);
+}
 for (const legacyPath of [
   path.join(REPO_ROOT, "plugins", "stonefish-engineering"),
   path.join(REPO_ROOT, "skills", "stonefish-engineering"),
   path.join(REPO_ROOT, "skills", SKILL_NAME),
+  ...["task", "verify", "review"].map((name) => path.join(REPO_ROOT, "skills", name)),
 ]) {
   assert.equal(
     existsSync(legacyPath),

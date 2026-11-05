@@ -1,5 +1,9 @@
 # StonePlugins 文档索引
 
+## 当前文档工作流
+
+[文档工作流](document-workflow.md)说明 v0.6.0 的 task、verify、review 及共享 SOP 分发。结果见 [v0.6.0 验证](evals/v0.6.0.md)，历史隔离结果见[本地开发验收](evals/document-workflow-development.md)，不继承其他版本的宿主结论。
+
 ## 先区分版本与实现
 
 `v0.5.1` 为完整 Codex 插件：`stoneplugins` 同包提供 `engineering` Skill 与 Hooks，生命周期直接送达核心，核心生命周期与本地安装验收已通过。`v0.5.0` 基线仍是独立 Skill＋Hook-only 插件，必须结合版本、来源、目录与证据判断实际实现。

@@ -33,4 +33,4 @@ jobs:
       - name: Validate release artifacts
         if: github.ref_type == 'tag'
         run: npm run validate:release
-      - run: node --test tests/inject-context.test.ts
+      - run: npm test

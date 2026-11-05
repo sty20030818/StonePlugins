@@ -1,16 +1,18 @@
-# StonePlugins：石头鱼的工程规则
+# StonePlugins：工程规则与文档工作流
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-## 当前状态
+## 当前版本
 
-`v0.5.5` 保留 Codex 优先的完整插件：一次安装取得工程 Skill、三份细则和生命周期 Hook。Skill 展示名为 `Engineering`，限定入口为 `$stoneplugins:engineering`。从 `v0.5.1` 至 `v0.5.4` 升级无需更换插件 ID；从 `v0.5.0` 升级仍须迁移插件 ID 和 Skill 来源，请勿直接叠加启用旧插件。
+`v0.6.0` 同包提供 `engineering`、`task`、`verify`、`review`。工程规则继续由原有生命周期 Hook 送达；三个文档工作流按需接续任务、验收交付和审阅阶段，共用固定版本的 SOP 与模板。作者源在 StoneDocs，技能在本仓库维护。
 
-本版明确“为什么这么做”的公开决策说明仅在本轮最终回复展示，并在每轮提醒中重申；中途继续正常汇报进度、必要风险和待确认事项。检查结果及未验证边界见 [v0.5.5 验证](docs/evals/v0.5.5.md)，正式发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.5.5) 为准；不继承旧版本的宿主验收或声称固定 token 收益。设计见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，执行记录见[重构计划](docs/plans/2026-09-14-codex-first-refactor.md)，历史资料见[文档索引](docs/README.md)。
+[文档工作流](docs/document-workflow.md)说明职责、调用和来源约定，[v0.6.0 验证](docs/evals/v0.6.0.md)区分包检查、实际安装和宿主行为；正式发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.6.0) 为准。[开发试跑](docs/evals/document-workflow-development.md)保留发布前的隔离结果，不代替宿主验证。
+
+从 v0.5.1–v0.5.5 升级无需更换插件 ID；从 v0.5.0 升级仍须迁移插件 ID 和 Skill 来源。已有设计见 [ADR-0004](docs/adr/0004-codex-first-bundled-engineering.md)，历史资料见[文档索引](docs/README.md)。
 
 ## 规则与加载
 
-唯一核心正文位于 [plugins/stoneplugins/skills/engineering/SKILL.md](plugins/stoneplugins/skills/engineering/SKILL.md)，与包内三份细则共同持有运行时规则。插件 ID 为 `stoneplugins`，Skill 名为 `engineering`，Codex 限定入口为 `$stoneplugins:engineering`；marketplace ID 仍为 `stonefish`。对话中称为“石头鱼的工程规则”，不把作者的语言、称呼或包管理器偏好强加给其他用户。
+唯一核心正文位于 [plugins/stoneplugins/skills/engineering/SKILL.md](plugins/stoneplugins/skills/engineering/SKILL.md)，与包内三份细则共同持有运行时规则。插件 ID 为 `stoneplugins`，工程 Skill 名为 `engineering`，Codex 限定入口为 `$stoneplugins:engineering`；marketplace ID 仍为 `stonefish`。对话中称为“石头鱼的工程规则”，不把作者的语言、称呼或包管理器偏好强加给其他用户。
 
 - `SessionStart` 的 startup、resume、clear、compact，以及 `SubagentStart`，从实际运行的插件缓存读取包内 Skill，移除 frontmatter 后送达完整核心，并给出当前资源路径；不展开 references。
 - `UserPromptSubmit` 每轮只发送不超过 300 UTF-8 bytes 的执行提醒，指向核心“回复格式”并检查全部加粗；不根据用户提示关键词路由，也不重复注入核心。
@@ -41,11 +43,11 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ```bash
 node --version
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.5.5
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.6.0
 codex plugin add stoneplugins@stonefish
 ```
 
-不需要另跑 Skills CLI 给 Codex 安装 `engineering`，插件包已经包含核心、元数据与细则。开发试验可在仓库根目录使用 `codex plugin marketplace add .`；本地来源与 GitHub 来源不能在同一 marketplace ID 下混用，固定 ref 也不会自动跟随未来版本。
+不需要另跑 Skills CLI 给 Codex 安装这些技能，插件包已包含四个入口、元数据及所需资源。文档工作流目前按完整插件分发，不支持单独复制其中一个技能目录。开发试验可在仓库根目录使用 `codex plugin marketplace add .`；本地来源与 GitHub 来源不能在同一 marketplace ID 下混用，固定 ref 也不会自动跟随未来版本。
 
 安装后，在新任务中审查并信任 `SessionStart`、`SubagentStart`、`UserPromptSubmit` 三个 Hook，核对原生入口 `$stoneplugins:engineering` 和资源位置；再分别验证生命周期送达、完整核心和按需读取细则。插件安装不自动信任 Hook，配置变化后可能需要重新审核。当前任务里已加载的旧上下文不能作为新安装验收证据。
 
@@ -116,7 +118,7 @@ npm ci
 npm run check
 ```
 
-源码为 `plugins/stoneplugins/src/inject-context.ts`；`npm run build` 生成实际执行的 `hooks/inject-context.js`，同包 `package.json` 保证缓存中仍按 ESM 运行。不要手改生成物。唯一 Skill 树为 `plugins/stoneplugins/skills/engineering/`，不保留根目录镜像、旧插件或兼容副本。
+源码为 `plugins/stoneplugins/src/inject-context.ts`；`npm run build` 生成实际执行的 `hooks/inject-context.js`，同包 `package.json` 保证缓存中仍按 ESM 运行。不要手改生成物。技能作者源位于 `plugins/stoneplugins/skills/`，engineering 保留原来的完整规则与细则，新文档工作流共用包内固定 SOP 资源，不保留根目录镜像或独立手改的规则副本。
 
 发布另行授权后，同步根 package、lock、插件 manifest、CHANGELOG、固定 ref 示例与版本评测。按[活动评测规范](docs/evals/behavior-cases.md)选择正反触发和关键行为案例，涉及加载变化时补齐相关生命周期；记录实际模型与推理强度，不要求指定某个模型。区分字节预算、模型 token、缓存口径、正文完整与行为落实。新文件按正常流程进入 Git 跟踪后再运行 `npm run validate:release`，不能为使检查通过擅自暂存。
 

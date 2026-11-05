@@ -1,0 +1,7 @@
+interface:
+  display_name: "Task"
+  short_description: "按阶段目标推进已确认任务，记录结果、验收证据与接续信息，维护唯一任务状态"
+  default_prompt: "使用 $task 接续指定任务，核对完成条件后在授权范围内执行并写回。"
+
+policy:
+  allow_implicit_invocation: true
