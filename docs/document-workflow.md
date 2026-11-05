@@ -1,6 +1,6 @@
 # 文档工作流
 
-v0.6.0 提供 task、verify、review。Codex 限定入口为 `$stoneplugins:task`、`$stoneplugins:verify`、`$stoneplugins:review`，自动发现由技能描述与宿主处理，现有工程 hook 不路由这些工作流。
+v0.6.1 提供 task、verify、review。Codex 限定入口为 `$stoneplugins:task`、`$stoneplugins:verify`、`$stoneplugins:review`，自动发现由技能描述与宿主处理，现有工程 hook 不路由这些工作流。
 
 ## 职责与使用
 
@@ -14,9 +14,11 @@ v0.6.0 提供 task、verify、review。Codex 限定入口为 `$stoneplugins:task
 
 ## 规则作者源与分发
 
-通用规则在 StoneDocs 的 docs/sop.md，模板在 docs/templates.md。包内[规范](../plugins/stoneplugins/references/docs-system/sop.md)和[模板](../plugins/stoneplugins/references/docs-system/templates.md)是明确时点的逐字副本，[来源清单](../plugins/stoneplugins/references/docs-system/source.json)记录仓库、基线提交、源状态与哈希。
+当前版本采用 StoneDocs 的共同约定与九项独立 SOP；此前的单体 SOP 与独立模板已退出运行资源。
 
-更新规则应先改作者源，同步这两个文件后重算来源清单并检查一致性，不手改包内副本。v0.6.0 的 sourceState 为 commit，baseCommit 为 `67c3a415f95b92e0c802165df0c326099409e411`，已逐字核对真实源提交。未来更新也须固定实际源版本；发布检查拒绝 working-tree 来源。
+共同规则在 StoneDocs 的 docs/conventions.md，独立流程在 docs/sop/；流程要求、记录骨架和示例由对应 SOP 统一维护，构成单一事实源。包内[共同约定](../plugins/stoneplugins/references/docs-system/conventions.md)、[SOP 导航](../plugins/stoneplugins/references/docs-system/sop/README.md)与九项流程是明确时点的逐字副本，共十一份 Markdown 资源。[来源清单](../plugins/stoneplugins/references/docs-system/source.json)记录仓库、基线提交、源状态、精确路径与哈希。StoneDocs 的 docs/guide.md 面向使用者串联流程，不随运行包分发；技能只保留项目读取、工具适配与输出路由，直接读取共同约定和对应 SOP 的“输出结构与示例”，不再维护独立模板或复制规则正文。
+
+更新规则应先改作者源，同步上述十一份资源后重算来源清单并检查一致性，不手改包内副本。本版 sourceState 为 commit，baseCommit 指向真实作者源提交；发布时逐项从该提交读取原文并核对包内字节。开发中尚未提交的修改必须标为 working-tree，发布检查拒绝这类来源。
 
 运行包不查找作者电脑或远端 latest。项目注明采用版本和明确差异，插件升级不会自动改写项目规范。首版验证范围为完整插件包，单独复制新技能文件夹的分发尚未支持。
 
@@ -24,4 +26,4 @@ v0.6.0 提供 task、verify、review。Codex 限定入口为 `$stoneplugins:task
 
 沿用 npm run check，覆盖类型、生成 hook、工程规则检查、文档工作流包级校验和测试。行为评测只在隔离资料中执行，显式读取技能文件不等于真实宿主自动路由或安装已经通过。
 
-开发试跑由 StoneDocs P002 管理，发布安装与宿主验证由 P003 承接，任务状态不在这里复制。当前版本结果见 [v0.6.0 验证](evals/v0.6.0.md)，历史结果保留在[开发验收](evals/document-workflow-development.md)。
+任务状态由 StoneDocs 的对应阶段持有，不在这里复制。本版结果见 [v0.6.1 验证](evals/v0.6.1.md)；[v0.6.0 验证](evals/v0.6.0.md)和[开发验收](evals/document-workflow-development.md)为历史结果，不替代本版实际宿主验收。

@@ -2,7 +2,7 @@
 
 ## 当前文档工作流
 
-[文档工作流](document-workflow.md)说明 v0.6.0 的 task、verify、review 及共享 SOP 分发。结果见 [v0.6.0 验证](evals/v0.6.0.md)，历史隔离结果见[本地开发验收](evals/document-workflow-development.md)，不继承其他版本的宿主结论。
+[文档工作流](document-workflow.md)说明 task、verify、review 及十一份共同约定、独立 SOP 资源的分发；输出结构与示例由对应 SOP 统一维护，技能只做读取与执行适配。当前版本的包检查、发布、安装与宿主结果见 [v0.6.1 验证](evals/v0.6.1.md)。[v0.6.0 验证](evals/v0.6.0.md)及[本地开发验收](evals/document-workflow-development.md)保留当时结果，不作为新版本通过。
 
 ## 先区分版本与实现
 
@@ -56,7 +56,7 @@
 
 ## 版本与开发验证档案
 
-[v0.3.4](evals/v0.3.4.md)、[v0.3.5](evals/v0.3.5.md)、[v0.3.6](evals/v0.3.6.md)、[v0.3.7](evals/v0.3.7.md)、[v0.4.0](evals/v0.4.0.md)、[v0.4.1](evals/v0.4.1.md)、[v0.5.0 候选](evals/v0.5.0.md)、[独立 Skill 开发验证](evals/independent-skill-development.md)、[完整插件首次候选验证](evals/codex-first-bundled-development.md) 与 [v0.5.1 评测](evals/v0.5.1.md)均为对应版本的历史证据；当前版本的证据边界见 [v0.5.5 评测](evals/v0.5.5.md)。
+[v0.3.4](evals/v0.3.4.md)、[v0.3.5](evals/v0.3.5.md)、[v0.3.6](evals/v0.3.6.md)、[v0.3.7](evals/v0.3.7.md)、[v0.4.0](evals/v0.4.0.md)、[v0.4.1](evals/v0.4.1.md)、[v0.5.0 候选](evals/v0.5.0.md)、[独立 Skill 开发验证](evals/independent-skill-development.md)、[完整插件首次候选验证](evals/codex-first-bundled-development.md) 与 [v0.5.1 评测](evals/v0.5.1.md)均为对应版本的历史证据；后续版本档案包括 [v0.5.2](evals/v0.5.2.md)、[v0.5.3](evals/v0.5.3.md)、[v0.5.4](evals/v0.5.4.md)、[v0.5.5](evals/v0.5.5.md) 与 [v0.6.0](evals/v0.6.0.md)；当前版本的证据边界见 [v0.6.1 验证](evals/v0.6.1.md)。
 
 保留原始成功、失败、PENDING 和证据不足，不改写为新版本通过。v0.5.0 文件开头“尚未发布”属于当时的候选快照；发布状态与宿主行为验收本来就是两种证据。新方案必须留下自己的原始轨迹，不能继承这些结论。
 

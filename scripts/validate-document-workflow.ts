@@ -5,6 +5,10 @@ import path from "node:path";
 
 const SKILL_NAMES = ["engineering", "review", "task", "verify"];
 const SOURCE_REPOSITORY = "https://github.com/sty20030818/StoneDocs";
+const SOURCE_FILES = [
+  "conventions.md", "sop/README.md",
+  ...["idea", "compare", "decide", "story", "plan", "design", "task", "verify", "review"].map((name) => `sop/${name}.md`),
+];
 
 type SourceFile = { sourcePath: string; bundledPath: string; sha256: string };
 type SourceManifest = {
@@ -150,6 +154,7 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
   }
 
   const docsRoot = path.join(root, "references/docs-system");
+  assert.ok(!existsSync(path.join(docsRoot, "templates.md")), "不得保留遗留 templates.md；输出结构与示例由对应 SOP 持有");
   const sourcePath = path.join(docsRoot, "source.json");
   requireResource(sourcePath);
   const source = JSON.parse(readFileSync(sourcePath, "utf8")) as SourceManifest;
@@ -158,8 +163,8 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
   assert.ok(typeof source.baseCommit === "string" && /^[a-f0-9]{40}$/.test(source.baseCommit), "来源清单必须包含完整 baseCommit");
   assert.ok(source.sourceState === "working-tree" || source.sourceState === "commit", "来源清单 sourceState 非法");
   if (options.release) assert.equal(source.sourceState, "commit", "working-tree 来源仅可本地验证，不得发布");
-  assert.ok(Array.isArray(source.files) && source.files.length === 2, "来源清单必须且只能包含 SOP 与模板");
-  assert.deepEqual(source.files.map((file) => file?.bundledPath).sort(), ["sop.md", "templates.md"], "来源清单必须唯一包含 SOP 与模板");
+  assert.ok(Array.isArray(source.files) && source.files.length === SOURCE_FILES.length, "来源清单必须且只能包含共同约定、SOP 导航与九项流程，共十一份文档");
+  assert.deepEqual(source.files.map((file) => file?.bundledPath).sort(), [...SOURCE_FILES].sort(), "来源清单必须唯一包含全部必需文档");
   for (const file of source.files) {
     assert.equal(file.sourcePath, `docs/${file.bundledPath}`, "来源清单 sourcePath 不匹配");
     assert.ok(typeof file.sha256 === "string" && /^[a-f0-9]{64}$/.test(file.sha256), "来源清单 SHA-256 格式错误");

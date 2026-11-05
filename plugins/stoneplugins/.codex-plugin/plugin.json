@@ -1,6 +1,6 @@
 {
   "name": "stoneplugins",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "为 Codex 提供石头鱼工程规则、文档工作流 Skills 与生命周期 Hook。",
   "skills": "./skills/",
   "author": {
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "StonePlugins",
     "shortDescription": "工程规则与 task、verify、review 文档工作流",
-    "longDescription": "engineering 持有工程规则并由现有 Hook 送达。task、verify、review 按需接续任务、验证交付与审阅阶段，共用带来源记录的 SOP 和模板。安装、加载和实际行为验证分别记录。",
+    "longDescription": "engineering 持有工程规则并由现有 Hook 送达。task、verify、review 按需接续任务、验证交付与审阅阶段，共用带来源记录的 共同约定与独立 SOP，输出结构由对应流程维护。安装、加载和实际行为验证分别记录。",
     "developerName": "石头鱼",
     "category": "Developer Tools",
     "capabilities": [

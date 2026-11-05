@@ -4,6 +4,18 @@
 
 ## [未发布]
 
+## [0.6.1] - 2026-11-05
+
+### 变更
+
+- 共同约定与九项独立 SOP 取代单体流程；骨架与示例并入对应 SOP，删除独立模板集合。
+- task、verify、review 保持轻量入口，统一引用流程与输出结构；来源固定到实际 StoneDocs 提交。
+- 强化完整资源集合、旧模板残留与缺失锚点的包级校验，保留原工程规则及 Hook。
+
+### 文档
+
+- 澄清想法记录与处置、阶段退出条件与未来行为规则的边界，统一当前版本与历史验收入口。
+
 ## [0.6.0] - 2026-11-05
 
 ### 新增
@@ -225,7 +237,9 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.5.5...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/sty20030818/StonePlugins/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/sty20030818/StonePlugins/compare/v0.5.5...v0.6.0
 [0.5.5]: https://github.com/sty20030818/StonePlugins/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/sty20030818/StonePlugins/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/sty20030818/StonePlugins/compare/v0.5.2...v0.5.3

@@ -1,17 +1,62 @@
 {
   "sourceRepository": "https://github.com/sty20030818/StoneDocs",
-  "baseCommit": "67c3a415f95b92e0c802165df0c326099409e411",
+  "baseCommit": "4c7998f0720813fd05df65f15ad4aa78f0e0fa1a",
   "sourceState": "commit",
   "files": [
     {
-      "sourcePath": "docs/sop.md",
-      "bundledPath": "sop.md",
-      "sha256": "7f14de160d9f60250b5805fe7b6aa0637460701922de411aa4d162e5be8f5a70"
+      "sourcePath": "docs/conventions.md",
+      "bundledPath": "conventions.md",
+      "sha256": "eee6d6992be82b53e15b36ef52a86d5a4dbbe68c221aae4aa4567f1c76e4378d"
     },
     {
-      "sourcePath": "docs/templates.md",
-      "bundledPath": "templates.md",
-      "sha256": "1dd5cc1570b624019d240cd524058c31f5dd0cf8a20a61298c33a233d67d86d5"
+      "sourcePath": "docs/sop/README.md",
+      "bundledPath": "sop/README.md",
+      "sha256": "1287b0c0467e28aa836217de5f6703e9a9684d768798d2889d53f728d469fbf6"
+    },
+    {
+      "sourcePath": "docs/sop/idea.md",
+      "bundledPath": "sop/idea.md",
+      "sha256": "d1ec9be80da853f9850a4836481e3d8cf66b335c03bdba283c98fd1b915de9ea"
+    },
+    {
+      "sourcePath": "docs/sop/compare.md",
+      "bundledPath": "sop/compare.md",
+      "sha256": "2e994ad74bae9f1bb528e6a569b1d6516f8d152725d6df22abd8e1f23752817b"
+    },
+    {
+      "sourcePath": "docs/sop/decide.md",
+      "bundledPath": "sop/decide.md",
+      "sha256": "126eff389eabfc1fa40fd49102fca2f0bf9b0c988c5097b2b9b7a6a03d1e0d7d"
+    },
+    {
+      "sourcePath": "docs/sop/story.md",
+      "bundledPath": "sop/story.md",
+      "sha256": "678cf27c8d78b4a28e72161e610122f730347c361ac21bbe9dcb71084c3288ad"
+    },
+    {
+      "sourcePath": "docs/sop/plan.md",
+      "bundledPath": "sop/plan.md",
+      "sha256": "69a3bbe487af1884ad134161d5106736aeeef4c73865e057b2b934e6b6cffad1"
+    },
+    {
+      "sourcePath": "docs/sop/design.md",
+      "bundledPath": "sop/design.md",
+      "sha256": "b3a124ef8c48b11a4fcc1bed71dbe2fab7c2c80484ff259ef982768cbe77f960"
+    },
+    {
+      "sourcePath": "docs/sop/task.md",
+      "bundledPath": "sop/task.md",
+      "sha256": "6c3b12998e83a1d12c85947f428b0f66854aa067144dbef10340cdceedd6d0ea"
+    },
+    {
+      "sourcePath": "docs/sop/verify.md",
+      "bundledPath": "sop/verify.md",
+      "sha256": "43a9486265f6b0855eca826ca5fb067eae2b981ced506ef12a7bf01720e622c4"
+    },
+    {
+      "sourcePath": "docs/sop/review.md",
+      "bundledPath": "sop/review.md",
+      "sha256": "82ae741000bfdc993b1f8d5e700cb6f292375861ba5b44600cbb413d04bec869"
     }
   ]
 }
