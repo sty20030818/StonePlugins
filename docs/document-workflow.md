@@ -1,38 +1,41 @@
 # 文档工作流
 
-v0.7.0 提供 story、plan、design、task、verify、review。Codex 正式限定入口分别为 `$stoneplugins:story`、`$stoneplugins:plan`、`$stoneplugins:design`、`$stoneplugins:task`、`$stoneplugins:verify`、`$stoneplugins:review`。自然语言发现由技能描述与宿主处理，现有工程 Hook 不路由这些工作流。
+## 本版本与独立使用
+
+本版 v0.8.0 包含九项文档工作流，与 engineering 共十个技能入口。各入口可依据足够的目标、约束和事实独立使用，通过项目文件接续；不要求前序调用记录。
+
+本版规则、发布、安装和正式宿主结果见 [v0.8.0 验证](evals/v0.8.0.md)；[v0.7.0 验证](evals/v0.7.0.md)保留旧版六项工作流的结果，不直接继承为新模型通过。
 
 ## 职责与使用
 
+下表列出本版入口，限定入口名采用 `$stoneplugins:<name>`；源码声明不代表宿主已经发现、安装或验证这些入口。自然语言发现由描述与宿主处理，现有工程 Hook 不路由文档工作流。
+
 | 入口 | 适用请求 | 主要结果 |
 | --- | --- | --- |
-| [story](../plugins/stoneplugins/skills/story/SKILL.md) | 梳理项目用户故事和验收行为 | 故事、规则、场景或独立讨论草案 |
-| [plan](../plugins/stoneplugins/skills/plan/SKILL.md) | 规划或调整成果阶段 | 范围、退出条件、依赖及阶段计划 |
-| [design](../plugins/stoneplugins/skills/design/SKILL.md) | 形成技术实施方案 | 结构、关键流程、取舍及验证安排 |
-| [task](../plugins/stoneplugins/skills/task/SKILL.md) | 接续或拆分已明确的阶段任务 | 交付、唯一任务记录、证据和接续点 |
-| [verify](../plugins/stoneplugins/skills/verify/SKILL.md) | 验收明确对象、复验、核对证据 | 逐条件结果、版本化证据和局限 |
-| [review](../plugins/stoneplugins/skills/review/SKILL.md) | 阶段评审、复盘、按授权收尾 | 阶段判断、遗留处置和实际归档结果 |
+| [idea](../plugins/stoneplugins/skills/idea/SKILL.md) | 记录或处理尚未安排的项目想法 | 可理解的待办、已有记录或明确去向 |
+| [compare](../plugins/stoneplugins/skills/compare/SKILL.md) | 调查并比较真实可行选项 | 事实依据、取舍、推荐与未知 |
+| [decide](../plugins/stoneplugins/skills/decide/SKILL.md) | 澄清取舍并记录已确认选择 | 写回对应所有者的决定，按需保留长期取舍 |
+| [story](../plugins/stoneplugins/skills/story/SKILL.md) | 梳理项目用户故事和验收行为 | 故事、规则、场景或讨论草案 |
+| [plan](../plugins/stoneplugins/skills/plan/SKILL.md) | 规划或调整产品目标或成果阶段 | Goal/Phase 计划、范围、依赖及验收条件 |
+| [design](../plugins/stoneplugins/skills/design/SKILL.md) | 形成需要共同审查的实施方案 | 结构、关键流程、取舍及验证安排 |
+| [task](../plugins/stoneplugins/skills/task/SKILL.md) | 拆分、接续或交接已明确的阶段任务 | 实际交付、唯一任务记录和接续点 |
+| [verify](../plugins/stoneplugins/skills/verify/SKILL.md) | 验收明确对象、复验或核对已有结果 | 实际结果、必要证据与限制 |
+| [review](../plugins/stoneplugins/skills/review/SKILL.md) | 判断 Goal/Phase 成果并按授权收尾 | 条件判断、遗留处置及实际归档结果 |
 
-每个入口可以独立使用，前提是目标、标准和必要事实足够明确，不要求先调用其他技能。按明确授权处理本步或连续职责，操作从共同约定和对应 SOP 读取，协作不依赖兄弟 SKILL 文件。完整插件仍是分发单元，不代表可独立复制一个入口目录。
+Goal → Phase → Task 的共用模型由[共同约定](../plugins/stoneplugins/references/docs-system/conventions.md)维护。plan/review 先区分对象；Task 始终归 Phase，目标层不另建任务清单。整体验收由阶段任务承接，报告进入对应 Goal；普通任务可在条目中简记实际结果，独立或多批次验收按 SOP 记录，不默认生成附件包。
 
-同一执行者可以连续推进任务和验证，再根据证据写回结果。review 独立读取阶段资料，缺证据才补验证。修改状态遵守共同规则，不把 task 变成其他技能必须回调的状态工具。
+技能只负责项目读取、工具适配和输出路由，具体操作与填写结构由对应 SOP 维护。当前执行者可以连续承担多项职责，不把兄弟技能的调用或安装设为前置，也不为更新状态循环回调。没有技能或 CLI 时，人或 AI 仍可用 Markdown + Git 执行 SOP；独立使用不意味着只复制一个技能目录就包含运行资源。
 
 ## 规则作者源与分发
 
-当前版本采用 StoneDocs 的共同约定与九项独立 SOP；此前的单体 SOP 与独立模板已退出运行资源。
+共同规则的作者源为 StoneDocs 的 docs/conventions.md，各流程及输出骨架在 docs/sop/。包内[共同约定](../plugins/stoneplugins/references/docs-system/conventions.md)、[SOP 导航](../plugins/stoneplugins/references/docs-system/sop/README.md)与九项流程是固定时点的逐字副本，共十一份 Markdown 资源；新增技能不增加第二套 SOP 或独立模板。
 
-共同规则在 StoneDocs 的 docs/conventions.md，独立流程在 docs/sop/；流程要求、记录骨架和示例由对应 SOP 统一维护，构成单一事实源。包内[共同约定](../plugins/stoneplugins/references/docs-system/conventions.md)、[SOP 导航](../plugins/stoneplugins/references/docs-system/sop/README.md)与九项流程是明确时点的逐字副本，共十一份 Markdown 资源。[来源清单](../plugins/stoneplugins/references/docs-system/source.json)记录仓库、基线提交、源状态、精确路径与哈希。StoneDocs 的 docs/guide.md 面向使用者串联流程，不随运行包分发；技能只保留项目读取、工具适配与输出路由，直接读取共同约定和对应 SOP 的“输出结构与示例”，不再维护独立模板或复制规则正文。
+[来源清单](../plugins/stoneplugins/references/docs-system/source.json)唯一记录仓库、完整基线提交、源状态、路径与文件哈希。作者源更新后同步这十一份资源并校验字节，不手改副本。未提交源使用 working-tree，仅可本地验证；发布门禁要求 commit 来源，发布核对还须将资源与相应 Git 原文比对。来源清单和固定规则副本属于包的分发契约，普通任务不因此需要来源包或哈希清单。
 
-更新规则应先改作者源，同步上述十一份资源后重算来源清单并检查一致性，不手改包内副本。本版本 sourceState 为 commit，baseCommit 指向实际作者源提交，发布时逐项 git show 读取原文并比对字节。开发中的未提交源必须标 working-tree，发布门禁拒绝此类来源。
+运行资源随完整插件提供，不查作者电脑或远端 latest。StoneDocs 的 guide 面向使用者串联路线，不是运行包依赖；项目自身目标、任务、决定和结果仍由采用项目拥有。插件升级不会自动改变项目采用的规范版本。
 
-运行包不查找作者电脑或远端 latest。项目注明采用版本和明确差异，插件升级不会自动改写项目规范。首版验证范围为完整插件包，单独复制新技能文件夹的分发尚未支持。
+## 开发验证与证据边界
 
-## 本地验证
+沿用 npm run check，覆盖类型、生成 Hook、工程规则、工作流包级检查和测试；静态通过不替代宿主发现、正式安装或模型实际行为。候选结果按实际对象和规则版本记录，未执行部分明确保留，不从历史档案继承通过。
 
-沿用 npm run check，覆盖类型、生成 hook、工程规则检查、文档工作流包级校验和测试。行为评测只在隔离资料中执行，显式读取技能文件不等于真实宿主自动路由或安装已经通过。
-
-任务状态由 StoneDocs 的对应阶段持有，不在这里复制。本版结果见 [v0.7.0 验证](evals/v0.7.0.md)；[v0.6.0 验证](evals/v0.6.0.md)和[开发验收](evals/document-workflow-development.md)为历史结果，不替代本版实际宿主验收。
-
-## 开发与正式验证边界
-
-[规划技能开发记录](evals/planning-skills-development.md)保留 P007 当时未发布候选的包级及 repo-scoped 宿主结果。运行资源仍十一份，不增加第二套流程正文；独立调用前提与组合语义由共同约定维护，人类路线在 StoneDocs 使用指南。项目范围发现与结构化注入不等于正式插件安装更新。
+工作任务和状态由 StoneDocs 对应 Phase 持有，本页只说明入口和使用方式。既有 [P007 开发记录](evals/planning-skills-development.md)、[v0.6.1 验证](evals/v0.6.1.md)和[首批工作流开发记录](evals/document-workflow-development.md)保留各自时点的候选及实际结果，不能替代其他版本的实际验证。

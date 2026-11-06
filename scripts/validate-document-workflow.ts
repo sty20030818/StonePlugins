@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
 import path from "node:path";
 
-const SKILL_NAMES = ["design", "engineering", "plan", "review", "story", "task", "verify"];
+const SKILL_NAMES = ["compare", "decide", "design", "engineering", "idea", "plan", "review", "story", "task", "verify"];
 const SOURCE_REPOSITORY = "https://github.com/sty20030818/StoneDocs";
 const SOURCE_FILES = [
   "conventions.md", "sop/README.md",
@@ -113,7 +113,7 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
 
   const skillsRoot = path.join(root, "skills");
   requireResource(skillsRoot, true);
-  assert.deepEqual(readdirSync(skillsRoot).sort(), SKILL_NAMES, "插件必须且只能包含七项技能 engineering/story/plan/design/task/verify/review");
+  assert.deepEqual(readdirSync(skillsRoot).sort(), SKILL_NAMES, "插件必须且只能包含十项技能 engineering 与九项文档工作流");
   const discovered: string[] = [];
   const visitedDirectories = new Set<string>();
   const discover = (directory: string): void => {
@@ -132,7 +132,7 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
     }
   };
   discover(skillsRoot);
-  assert.deepEqual(discovered.sort(), SKILL_NAMES.map((name) => `${name}/SKILL.md`), "七项 Skill 必须分别只有唯一包内发现入口");
+  assert.deepEqual(discovered.sort(), SKILL_NAMES.map((name) => `${name}/SKILL.md`), "十项 Skill 必须分别只有唯一包内发现入口");
 
   const markdownFiles: string[] = [];
   for (const name of SKILL_NAMES) {

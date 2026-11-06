@@ -1,0 +1,7 @@
+interface:
+  display_name: "Idea"
+  short_description: "收集和整理尚未承诺实施的项目想法，保留价值、待讨论问题与明确处理去向"
+  default_prompt: "使用 $idea 整理这个项目想法，明确价值、待讨论问题和已有承接位置。"
+
+policy:
+  allow_implicit_invocation: true

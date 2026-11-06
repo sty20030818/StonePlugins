@@ -5,11 +5,11 @@ description: "对明确的交付对象执行验收或复验，核对证据是否
 
 # Verify
 
-验收或复验明确的交付对象，或核对已有证据。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[验收 SOP](../../references/docs-system/sop/verify.md)；对象和标准版本、原文快照、复验及完成判断由这些文档维护。记录骨架见[验收输出结构与示例](../../references/docs-system/sop/verify.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+验收或复验明确的交付对象，或核对已有证据。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[验收 SOP](../../references/docs-system/sop/verify.md)；对象和标准版本、按需证据、复验及完成判断由这些文档维护。记录骨架见[验收输出结构与示例](../../references/docs-system/sop/verify.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
 
 ## 项目读取
 
-沿项目入口和关联资料定位任务完成条件、适用行为标准或阶段差异、实际受检对象及既有验证记录。先识别只读核对与获准执行、写回的边界；按项目采用的规则版本和明确差异解释资料，版本未知或契约冲突按共同约定处理。
+沿项目入口和关联资料定位本次 Task、Phase 或 Goal 的条件、适用行为标准或阶段差异、实际受检对象及既有验证记录。先识别只读核对与获准执行、写回的边界；按项目采用的规则版本和明确差异解释资料，版本未知或契约冲突按共同约定处理。
 
 ## 执行适配
 
@@ -17,4 +17,4 @@ description: "对明确的交付对象执行验收或复验，核对证据是否
 
 ## 输出
 
-返回逐条件结论、实际证据入口、未满足项和局限，验证记录按验收 SOP 写回对应所有者。
+返回逐条件结论、实际结果和必要证据入口、未满足项和局限，验证记录按验收 SOP 写回对应所有者。

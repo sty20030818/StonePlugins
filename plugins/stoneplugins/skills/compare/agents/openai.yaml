@@ -1,0 +1,7 @@
+interface:
+  display_name: "Compare"
+  short_description: "围绕项目中的真实选择调查依据、比较取舍，给出推荐边界与尚未确认的问题"
+  default_prompt: "使用 $compare 比较这个项目问题的可行方案，说明依据、推荐与未决选择。"
+
+policy:
+  allow_implicit_invocation: true

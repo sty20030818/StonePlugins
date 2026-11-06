@@ -17,7 +17,7 @@ function fixture(t: TestContext) {
   const pluginRoot = path.join(temporary, "plugin with spaces");
   const docsRoot = path.join(pluginRoot, "references/docs-system");
   mkdirSync(path.join(docsRoot, "sop"), { recursive: true });
-  for (const name of ["design", "engineering", "plan", "review", "story", "task", "verify"]) {
+  for (const name of ["engineering", ...SOP_NAMES]) {
     const skillRoot = path.join(pluginRoot, "skills", name);
     mkdirSync(path.join(skillRoot, "agents"), { recursive: true });
     writeFileSync(path.join(skillRoot, "SKILL.md"), `---\nname: ${name}\ndescription: "A focused workflow."\n---\n\n[Rules](../../references/docs-system/conventions.md#rules)\n${name === "engineering" ? "" : `[Output](../../references/docs-system/sop/${name}.md#输出结构与示例)\n`}`);
@@ -47,7 +47,7 @@ function appendTask(pluginRoot: string, content: string) {
   writeFileSync(file, `${readFileSync(file, "utf8")}\n${content}\n`);
 }
 
-test("七项技能与固定来源在独立目录中可验证，忽略围栏示例和 HTTP 背景链接", (t) => {
+test("十项技能与固定来源在独立目录中可验证，忽略围栏示例和 HTTP 背景链接", (t) => {
   const { pluginRoot } = fixture(t);
   appendTask(pluginRoot, "```markdown\n[Example](missing-example.md)\n```\n~~~markdown\n[Example](another-missing.md)\n~~~\n[Background](https://example.com/background)\n`[Inline example](not-a-resource.md)`");
   assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot));
@@ -63,15 +63,15 @@ test("实际完整插件复制到安装位置后不依赖原仓库路径", (t) =
 });
 
 test("每个必需技能缺失、额外技能或嵌套重复发现均被拒绝", (t) => {
-  for (const name of ["design", "engineering", "plan", "review", "story", "task", "verify"]) {
+  for (const name of ["engineering", ...SOP_NAMES]) {
     const { pluginRoot } = fixture(t);
     rmSync(path.join(pluginRoot, "skills", name), { recursive: true });
-    assert.throws(() => validateDocumentWorkflow(pluginRoot), /七项技能/);
+    assert.throws(() => validateDocumentWorkflow(pluginRoot), /十项技能/);
   }
   const { pluginRoot } = fixture(t);
-  const extra = path.join(pluginRoot, "skills/idea");
+  const extra = path.join(pluginRoot, "skills/extra");
   cpSync(path.join(pluginRoot, "skills/task"), extra, { recursive: true });
-  assert.throws(() => validateDocumentWorkflow(pluginRoot), /七项技能/);
+  assert.throws(() => validateDocumentWorkflow(pluginRoot), /十项技能/);
   rmSync(extra, { recursive: true });
   mkdirSync(path.join(pluginRoot, "skills/story/nested"));
   writeFileSync(path.join(pluginRoot, "skills/story/nested/SKILL.md"), "# Duplicate\n");
@@ -161,15 +161,23 @@ test("必需 SOP 缺失、遗留模板、快照或清单损坏均被拒绝，工
 });
 
 test("新入口元数据必须指向自身且自身 SOP 锚点可取回", (t) => {
-  for (const name of ["story", "plan", "design"]) {
+  for (const name of SOP_NAMES) {
     const { pluginRoot } = fixture(t);
     const metadata = path.join(pluginRoot, "skills", name, "agents/openai.yaml");
     const original = readFileSync(metadata, "utf8");
-    writeFileSync(metadata, original.replace(`$${name} for`, "$task for"));
+    writeFileSync(metadata, original.replace(`$${name} for`, "$unrelated-workflow for"));
     assert.throws(() => validateDocumentWorkflow(pluginRoot), /自身入口/);
     writeFileSync(metadata, original);
     const skill = path.join(pluginRoot, "skills", name, "SKILL.md");
     writeFileSync(skill, readFileSync(skill, "utf8").replace("#输出结构与示例", "#missing-output"));
     assert.throws(() => validateDocumentWorkflow(pluginRoot), /锚点/);
   }
+});
+
+
+test("已提交的完整规则来源可通过包级发布来源检查", (t) => {
+  const { pluginRoot, docsRoot, source } = fixture(t);
+  source.sourceState = "commit";
+  writeFileSync(path.join(docsRoot, "source.json"), JSON.stringify(source));
+  assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot, { release: true }));
 });

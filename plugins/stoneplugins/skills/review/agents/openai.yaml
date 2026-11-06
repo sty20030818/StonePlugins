@@ -1,7 +1,7 @@
 interface:
   display_name: "Review"
-  short_description: "审阅阶段成果与退出条件，记录遗留处置，并在授权范围内完成收尾与原地归档"
-  default_prompt: "使用 $review 审阅指定阶段的成果、证据与遗留事项，判断能否收尾。"
+  short_description: "审阅产品目标或成果阶段，核对验收依据、基线与遗留，在授权范围内形成结论和收尾"
+  default_prompt: "使用 $review 审阅指定 Goal 或 Phase 的成果、证据和遗留，按授权记录判断与收尾。"
 
 policy:
   allow_implicit_invocation: true
