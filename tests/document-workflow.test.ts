@@ -20,13 +20,14 @@ function fixture(t: TestContext) {
   for (const name of ["engineering", ...SOP_NAMES]) {
     const skillRoot = path.join(pluginRoot, "skills", name);
     mkdirSync(path.join(skillRoot, "agents"), { recursive: true });
-    writeFileSync(path.join(skillRoot, "SKILL.md"), `---\nname: ${name}\ndescription: "A focused workflow."\n---\n\n[Rules](../../references/docs-system/conventions.md#rules)\n${name === "engineering" ? "" : `[Output](../../references/docs-system/sop/${name}.md#输出结构与示例)\n`}`);
+    const body = name === "engineering" ? "Engineering rules.\n" : `[Rules](../../references/docs-system/conventions.md#rules)\n[Workflow](../../references/docs-system/sop/${name}.md)\n[Output](../../references/docs-system/sop/${name}.md#输出结构与示例)\n[Source](../../references/docs-system/source.json)\n`;
+    writeFileSync(path.join(skillRoot, "SKILL.md"), `---\nname: ${name}\ndescription: "A focused workflow."\n---\n\n${body}`);
     writeFileSync(path.join(skillRoot, "agents/openai.yaml"), `interface:\n  display_name: "${name}"\n  short_description: "A focused workflow"\n  default_prompt: "Use $${name} for this work."\n\npolicy:\n  allow_implicit_invocation: true\n`);
   }
   writeFileSync(path.join(docsRoot, "conventions.md"), "# Rules\n\n[Workflows](sop/README.md)\n");
   writeFileSync(path.join(docsRoot, "sop/README.md"), "# Workflows\n");
   for (const name of SOP_NAMES) {
-    writeFileSync(path.join(docsRoot, `sop/${name}.md`), `# ${name}\n\n[Rules](../conventions.md#rules)\n\n## 输出结构与示例\n\nRecord the actual result.\n`);
+    writeFileSync(path.join(docsRoot, `sop/${name}.md`), `# ${name}\n\n[Rules](../conventions.md#rules)\n\n## 操作\n\nFollow the workflow.\n\n## 输出结构与示例\n\nRecord the actual result.\n`);
   }
   const source = {
     sourceRepository: "https://github.com/sty20030818/StoneDocs",
@@ -60,6 +61,118 @@ test("实际完整插件复制到安装位置后不依赖原仓库路径", (t) =
   const resources = validateDocumentWorkflow(pluginRoot);
   const docsRoot = path.join(pluginRoot, "references/docs-system");
   assert.equal(resources.filter((file) => file.startsWith(`${docsRoot}${path.sep}`) && path.extname(file) === ".md").length, 11);
+});
+
+test("九项文档技能的四类必需入口缺失均被拒绝", (t) => {
+  for (const name of SOP_NAMES) {
+    for (const label of ["Rules", "Workflow", "Output", "Source"]) {
+      const { pluginRoot } = fixture(t);
+      const skill = path.join(pluginRoot, "skills", name, "SKILL.md");
+      writeFileSync(skill, readFileSync(skill, "utf8").split("\n").filter((line) => !line.startsWith(`[${label}]`)).join("\n"));
+      assert.throws(() => validateDocumentWorkflow(pluginRoot), /缺少必需文档入口/);
+    }
+  }
+});
+
+test("合法资源不能替代共同约定、自身 SOP、输出锚点或来源入口", (t) => {
+  for (const name of SOP_NAMES) {
+    const other = name === "design" ? "task" : "design";
+    for (const [from, to] of [
+      ["conventions.md#rules)", "sop/README.md)"],
+      [`sop/${name}.md)`, `sop/${other}.md)`],
+      [`sop/${name}.md#输出结构与示例)`, `sop/${other}.md#输出结构与示例)`],
+      ["source.json)", "sop/README.md)"],
+    ]) {
+      const { pluginRoot } = fixture(t);
+      const skill = path.join(pluginRoot, "skills", name, "SKILL.md");
+      writeFileSync(skill, readFileSync(skill, "utf8").replace(from!, to!));
+      assert.throws(() => validateDocumentWorkflow(pluginRoot), /缺少必需文档入口/);
+    }
+  }
+});
+
+test("代码示例、外部同名链接与未使用定义不能补足必需入口", (t) => {
+  const workflow = "[Workflow](../../references/docs-system/sop/task.md)";
+  for (const substitute of [`\`\`\`markdown\n${workflow}\n\`\`\``, `\`${workflow}\``, "[Workflow](https://example.com/references/docs-system/sop/task.md)", "[unused-workflow]: ../../references/docs-system/sop/task.md"]) {
+    const { pluginRoot } = fixture(t);
+    const skill = path.join(pluginRoot, "skills/task/SKILL.md");
+    writeFileSync(skill, readFileSync(skill, "utf8").replace(workflow, substitute));
+    assert.throws(() => validateDocumentWorkflow(pluginRoot), /缺少必需文档入口/);
+  }
+});
+
+test("缩进代码、注释与转义文本不能补足正文入口", (t) => {
+  const workflow = "[Workflow](../../references/docs-system/sop/task.md)";
+  for (const substitute of [`\n    ${workflow}\n`, `\n\t${workflow}\n`, `\n- Example:\n\n      ${workflow}\n`, `<!--\n${workflow}\n-->`, `\\${workflow}`]) {
+    const { pluginRoot } = fixture(t);
+    const skill = path.join(pluginRoot, "skills/task/SKILL.md");
+    writeFileSync(skill, readFileSync(skill, "utf8").replace(workflow, substitute));
+    assert.throws(() => validateDocumentWorkflow(pluginRoot), /缺少必需文档入口/);
+  }
+});
+
+test("frontmatter 内的链接不能补足正文入口", (t) => {
+  const { pluginRoot } = fixture(t);
+  const skill = path.join(pluginRoot, "skills/task/SKILL.md");
+  const original = readFileSync(skill, "utf8");
+  const routes = original.slice(original.indexOf("\n---\n") + 5).trim();
+  writeFileSync(skill, `---\nname: task\ndescription: ${JSON.stringify(routes.replaceAll("\n", " "))}\n---\n\nRun task.\n`);
+  assert.throws(() => validateDocumentWorkflow(pluginRoot), /缺少必需文档入口/);
+});
+
+test("重复引用定义按第一个目标判断正文入口", (t) => {
+  for (const first of ["task", "design"]) {
+    const { pluginRoot } = fixture(t);
+    const skill = path.join(pluginRoot, "skills/task/SKILL.md");
+    const original = readFileSync(skill, "utf8");
+    const last = first === "task" ? "design" : "task";
+    writeFileSync(skill, `${original.replace("[Workflow](../../references/docs-system/sop/task.md)", "[Workflow][route]")}\n[route]: ../../references/docs-system/sop/${first}.md\n[route]: ../../references/docs-system/sop/${last}.md\n`);
+    if (first === "task") assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot));
+    else assert.throws(() => validateDocumentWorkflow(pluginRoot), /缺少必需文档入口/);
+  }
+});
+
+test("合法路径变体、引用式链接与正文改写保留入口契约，engineering 不要求文档 SOP", (t) => {
+  for (const name of SOP_NAMES) {
+    for (const mode of ["normalized", "encoded", "anchored", "escaped-backslash", "paragraph", "list", "list-continuation", "reference", "reference-whitespace", "collapsed", "shortcut"]) {
+      const { pluginRoot } = fixture(t);
+      const skill = path.join(pluginRoot, "skills", name, "SKILL.md");
+      const original = readFileSync(skill, "utf8");
+      let content = original;
+      if (mode === "normalized") content = original.replaceAll("../../references/docs-system/", "../../references/./docs-system/sop/../");
+      else if (mode === "encoded") {
+        content = original.replaceAll(`${name}.md`, `%${name.charCodeAt(0).toString(16)}${name.slice(1)}.md`)
+          .replaceAll("#输出结构与示例", `#${encodeURIComponent("输出结构与示例")}`)
+          .replace("conventions.md#rules)", "%63onventions.md#rules)").replace("source.json)", "%73ource.json)");
+      } else if (mode === "anchored") content = original.replace(`sop/${name}.md)`, `sop/${name}.md#操作)`);
+      else if (mode === "escaped-backslash") content = original.replaceAll("[", "\\\\[");
+      else if (mode === "paragraph") content = original.replace("[Rules]", "Resources:\n    [Rules]").replaceAll("\n[", "\n    [");
+      else if (mode === "list") content = original.replaceAll("\n[", "\n- [");
+      else if (mode === "list-continuation") content = original.replace("[Rules]", "- Resources:\n\n    [Rules]").replaceAll("\n[", "\n    [");
+      else {
+        const targets = ["conventions.md", `sop/${name}.md`, `sop/${name}.md#输出结构与示例`, "source.json"];
+        content = `${original.match(/^---\n[\s\S]*?\n---\n/)![0]}\nUse the linked resources.\n${targets.map((_, index) => mode === "reference-whitespace" ? `[Resource ${index}][ Route   ${index} ]` : mode === "reference" ? `[Resource ${index}][route-${index}]` : mode === "collapsed" ? `[route-${index}][]` : `[route-${index}]`).join("\n")}\n\n${targets.map((target, index) => `[${mode === "reference-whitespace" ? `route ${index}` : `route-${index}`}]: <../../references/docs-system/${target}>`).join("\n")}\n`;
+      }
+      writeFileSync(skill, content);
+      assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot));
+    }
+  }
+});
+
+test("完整安装包的正文缩水或全部错指合法 SOP 无法通过发布检查", (t) => {
+  for (const mode of ["single-line", "wrong-sop"]) {
+    const { pluginRoot } = fixture(t);
+    rmSync(pluginRoot, { recursive: true });
+    cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
+    const sourcePath = path.join(pluginRoot, "references/docs-system/source.json");
+    const source = JSON.parse(readFileSync(sourcePath, "utf8"));
+    source.sourceState = "commit";
+    writeFileSync(sourcePath, JSON.stringify(source));
+    const skill = path.join(pluginRoot, "skills/task/SKILL.md");
+    const original = readFileSync(skill, "utf8");
+    writeFileSync(skill, mode === "single-line" ? `${original.match(/^---\n[\s\S]*?\n---\n/)![0]}\nRun task.\n` : original.replaceAll("sop/task.md", "sop/design.md"));
+    assert.throws(() => validateDocumentWorkflow(pluginRoot, { release: true }), /缺少必需文档入口/);
+  }
 });
 
 test("每个必需技能缺失、额外技能或嵌套重复发现均被拒绝", (t) => {

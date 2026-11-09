@@ -25,7 +25,10 @@ function inside(root: string, file: string): boolean {
 
 function withoutCode(markdown: string, stripInline = true): string {
   let fence: { marker: string; length: number } | undefined;
-  return markdown.split(/\r?\n/).map((line) => {
+  let paragraph = false;
+  let listIndent = 0;
+  const indentation = (value: string): number => [...value].reduce((width, character) => character === "\t" ? width + 4 - width % 4 : width + 1, 0);
+  return markdown.replace(/<!--[\s\S]*?(?:-->|$)/g, (comment) => comment.replace(/[^\r\n]/g, "")).split(/\r?\n/).map((line) => {
     if (fence) {
       if (new RegExp(`^ {0,3}${fence.marker}{${fence.length},}\\s*$`).test(line)) fence = undefined;
       return "";
@@ -33,25 +36,50 @@ function withoutCode(markdown: string, stripInline = true): string {
     const opening = line.match(/^ {0,3}(`{3,}|~{3,})/);
     if (opening) {
       fence = { marker: opening[1]![0]!, length: opening[1]!.length };
+      paragraph = false;
       return "";
     }
+    if (!line.trim()) {
+      paragraph = false;
+      return "";
+    }
+    const indent = indentation(line.match(/^[ \t]*/)![0]);
+    if (!paragraph && indent < listIndent) listIndent = 0;
+    // 列表按内容起点判断缩进；段落续行不能开启缩进代码块。
+    if (!paragraph && indent >= listIndent + 4) return "";
+    const list = line.match(/^[ \t]*(?:[-+*]|\d+[.)])[ \t]+/);
+    if (list) listIndent = indentation(list[0]);
+    paragraph = !/^ {0,3}(?:#{1,6}(?:\s|$)|\[[^\]\n]+\]:)/.test(line);
     return stripInline ? line.replace(/(`+)(.*?)\1/g, "") : line;
   }).join("\n");
 }
 
-function markdownLinks(markdown: string): string[] {
-  const content = withoutCode(markdown);
-  const links = [...content.matchAll(/!?\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|((?:\\.|[^\s()\\]|\([^()]*\))+))(?:\s+["'][^\n]*?["'])?\s*\)/g)]
-    .map((match) => match[1] ?? match[2]!);
+function referenceLabel(label: string): string {
+  return label.trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function markdownLinks(markdown: string): { target: string; used: boolean }[] {
+  const content = withoutCode(markdown).replace(/(?<!\\)((?:\\\\)*)\\[\[\]]/g, "$1\u0000");
   const definitions = new Map<string, string>();
+  const links: { target: string; used: boolean }[] = [];
   for (const match of content.matchAll(/^ {0,3}\[([^\]\n]+)\]:\s*(?:<([^>\n]+)>|(\S+))/gm)) {
     const target = match[2] ?? match[3]!;
-    definitions.set(match[1]!.trim().toLowerCase(), target);
-    links.push(target);
+    const label = referenceLabel(match[1]!);
+    if (!definitions.has(label)) definitions.set(label, target);
+    links.push({ target, used: false });
   }
-  for (const match of content.matchAll(/!?\[([^\]\n]+)\]\[([^\]\n]*)\]/g)) {
-    const label = (match[2] || match[1]!).trim().toLowerCase();
+  const body = content.replace(/^ {0,3}\[[^\]\n]+\]:[^\n]*$/gm, "");
+  for (const match of body.matchAll(/!?\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|((?:\\.|[^\s()\\]|\([^()]*\))+))(?:\s+["'][^\n]*?["'])?\s*\)/g)) {
+    links.push({ target: match[1] ?? match[2]!, used: true });
+  }
+  for (const match of body.matchAll(/!?\[([^\]\n]+)\]\[([^\]\n]*)\]/g)) {
+    const label = referenceLabel(match[2] || match[1]!);
     assert.ok(definitions.has(label), `缺少 Markdown 引用定义：${label}`);
+    links.push({ target: definitions.get(label)!, used: true });
+  }
+  for (const match of body.matchAll(/!?\[([^\]\n]+)\](?![\[(]|:)/g)) {
+    const target = definitions.get(referenceLabel(match[1]!));
+    if (target) links.push({ target, used: true });
   }
   return links;
 }
@@ -112,6 +140,7 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
   };
 
   const skillsRoot = path.join(root, "skills");
+  const workflowSkills = new Map(SKILL_NAMES.filter((name) => name !== "engineering").map((name) => [path.join(skillsRoot, name, "SKILL.md"), name]));
   requireResource(skillsRoot, true);
   assert.deepEqual(readdirSync(skillsRoot).sort(), SKILL_NAMES, "插件必须且只能包含十项技能 engineering 与九项文档工作流");
   const discovered: string[] = [];
@@ -135,6 +164,7 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
   assert.deepEqual(discovered.sort(), SKILL_NAMES.map((name) => `${name}/SKILL.md`), "十项 Skill 必须分别只有唯一包内发现入口");
 
   const markdownFiles: string[] = [];
+  const skillBodies = new Map<string, string>();
   for (const name of SKILL_NAMES) {
     const skillPath = path.join(skillsRoot, name, "SKILL.md");
     const skill = readFileSync(skillPath, "utf8");
@@ -146,7 +176,9 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
     const description = fields.match(/^description: ("(?:[^"\\\r\n]|\\.)+")$/m);
     assert.ok(description, `Skill frontmatter description 必须为双引号字符串：${name}`);
     assert.ok((JSON.parse(description[1]!) as string).trim(), `Skill frontmatter description 不得为空：${name}`);
-    assert.ok(skill.slice(frontmatter[0].length).trim(), `Skill 正文不得为空：${name}`);
+    const body = skill.slice(frontmatter[0].length);
+    assert.ok(body.trim(), `Skill 正文不得为空：${name}`);
+    skillBodies.set(skillPath, body);
     markdownFiles.push(skillPath);
     const metadataPath = path.join(skillsRoot, name, "agents/openai.yaml");
     requireResource(metadataPath);
@@ -179,9 +211,10 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
     const file = markdownFiles[index]!;
     if (checked.has(file)) continue;
     checked.add(file);
-    const markdown = readFileSync(file, "utf8");
+    const markdown = skillBodies.get(file) ?? readFileSync(file, "utf8");
     assert.ok(markdown.trim(), `Markdown 资源不得为空：${path.relative(root, file)}`);
-    for (const target of markdownLinks(markdown)) {
+    const links: { destination: string; anchor: string | undefined }[] = [];
+    for (const { target, used } of markdownLinks(markdown)) {
       if (/^https?:\/\//i.test(target)) continue;
       assert.ok(!/^(?:[a-z][a-z\d+.-]*:|\/)/i.test(target), `插件资源必须使用包内相对路径，不得逃逸：${target}`);
       const anchorIndex = target.indexOf("#");
@@ -189,10 +222,23 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
       const encodedAnchor = anchorIndex < 0 ? undefined : target.slice(anchorIndex + 1);
       const destination = path.resolve(path.dirname(file), decodeURIComponent(encodedPath).replace(/\\([()])/g, "$1") || path.basename(file));
       requireResource(destination);
+      const anchor = encodedAnchor ? decodeURIComponent(encodedAnchor) : undefined;
+      if (used) links.push({ destination, anchor });
       if (path.extname(destination).toLowerCase() === ".md") {
         markdownFiles.push(destination);
-        if (encodedAnchor) assert.ok(markdownAnchors(readFileSync(destination, "utf8")).has(decodeURIComponent(encodedAnchor)), `缺少 Markdown 锚点：${target}`);
+        if (anchor) assert.ok(markdownAnchors(readFileSync(destination, "utf8")).has(anchor), `缺少 Markdown 锚点：${target}`);
       }
+    }
+    const name = workflowSkills.get(file);
+    if (name) {
+      const sopPath = path.join(docsRoot, `sop/${name}.md`);
+      const required = [
+        ["共同约定", links.some((link) => link.destination === path.join(docsRoot, "conventions.md"))],
+        ["自身 SOP", links.some((link) => link.destination === sopPath && link.anchor !== "输出结构与示例")],
+        ["自身输出结构与示例", links.some((link) => link.destination === sopPath && link.anchor === "输出结构与示例")],
+        ["固定快照清单", links.some((link) => link.destination === sourcePath)],
+      ] as const;
+      for (const [label, present] of required) assert.ok(present, `缺少必需文档入口：${name}/${label}`);
     }
   }
   return [...resources].sort();

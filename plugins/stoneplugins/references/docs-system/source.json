@@ -1,6 +1,6 @@
 {
   "sourceRepository": "https://github.com/sty20030818/StoneDocs",
-  "baseCommit": "3ffb9e056d4e741f892c509fc01930c23fdb70c8",
+  "baseCommit": "7d9171cc7931f4eef0e82dc4b8e212a32672cb9e",
   "sourceState": "commit",
   "files": [
     {
@@ -41,17 +41,17 @@
     {
       "sourcePath": "docs/sop/design.md",
       "bundledPath": "sop/design.md",
-      "sha256": "cc9fc7c33f21e3369351ddd33cac4c787612c386588c0dc4de78aa52bc50c03f"
+      "sha256": "555b0c4cf772b7a46a78bce93aa83bd333c21e2090cff71c9b2dbc5636c834dd"
     },
     {
       "sourcePath": "docs/sop/task.md",
       "bundledPath": "sop/task.md",
-      "sha256": "e9b5ff84ca40521b1a2867d3c1a7227c805fd7a622a5b604c8f96b22ea9c6006"
+      "sha256": "914d668a1875c94a00a1c24b510d6de152cae90749745661212bbe5f36577be2"
     },
     {
       "sourcePath": "docs/sop/verify.md",
       "bundledPath": "sop/verify.md",
-      "sha256": "801414371196f609c44f66dc8d7e1412cd2144c6cda321256b5f6bf563af7d73"
+      "sha256": "a48a90c7555ea52b0cd87830ba1490d8467df9b935707ba8acde7691299f1337"
     },
     {
       "sourcePath": "docs/sop/review.md",
