@@ -5,7 +5,7 @@ description: "在项目文档工作流中，围绕明确问题调研并比较可
 
 # Compare
 
-围绕项目中的真实选择形成有依据的比较。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[比较 SOP](../../references/docs-system/sop/compare.md)；调查、推荐和完成判断由这些文档维护。记录骨架见[比较输出结构与示例](../../references/docs-system/sop/compare.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+围绕项目中的真实选择形成有依据的比较。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[比较 SOP](../../tools/stonedocs/rules/docs/sop/compare.md)；调查、推荐和完成判断由这些文档维护。记录骨架见[比较输出结构与示例](../../tools/stonedocs/rules/docs/sop/compare.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
@@ -14,6 +14,8 @@ description: "在项目文档工作流中，围绕明确问题调研并比较可
 ## 执行适配
 
 按比较 SOP 调查，优先核对当前项目与一手来源；实验仅按实际授权进行。把可核对事实、实际观察、推断和推荐分开，保留会改变推荐的未知。比较不覆盖已有确认、不把推荐写成决定，也不因推荐新增实施承诺；若涉及规划，沿 Goal → Phase → Task 关联，Task 不脱离 Phase。
+
+需要定位已有 Goal/Phase/Task 或读取项目 SOP 时，按[配套 CLI 用法](../../references/cli.md)使用只读入口；比较正文仍按本 SOP 组织，不把 CLI 检查当作调研或取舍。
 
 ## 输出
 

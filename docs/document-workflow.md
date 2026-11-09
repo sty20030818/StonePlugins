@@ -2,9 +2,9 @@
 
 ## 本版本与独立使用
 
-本版 v0.8.1 包含九项文档工作流，与 engineering 共十个技能入口。各入口可依据足够的目标、约束和事实独立使用，通过项目文件接续；不要求前序调用记录。
+九项文档工作流，与 engineering 共十个技能入口。各入口可依据足够的目标、约束和事实独立使用，通过项目文件接续；不要求前序调用记录。
 
-本版规则、发布、安装和正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)；[v0.7.0 验证](evals/v0.7.0.md)保留旧版六项工作流的结果，不直接继承为新模型通过。
+开发树的配套 CLI 适配尚未发布，个人正式安装尚未更新。本地正式协议安装、实际调用及固定产物结果由 [StoneDocs T0058](https://github.com/sty20030818/StoneDocs/blob/b60ee7f26d3046025f7987bd54c611472264034a/docs/goals/v1/phases/p003-cli/tasks.md#result-task-t0058-paired-cli-acceptance)持有；既有 v0.8.1 规则、发布、安装和正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)；[v0.7.0 验证](evals/v0.7.0.md)保留旧版六项工作流的结果，不直接继承为新模型通过。
 
 ## 职责与使用
 
@@ -22,17 +22,19 @@
 | [verify](../plugins/stoneplugins/skills/verify/SKILL.md) | 验收明确对象、复验或核对已有结果 | 实际结果、必要证据与限制 |
 | [review](../plugins/stoneplugins/skills/review/SKILL.md) | 判断 Goal/Phase 成果并按授权收尾 | 条件判断、遗留处置及实际归档结果 |
 
-Goal → Phase → Task 的共用模型由[共同约定](../plugins/stoneplugins/references/docs-system/conventions.md)维护。plan/review 先区分对象；Task 始终归 Phase，目标层不另建任务清单。整体验收由阶段任务承接，报告进入对应 Goal；普通任务可在条目中简记实际结果，独立或多批次验收按 SOP 记录，不默认生成附件包。
+Goal → Phase → Task 的共用模型由[共同约定](../plugins/stoneplugins/tools/stonedocs/rules/docs/conventions.md)维护。plan/review 先区分对象；Task 始终归 Phase，目标层不另建任务清单。整体验收由阶段任务承接，报告进入对应 Goal；普通任务可在条目中简记实际结果，独立或多批次验收按 SOP 记录，不默认生成附件包。
 
 技能只负责项目读取、工具适配和输出路由，具体操作与填写结构由对应 SOP 维护。当前执行者可以连续承担多项职责，不把兄弟技能的调用或安装设为前置，也不为更新状态循环回调。没有技能或 CLI 时，人或 AI 仍可用 Markdown + Git 执行 SOP；独立使用不意味着只复制一个技能目录就包含运行资源。
 
-## 规则作者源与分发
+## CLI 与规则分发
 
-共同规则的作者源为 StoneDocs 的 docs/conventions.md，各流程及输出骨架在 docs/sop/。包内[共同约定](../plugins/stoneplugins/references/docs-system/conventions.md)、[SOP 导航](../plugins/stoneplugins/references/docs-system/sop/README.md)与九项流程是固定时点的逐字副本，共十一份 Markdown 资源；新增技能不增加第二套 SOP 或独立模板。
+共同规则作者源在 StoneDocs 的 docs/conventions.md，九项流程和骨架在 docs/sop/。StoneDocs 构建同源独立 JavaScript 包，完整产物包含 CLI、固定十一份规则、[规范清单](../plugins/stoneplugins/tools/stonedocs/rules/source.json)和[程序产物清单](../plugins/stoneplugins/tools/stonedocs/artifact.json)。StonePlugins 通过显式导入接入完整包，不手改编译 JS 或规则，也不维护另一份 SOP 快照。规则源与程序源分别记录固定身份；工作树构建明确标记 source.state 为 working-tree，只可本地验证，正式来源门禁要求 commit。当前配套工具与规则的实际身份读取各自清单，插件是否已发布另从固定 tag 与对应结果核对。
 
-[来源清单](../plugins/stoneplugins/references/docs-system/source.json)唯一记录仓库、完整基线提交、源状态、路径与文件哈希。作者源更新后同步这十一份资源并校验字节，不手改副本。未提交源使用 working-tree，仅可本地验证；发布门禁要求 commit 来源，发布核对还须将资源与相应 Git 原文比对。来源清单和固定规则副本属于包的分发契约，普通任务不因此需要来源包或哈希清单。
+开发者先按 StoneDocs 构建入口生成明确产物，再运行 `npm run import:stonedocs -- --package /path/to/package`；已有配套包需要显式 `--replace`，正式导入另加 `--release`。导入复用产物自身的完整性校验，读回后才替换完整生成目录，旧目录类型或内容无法验证则停止。清单摘要保证内容对应，不代替来源认证；只导入可信作者渠道的明确版本。完整包资源纳入本仓发布校验，不从远端 latest 或作者电脑补缺。
 
-运行资源随完整插件提供，不查作者电脑或远端 latest。StoneDocs 的 guide 面向使用者串联路线，不是运行包依赖；项目自身目标、任务、决定和结果仍由采用项目拥有。插件升级不会自动改变项目采用的规范版本。
+技能按[配套 CLI 用法](../plugins/stoneplugins/references/cli.md)从实际安装路径定位工具并显式限定项目。只读定位、常规创建和状态等确定性操作由 CLI 承接；语义讨论、技术方案、代码和实际验收仍由当前执行者完成。命令参数与 JSON 结构查实际 help，不在每个技能重复维护。程序运行只需 Node >=22.18.0，插件用户不用另装全局 CLI；终端或 CI 可使用 StoneDocs 同源独立包。
+
+程序、插件和项目采用版本独立；插件更新不升级项目规则。项目 SOP 优先，缺失工具或不支持契约按明确缺口处理，可以在已授权范围手工接续 Markdown + Git，不自动换版、安装或覆写。StoneDocs guide 面向使用者串联路线，项目目标、任务、决定和结果仍由采用项目拥有。
 
 ## 开发验证与证据边界
 

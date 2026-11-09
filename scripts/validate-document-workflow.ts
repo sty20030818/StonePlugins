@@ -1,22 +1,43 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 const SKILL_NAMES = ["compare", "decide", "design", "engineering", "idea", "plan", "review", "story", "task", "verify"];
 const SOURCE_REPOSITORY = "https://github.com/sty20030818/StoneDocs";
-const SOURCE_FILES = [
-  "conventions.md", "sop/README.md",
-  ...["idea", "compare", "decide", "story", "plan", "design", "task", "verify", "review"].map((name) => `sop/${name}.md`),
-];
-
-type SourceFile = { sourcePath: string; bundledPath: string; sha256: string };
-type SourceManifest = {
-  sourceRepository: string;
-  baseCommit: string;
-  sourceState: "working-tree" | "commit";
-  files: SourceFile[];
+type Artifact = {
+  root: string;
+  manifest: { cliContract: 1; ruleContract: 1; files: { path: string }[]; source: { repository: string }; rules: { repository: string } };
+  rules: { root: string; files: { path: string }[] };
 };
+const ARTIFACT_READER = `
+import { pathToFileURL } from "node:url";
+import path from "node:path";
+try {
+  const { readArtifact } = await import(pathToFileURL(path.join(process.argv[1], "lib/distribution/artifact.js")).href);
+  process.stdout.write(JSON.stringify(readArtifact(process.argv[1], { release: process.argv[2] === "release" })));
+} catch (error) {
+  console.error(error instanceof Error ? error.message : "产物完整性校验未完成。");
+  process.exitCode = 1;
+}`;
+
+/** 完整性合同由同源包持有；这里不复制产物或规范解析器。 */
+export function readPairedArtifact(packageRoot: string, options: { release?: boolean } = {}): Artifact {
+  const root = path.resolve(packageRoot);
+  for (const relative of ["", "lib", "lib/distribution", "lib/distribution/artifact.js"]) {
+    const file = path.join(root, relative);
+    assert.ok(existsSync(file), "缺少配套 CLI 完整性模块；请重新导入明确产物");
+    const stat = lstatSync(file);
+    assert.ok(!stat.isSymbolicLink() && (relative.endsWith(".js") ? stat.isFile() : stat.isDirectory()), "配套 CLI 路径必须为包内普通资源，不能经过软链接");
+  }
+  // 短命进程隔离 ESM 缓存，替换同绝对路径的包后不会继续验证旧实现。
+  const result = spawnSync(process.execPath, ["--input-type=module", "--eval", ARTIFACT_READER, root, options.release ? "release" : "candidate"], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
+  assert.ok(!result.error && result.status === 0, result.stderr?.trim() || "配套 CLI 完整性校验未完成");
+  const artifact = JSON.parse(result.stdout) as Artifact;
+  assert.equal(artifact?.manifest?.cliContract, 1, "当前技能不支持此配套 CLI 契约；保留现有产物并明确升级消费者，不能仅凭包自校验通过接纳");
+  assert.equal(artifact?.manifest?.ruleContract, 1, "当前技能不支持此规范契约；保留现有产物并明确升级消费者，不能自动升级项目规则");
+  return artifact;
+}
 
 function inside(root: string, file: string): boolean {
   const relative = path.relative(root, file);
@@ -185,26 +206,21 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
     validateSkillMetadata(readFileSync(metadataPath, "utf8"), name);
   }
 
-  const docsRoot = path.join(root, "references/docs-system");
-  assert.ok(!existsSync(path.join(docsRoot, "templates.md")), "不得保留遗留 templates.md；输出结构与示例由对应 SOP 持有");
-  const sourcePath = path.join(docsRoot, "source.json");
-  requireResource(sourcePath);
-  const source = JSON.parse(readFileSync(sourcePath, "utf8")) as SourceManifest;
-  assert.ok(source && typeof source === "object", "来源清单必须为对象");
-  assert.equal(source.sourceRepository, SOURCE_REPOSITORY, "来源清单必须指向 StoneDocs 作者源");
-  assert.ok(typeof source.baseCommit === "string" && /^[a-f0-9]{40}$/.test(source.baseCommit), "来源清单必须包含完整 baseCommit");
-  assert.ok(source.sourceState === "working-tree" || source.sourceState === "commit", "来源清单 sourceState 非法");
-  if (options.release) assert.equal(source.sourceState, "commit", "working-tree 来源仅可本地验证，不得发布");
-  assert.ok(Array.isArray(source.files) && source.files.length === SOURCE_FILES.length, "来源清单必须且只能包含共同约定、SOP 导航与九项流程，共十一份文档");
-  assert.deepEqual(source.files.map((file) => file?.bundledPath).sort(), [...SOURCE_FILES].sort(), "来源清单必须唯一包含全部必需文档");
-  for (const file of source.files) {
-    assert.equal(file.sourcePath, `docs/${file.bundledPath}`, "来源清单 sourcePath 不匹配");
-    assert.ok(typeof file.sha256 === "string" && /^[a-f0-9]{64}$/.test(file.sha256), "来源清单 SHA-256 格式错误");
-    const bundled = path.resolve(docsRoot, file.bundledPath);
-    requireResource(bundled);
-    assert.equal(createHash("sha256").update(readFileSync(bundled)).digest("hex"), file.sha256, `来源快照 SHA-256 不匹配：${file.bundledPath}`);
-    markdownFiles.push(bundled);
+  assert.ok(!existsSync(path.join(root, "references/docs-system")), "不得保留第二份 docs-system 规范副本；规则由配套 CLI 产物拥有");
+  const packageRoot = path.join(root, "tools/stonedocs");
+  requireResource(packageRoot, true);
+  const artifact = readPairedArtifact(packageRoot, options);
+  assert.equal(artifact.manifest.source.repository, SOURCE_REPOSITORY, "CLI 来源必须指向 StoneDocs 作者源");
+  assert.equal(artifact.manifest.rules.repository, SOURCE_REPOSITORY, "规范来源必须指向 StoneDocs 作者源");
+  for (const file of ["artifact.json", ...artifact.manifest.files.map((entry) => entry.path)]) {
+    requireResource(path.join(packageRoot, file));
   }
+  const docsRoot = path.join(packageRoot, "rules/docs");
+  const sourcePath = path.join(packageRoot, "rules/source.json");
+  for (const file of artifact.rules.files) markdownFiles.push(path.join(packageRoot, "rules", file.path));
+  const cliGuide = path.join(root, "references/cli.md");
+  requireResource(cliGuide);
+  markdownFiles.push(cliGuide);
 
   const checked = new Set<string>();
   for (let index = 0; index < markdownFiles.length; index++) {
@@ -237,6 +253,7 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
         ["自身 SOP", links.some((link) => link.destination === sopPath && link.anchor !== "输出结构与示例")],
         ["自身输出结构与示例", links.some((link) => link.destination === sopPath && link.anchor === "输出结构与示例")],
         ["固定快照清单", links.some((link) => link.destination === sourcePath)],
+        ["配套 CLI 用法", links.some((link) => link.destination === cliGuide)],
       ] as const;
       for (const [label, present] of required) assert.ok(present, `缺少必需文档入口：${name}/${label}`);
     }

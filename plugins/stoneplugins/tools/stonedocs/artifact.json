@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "cliContract": 1,
+  "ruleContract": 1,
+  "version": "0.1.0",
+  "source": {
+    "repository": "https://github.com/sty20030818/StoneDocs",
+    "revision": "3f514effbe92f834379ff845b47fcdecdffd8a7b",
+    "state": "commit",
+    "files": [
+      {
+        "path": "package-lock.json",
+        "sha256": "602d5566672c9b6991f7a220f7724e7e39c259690efedc6f4b4c05c7cb0b5389"
+      },
+      {
+        "path": "package.json",
+        "sha256": "7d4a416c271f4c53376af9135bbc56502f1898b597e260fee1f22fa681140182"
+      },
+      {
+        "path": "scripts/build-cli.ts",
+        "sha256": "eed014ada09102bd0b5d10ada931d9e97f6773c98c10d5d585bc530f5212625f"
+      },
+      {
+        "path": "src/cli/commands.ts",
+        "sha256": "1e62625b11a54abc081859ba4c5fcae01d164a773bd474d799e0524b6727385e"
+      },
+      {
+        "path": "src/cli/create.ts",
+        "sha256": "c98ae66f54d248dfa3ef0bf46ddde21c2b919356112083b71d0fd1b04409a0ae"
+      },
+      {
+        "path": "src/cli/entry.ts",
+        "sha256": "23bb2441762044de98526cafec54542971489c4534b83efb1206905cfadbecc9"
+      },
+      {
+        "path": "src/cli/input.ts",
+        "sha256": "4a7f9a03505bb408a3cafc73f71de443b144584da365483fb7f221ef13ba826b"
+      },
+      {
+        "path": "src/cli/main.ts",
+        "sha256": "3a96b86a1e3444162e6f99bafded2d5102ea2e304f9d3da2362ca1aaf3a70866"
+      },
+      {
+        "path": "src/cli/progress.ts",
+        "sha256": "9cc4856d648a40e65295734b8a0603a951e8f8d3ada4110559273c8ef82be13e"
+      },
+      {
+        "path": "src/cli/rules.ts",
+        "sha256": "1e8cd9cb0be547bf0e91e3d6d9b4b13ec52166da24d9cdf568c9e85f64302049"
+      },
+      {
+        "path": "src/distribution/artifact.ts",
+        "sha256": "05ce6d39b23e9fda0ee6269cf8194b28568afd3963e64f0a705b92fcf3c7897e"
+      },
+      {
+        "path": "src/documents/check.ts",
+        "sha256": "1d879ba806fd8d4e8ad50fb823da552bd9a1347ac750a8ee53550be1693b4e8d"
+      },
+      {
+        "path": "src/documents/diagnostics.ts",
+        "sha256": "8ef72fc32336b66bc29e50d97a44ba38df558c0a6a844dbb1cb1eff6e4d46b5b"
+      },
+      {
+        "path": "src/documents/files.ts",
+        "sha256": "6fdecd8685c7a3773e84d178522192482cff27f638851f4252c5398fa0dbb40f"
+      },
+      {
+        "path": "src/documents/markdown.ts",
+        "sha256": "2ffa958b8af1e82e8e21c8f6d4c8f1b9bc378b5b8128d4cf8fb14f75c745b495"
+      },
+      {
+        "path": "src/documents/project.ts",
+        "sha256": "bd74992ddef47200c02aabc7a73cf9ca8d7332677a6bd69a8f427f5dc6be3bc5"
+      },
+      {
+        "path": "src/documents/read.ts",
+        "sha256": "bc9be5272803287510c6bfa0bd87b4fa0d59d253b94fe384f4476c81218aca64"
+      },
+      {
+        "path": "src/documents/sop.ts",
+        "sha256": "097ca97950689799ff5890f6d989d1b05dfb81a29f4fb46b4ef572bdf579e745"
+      },
+      {
+        "path": "src/files/write.ts",
+        "sha256": "149579462f57ff4079394bbdef3c1ce00c528c648e871a83a3c99eafa4e923c6"
+      },
+      {
+        "path": "src/rules/bundle.ts",
+        "sha256": "2b8c49ca2874ac02e1708c5b302cd75037156f00694a09e369dfb6ed570a5d25"
+      },
+      {
+        "path": "src/rules/entries.ts",
+        "sha256": "92461b6eed3e4dd686d8ba91a090a965efbab7a694e9935ebc24552a4d2d6b26"
+      },
+      {
+        "path": "src/rules/format.ts",
+        "sha256": "d20f24a4e5e76b69f18777280ab44b653cc6303b817c6fd09f5d05fca31dfd02"
+      },
+      {
+        "path": "src/version.ts",
+        "sha256": "1ba293927144b1dab103bec13be93cc3755588fa35f6737b4a5eae7e4140c14f"
+      },
+      {
+        "path": "src/workflow/adoption.ts",
+        "sha256": "7f673e01c0a68ed4a9ac4823879616f218764a8d7cf6c602ec548009a814324e"
+      },
+      {
+        "path": "src/workflow/context.ts",
+        "sha256": "4a095146d74c4f5e3a7628b9a18c5efc43e62eabb86769a86819a27cf5d8da69"
+      },
+      {
+        "path": "src/workflow/create.ts",
+        "sha256": "6fb70d9a85cf02fb790393188f3c8c8050bd3c3a8478e364bc7a28a1fc77b4d2"
+      },
+      {
+        "path": "src/workflow/init.ts",
+        "sha256": "144122fcbb8f3cc37331670f7434383551bb431b0d0a9da5540fb9218bc7aca8"
+      },
+      {
+        "path": "src/workflow/input.ts",
+        "sha256": "38690a60b5664eee2210cef39f90658c9dcd38aca1426501d9f9097a94a4b883"
+      },
+      {
+        "path": "src/workflow/json.ts",
+        "sha256": "ac5d28324620c385d24f979ae69fa6ac16203f00c9052bbd7e4e609303ef4099"
+      },
+      {
+        "path": "src/workflow/lifecycle.ts",
+        "sha256": "c6618eca955838cd2bbb9dc30aacccf68760fdd0f1390633acc25f5a0a4d9bff"
+      },
+      {
+        "path": "src/workflow/release-format.ts",
+        "sha256": "9deabc294686e3bcdb30bd75380cc64de3801aa46d814a0f06a76f2f5a5b441e"
+      },
+      {
+        "path": "src/workflow/releases.ts",
+        "sha256": "3686ad7f2077801b78680423d45b6f8b1c72e76d61c6572a07c3a611917f3d15"
+      },
+      {
+        "path": "src/workflow/results.ts",
+        "sha256": "2dde67e07d76f1d6cb58a4021a567a2913c87337b2712ff2f3f46661e16da37c"
+      },
+      {
+        "path": "src/workflow/upgrade.ts",
+        "sha256": "fd193e7ed8df03ba23329580cad553cef50962935f5656a0953217ade69e8896"
+      },
+      {
+        "path": "tsconfig.build.json",
+        "sha256": "be190698e531d0c5b2f0a5d3fd5c7d4879702b66ff1f52cd0ca1747a3ac0697d"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "bd6971104757d814b30f926f2b64082f6d1d4550f40455e4a01d21b75a3e3275"
+      }
+    ]
+  },
+  "rules": {
+    "repository": "https://github.com/sty20030818/StoneDocs",
+    "revision": "3ffbf2dd4a5c949cad2915c4291b1514aa1bd072"
+  },
+  "files": [
+    {
+      "path": "lib/cli/commands.js",
+      "sha256": "a35ec70869043a5030352b3cabb643f2b2558ba58766a8206858813bff51b73d",
+      "executable": false
+    },
+    {
+      "path": "lib/cli/create.js",
+      "sha256": "add2267f147ab171bd445bbfdce93103826852010e8da086089544911dd2274d",
+      "executable": false
+    },
+    {
+      "path": "lib/cli/entry.js",
+      "sha256": "661e95fd3243a55e1e68a4c25a15a0cc20b42a89b245497ceaa35151df93fd7d",
+      "executable": false
+    },
+    {
+      "path": "lib/cli/input.js",
+      "sha256": "1531af32e98a9515526d5e2f3660a5f33e934252ad848f93752776721238e1b7",
+      "executable": false
+    },
+    {
+      "path": "lib/cli/main.js",
+      "sha256": "023d4c6d911fe68f57f0dec45c3edf007bae806908a8a6f1ed0ef12244346234",
+      "executable": true
+    },
+    {
+      "path": "lib/cli/progress.js",
+      "sha256": "237eeeab76f1314e10d0e40f1981c72fec6a2e24ae3e4ef6e8fb8d1b1ae4424d",
+      "executable": false
+    },
+    {
+      "path": "lib/cli/rules.js",
+      "sha256": "01bfb55dfb3aea1b8fe6d7e20cb70394a82abb33ace002110a49e358b644af67",
+      "executable": false
+    },
+    {
+      "path": "lib/distribution/artifact.js",
+      "sha256": "c5545021152e367a86d725a3b5b7b6bd9d5faeaf2505d3fd55ed1ed861a8e1c5",
+      "executable": false
+    },
+    {
+      "path": "lib/documents/check.js",
+      "sha256": "3406c126b7d4954d314c277ddb25efe3979e1bc7043079eccbbdbc481e34585a",
+      "executable": false
+    },
+    {
+      "path": "lib/documents/diagnostics.js",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "executable": false
+    },
+    {
+      "path": "lib/documents/files.js",
+      "sha256": "c66c8f4ef8e84ba929fb49a9cefb15079bac70157f8a0dfb89ede6d4c457d6fb",
+      "executable": false
+    },
+    {
+      "path": "lib/documents/markdown.js",
+      "sha256": "e36d12914296d862364d04a3e794f5b29cdece800a46decf1effe9b9a604452f",
+      "executable": false
+    },
+    {
+      "path": "lib/documents/project.js",
+      "sha256": "709c3472d82e89d4746e7a989cb72863aa59fce9dfe87faed6737d9c6b870350",
+      "executable": false
+    },
+    {
+      "path": "lib/documents/read.js",
+      "sha256": "ee901e1cc7fe85471c5d13bc263fcdd7e12f77fd64efc6274a1fcc7a8267b600",
+      "executable": false
+    },
+    {
+      "path": "lib/documents/sop.js",
+      "sha256": "1f766ad7b6beef301dc7f058cf1b871250ad55399bdb65556c91c866638b42e2",
+      "executable": false
+    },
+    {
+      "path": "lib/files/write.js",
+      "sha256": "d54a3f50561478253d378832e513d117307cd86e0c4ca823f9ed55a8efd0ef0f",
+      "executable": false
+    },
+    {
+      "path": "lib/rules/bundle.js",
+      "sha256": "e7d5f0411d3e83b2b3638c79eaf12143fe01545686fe113d66660d8801025289",
+      "executable": false
+    },
+    {
+      "path": "lib/rules/entries.js",
+      "sha256": "4aad0553e9e33050c8d829f5b3b8bc039db5d1b1866cbcb20e22d341c4048f96",
+      "executable": false
+    },
+    {
+      "path": "lib/rules/format.js",
+      "sha256": "12f948a1e49ca8edf34a6c7680f44e4f543fa0cc8b9b72253330295210df8cf9",
+      "executable": false
+    },
+    {
+      "path": "lib/version.js",
+      "sha256": "d3d9bbf9ad0f60a181977a201bbda246872d2bc39fb2163c7fdd8d9da211998e",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/adoption.js",
+      "sha256": "e8c3838b592274f4bf2dc277c1e5c33ee0551a4ccdc4036249466dccb6448b6e",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/context.js",
+      "sha256": "dfed56d9b94902e62a499e5a76ed677b08068dd6f93ddb2db78567b1f9d9ed2a",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/create.js",
+      "sha256": "1f759ab543fa2cfd455b6b781d555a20bdbbae8a122fd161155e2f49919cff90",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/init.js",
+      "sha256": "699cf2b8879aca86b11f596f81b2100821f4ef632955d796ab48315a7fb121f5",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/input.js",
+      "sha256": "9a465a5616f30c435653bf2109dfa10a27e188a49ff69a59a97aa103e5e84d0f",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/json.js",
+      "sha256": "a3c128e31360e25c042c50a1adc52921dd09a3cefb00ebec68bdc3555147917a",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/lifecycle.js",
+      "sha256": "97d776c53614f33f5bd88ebf056be81eea108ad3c29ba174788911c50160548d",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/release-format.js",
+      "sha256": "b563134db2c94f9d7fe5f03d063fa189868049d5d1b15848060cecdbe61e7fca",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/releases.js",
+      "sha256": "7658e172967986c4b05cbe2cfa62dcf12fe51a22b3d4cdc2fd583aa1ae2695b9",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/results.js",
+      "sha256": "cab4797b561f73b9dd739ca59c262adae09f841bd80adf906b4f357ce6a8a767",
+      "executable": false
+    },
+    {
+      "path": "lib/workflow/upgrade.js",
+      "sha256": "d6795472589b4b2b5e6f5d1568118078262c9e305912ab0431cb4b7851c8e791",
+      "executable": false
+    },
+    {
+      "path": "package.json",
+      "sha256": "bdbb09cb93fc595d0f3e2cea6639d2d0c7de28a070ed8ff8b4f87db41a57a5c9",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/conventions.md",
+      "sha256": "8dc1c2fda92664ab13f6bd4b30c920fb76a7d7234a3944fa8d1612f2c838cbd1",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/README.md",
+      "sha256": "493e96dfb78973232929caad8e96cd7bf8160d831e78ab91967fb689bd2d39d2",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/compare.md",
+      "sha256": "af997434948992424f5d15ec8c1b23a1a3b98f251154d11962406cf7d58079ff",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/decide.md",
+      "sha256": "f5f11c06c3f7a5d3da0760199f9f5d8607d96d42d1c4b20970acc380f55a9124",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/design.md",
+      "sha256": "555b0c4cf772b7a46a78bce93aa83bd333c21e2090cff71c9b2dbc5636c834dd",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/idea.md",
+      "sha256": "a7d2ffc3fdf11174dcc6bc8f62c835f4b8c2bc76c1363463686b79454ae76918",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/plan.md",
+      "sha256": "92c5c28f40bed7107735994ecf9c240d869a7e2cabd5ca3c99f915d3add56c81",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/review.md",
+      "sha256": "eb9376f76b6ffba096bf3695d823c88c12283065c3a9846ccc50040c4e1640fc",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/story.md",
+      "sha256": "e3ee5a6232d1ca99210b92b5917b7ed0cd7a51a2cb5d8ab73a5c300be035eba7",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/task.md",
+      "sha256": "914d668a1875c94a00a1c24b510d6de152cae90749745661212bbe5f36577be2",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/sop/verify.md",
+      "sha256": "35de4a1dfd9c21e967bcdb32ba83d7ff446b1553c17e1306da0692c457c43734",
+      "executable": false
+    },
+    {
+      "path": "rules/source.json",
+      "sha256": "158823b7bfe36f140a2cab7cc3b3794e8019568efa80724fc276e7cf9f68401e",
+      "executable": false
+    }
+  ]
+}

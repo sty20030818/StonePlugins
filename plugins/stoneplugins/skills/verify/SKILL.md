@@ -5,7 +5,7 @@ description: "对明确的交付对象执行验收或复验，核对证据是否
 
 # Verify
 
-验收或复验明确的交付对象，或核对已有证据。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[验收 SOP](../../references/docs-system/sop/verify.md)；对象和标准版本、按需证据、复验及完成判断由这些文档维护。记录骨架见[验收输出结构与示例](../../references/docs-system/sop/verify.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+验收或复验明确的交付对象，或核对已有证据。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[验收 SOP](../../tools/stonedocs/rules/docs/sop/verify.md)；对象和标准版本、按需证据、复验及完成判断由这些文档维护。记录骨架见[验收输出结构与示例](../../tools/stonedocs/rules/docs/sop/verify.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
@@ -14,6 +14,8 @@ description: "对明确的交付对象执行验收或复验，核对证据是否
 ## 执行适配
 
 按验收 SOP 选择项目已有检查工具，实际执行与写回遵守本次授权。验证任务自身的状态由当前执行者按共同约定和验收 SOP 处理，无需为状态回调 task 技能。
+
+按[配套 CLI 用法](../../references/cli.md)定位实际安装的工具；已有结果用 result show 读取，获准写回的真实批次用 result add 追加到唯一对象。验证仍运行项目自己的检查和实际验收，check 仅核对文档结构；不因写入结果自动完成对象。
 
 ## 输出
 

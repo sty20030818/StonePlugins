@@ -5,7 +5,7 @@ description: "在项目文档工作流中，记录、整理或处理尚未承诺
 
 # Idea
 
-处理尚未承诺实施的项目想法。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[想法 SOP](../../references/docs-system/sop/idea.md)；处理方式和完成判断由这些文档维护。记录骨架见[想法输出结构与示例](../../references/docs-system/sop/idea.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+处理尚未承诺实施的项目想法。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[想法 SOP](../../tools/stonedocs/rules/docs/sop/idea.md)；处理方式和完成判断由这些文档维护。记录骨架见[想法输出结构与示例](../../tools/stonedocs/rules/docs/sop/idea.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
@@ -14,6 +14,8 @@ description: "在项目文档工作流中，记录、整理或处理尚未承诺
 ## 执行适配
 
 按想法 SOP 记录或处理，不把灵感改成已批准的范围、阶段或任务。已有承接工作时关联其唯一记录；采纳时说明接收去向，Goal 包含 Phase，Task 只能属于实际承接的 Phase。需要比较或确认时通过问题、依据和链接交接，不强制调用前序或后续技能。
+
+需要按对象定位承接范围或读取项目 SOP 时，按[配套 CLI 用法](../../references/cli.md)使用只读入口。想法内容和去向仍按本 SOP 写回，不为记录灵感创建 Goal、Phase 或 Task。
 
 ## 输出
 

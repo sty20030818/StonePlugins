@@ -5,7 +5,7 @@ description: "审阅产品目标（Goal）或成果阶段（Phase）的成果、
 
 # Review
 
-审阅 Goal 或 Phase 的成果与条件，先明确本次对象，按授权记录复盘或收尾；普通代码、PR 审查由相应工程审阅流程承接。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[成果审阅 SOP](../../references/docs-system/sop/review.md)；成果判断、遗留处置及收尾归档由这些文档维护。记录骨架见[成果审阅输出结构与示例](../../references/docs-system/sop/review.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+审阅 Goal 或 Phase 的成果与条件，先明确本次对象，按授权记录复盘或收尾；普通代码、PR 审查由相应工程审阅流程承接。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[成果审阅 SOP](../../tools/stonedocs/rules/docs/sop/review.md)；成果判断、遗留处置及收尾归档由这些文档维护。记录骨架见[成果审阅输出结构与示例](../../tools/stonedocs/rules/docs/sop/review.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
@@ -13,7 +13,9 @@ description: "审阅产品目标（Goal）或成果阶段（Phase）的成果、
 
 ## 执行适配
 
-按成果审阅 SOP 使用项目已有工具核对资料。需要补充验证时按 [verify SOP](../../references/docs-system/sop/verify.md) 处理，同一执行者可以连续完成；相关状态由当前执行者按共同约定和成果审阅 SOP 写回，无需为状态循环调用技能。
+按成果审阅 SOP 使用项目已有工具核对资料。需要补充验证时按 [verify SOP](../../tools/stonedocs/rules/docs/sop/verify.md) 处理，同一执行者可以连续完成；相关状态由当前执行者按共同约定和成果审阅 SOP 写回，无需为状态循环调用技能。
+
+按[配套 CLI 用法](../../references/cli.md)定位实际安装的工具，读取 Goal/Phase 和结果；需补记获准的实际批次时用 result add。满足条件并获准收尾后，分别执行相关对象的 done 和 archive，缺口先移交或解决。归档与完成为独立动作，不连带完成父级、发版或同步 Linear。
 
 ## 输出
 

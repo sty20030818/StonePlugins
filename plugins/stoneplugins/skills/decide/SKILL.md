@@ -5,7 +5,7 @@ description: "在项目文档工作流中，澄清目标、追问取舍并记录
 
 # Decide
 
-把项目讨论收敛为有依据、有明确范围的决定。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[决定 SOP](../../references/docs-system/sop/decide.md)；确认、记录和完成判断由这些文档维护。记录骨架见[决定输出结构与示例](../../references/docs-system/sop/decide.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+把项目讨论收敛为有依据、有明确范围的决定。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[决定 SOP](../../tools/stonedocs/rules/docs/sop/decide.md)；确认、记录和完成判断由这些文档维护。记录骨架见[决定输出结构与示例](../../tools/stonedocs/rules/docs/sop/decide.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
@@ -14,6 +14,8 @@ description: "在项目文档工作流中，澄清目标、追问取舍并记录
 ## 执行适配
 
 按决定 SOP 澄清会改变结果的取舍。已有确认继续适用，不能从建议、沉默或方向认可推导额外授权；未确认的选择保留为待决，不标为 accepted。授权写回时更新实际内容所有者，只有长期需要解释的重要取舍才独立成 decision；规划涉及 Goal、Phase、Task 时保持 Goal 包含 Phase、Task 必属 Phase。
+
+需要定位受影响对象或读取项目 SOP 时，按[配套 CLI 用法](../../references/cli.md)使用只读入口；确认和决定正文仍由当前执行者按本 SOP 写回，CLI 不作决定或授予权限。
 
 ## 输出
 

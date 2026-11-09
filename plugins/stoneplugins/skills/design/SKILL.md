@@ -5,7 +5,7 @@ description: "在项目文档工作流中，为明确交付目标形成或审查
 
 # Design
 
-为明确的项目交付目标形成或审查实施方案。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[实施设计 SOP](../../references/docs-system/sop/design.md)；输入、操作、写回与完成判断由这些文档维护。填写结构见[设计输出结构与示例](../../references/docs-system/sop/design.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+为明确的项目交付目标形成或审查实施方案。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[实施设计 SOP](../../tools/stonedocs/rules/docs/sop/design.md)；输入、操作、写回与完成判断由这些文档维护。填写结构见[设计输出结构与示例](../../tools/stonedocs/rules/docs/sop/design.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
@@ -14,6 +14,8 @@ description: "在项目文档工作流中，为明确交付目标形成或审查
 ## 执行适配
 
 按实施设计 SOP 使用项目已有工具核对实现并组织需要共同审查的方案。目标或约束不足时只澄清影响设计的缺口，已确认选择继续沿用；设计草案、获准写回与实现执行按本次授权区分。下游任务可直接引用设计，不依赖额外技能调用。
+
+需要定位承接 Goal/Phase/Task 或读取项目 SOP 时，按[配套 CLI 用法](../../references/cli.md)使用只读入口；方案正文仍由当前执行者按本 SOP 编写和审查，CLI 不替代技术判断。
 
 ## 输出
 

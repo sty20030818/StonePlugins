@@ -2,6 +2,10 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
+## 开发候选
+
+当前开发树增加 StoneDocs 同源配套 CLI：完整插件携带 JavaScript、固定规则和来源清单，九个工作流按实际安装位置调用同一工具，无需另装全局 CLI。导入与调用方式见[文档工作流](docs/document-workflow.md)及[配套 CLI 用法](plugins/stoneplugins/references/cli.md)。这是未发布候选；下述 v0.8.1 安装和历史结果仍对应其固定 tag，不把新适配视为旧正式版已包含。
+
 ## 当前版本
 
 `v0.8.1` 提供 idea、compare、decide、story、plan、design、task、verify、review 九项文档工作流，加上 engineering 共十个技能入口；各项可独立使用，并通过已有资料和链接接续。工程核心与三个生命周期 Hook 沿用原行为。

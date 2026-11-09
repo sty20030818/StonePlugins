@@ -5,7 +5,7 @@ description: "在项目文档工作流中，梳理用户故事、业务规则和
 
 # Story
 
-把项目目标整理为用户故事与可验收行为。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[故事 SOP](../../references/docs-system/sop/story.md)；输入、操作、写回与完成判断由这些文档维护。填写结构见[故事输出结构与示例](../../references/docs-system/sop/story.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+把项目目标整理为用户故事与可验收行为。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[故事 SOP](../../tools/stonedocs/rules/docs/sop/story.md)；输入、操作、写回与完成判断由这些文档维护。填写结构见[故事输出结构与示例](../../tools/stonedocs/rules/docs/sop/story.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
@@ -14,6 +14,8 @@ description: "在项目文档工作流中，梳理用户故事、业务规则和
 ## 执行适配
 
 按故事 SOP 使用项目已有工具梳理行为；技术、研究或文档工作可直接表达交付目标。讨论与写回遵守本次授权，故事和规则进入各自内容所有者。下游可直接读取产物继续规划、设计或验证，不依赖本技能的调用记录。
+
+需要定位目标、阶段或读取项目 SOP 时，按[配套 CLI 用法](../../references/cli.md)使用只读入口；用户故事和行为标准仍由当前执行者按本 SOP 编写，CLI 不生成业务承诺。
 
 ## 输出
 

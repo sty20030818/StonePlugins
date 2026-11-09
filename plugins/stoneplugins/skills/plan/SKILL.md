@@ -5,7 +5,7 @@ description: "在项目文档工作流中，规划或调整产品目标（Goal�
 
 # Plan
 
-根据已确认成果规划或调整 Goal 或 Phase，先明确本次对象。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[计划 SOP](../../references/docs-system/sop/plan.md)；输入、操作、写回与完成判断由这些文档维护。填写结构见[计划输出结构与示例](../../references/docs-system/sop/plan.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。
+根据已确认成果规划或调整 Goal 或 Phase，先明确本次对象。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[计划 SOP](../../tools/stonedocs/rules/docs/sop/plan.md)；输入、操作、写回与完成判断由这些文档维护。填写结构见[计划输出结构与示例](../../tools/stonedocs/rules/docs/sop/plan.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
@@ -14,6 +14,8 @@ description: "在项目文档工作流中，规划或调整产品目标（Goal�
 ## 执行适配
 
 按计划 SOP 使用项目既有路径组织 Goal、所属 Phase 与 roadmap 的关系。故事、技术方案或任务需要进一步展开时，可由当前执行者按相应 SOP 补充所需工作，不把兄弟技能的可用性或调用记录设为规划前置；本次实际产出仍由授权范围决定。
+
+按[配套 CLI 用法](../../references/cli.md)定位实际安装的工具。需要创建已确认的 Goal/Phase 时，用对应 new 命令预览及应用；已有计划的语义调整仍直接编辑其所有者。明确发布意图才使用 release plan/show，不从 Goal 标识推断版本。首次采用或明确规范升级时分别查看 init/upgrade 帮助，先预览；插件更新不触发项目升级。
 
 ## 输出
 
