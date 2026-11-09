@@ -1,4 +1,5 @@
 import { UsageError } from "./commands.js";
+import { validateRecoveryAuthor } from "./recovery.js";
 import { inputLoader } from "./input.js";
 import { planLifecycle } from "../workflow/lifecycle.js";
 import { planResult } from "../workflow/results.js";
@@ -28,7 +29,7 @@ export function executeProgress(root, call) {
     validateProgressOptions(call);
     const o = call.options;
     if (o.resume || o.rollback) {
-        const result = recoverPlan(root, String(o.resume ?? o.rollback), o.resume ? "continue" : "rollback", call.definition.path);
+        const result = recoverPlan(root, String(o.resume ?? o.rollback), o.resume ? "continue" : "rollback", call.definition.path, (request) => validateRecoveryAuthor(request, o.author === true));
         return { outcome: result.outcome, data: { object: result.plan.object, operationId: result.operationId, recovery: o.resume ? "continue" : "rollback" }, changes: result.changes, warnings: result.plan.warnings ?? [] };
     }
     // dry-run 允许只读观察；普通执行即使已成为终态，也不能绕过上次未清理的中断。

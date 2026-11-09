@@ -1,4 +1,5 @@
 import { UsageError } from "./commands.js";
+import { validateRecoveryAuthor } from "./recovery.js";
 import { planCreate } from "../workflow/create.js";
 import { inputLoader } from "./input.js";
 import { applyPlan, recoverPlan, planToken } from "../files/write.js";
@@ -28,7 +29,7 @@ export function executeCreate(root, call) {
     validateCreateOptions(call);
     const o = call.options;
     if (o.resume || o.rollback) {
-        const outcome = recoverPlan(root, String(o.resume ?? o.rollback), o.resume ? "continue" : "rollback", call.definition.path);
+        const outcome = recoverPlan(root, String(o.resume ?? o.rollback), o.resume ? "continue" : "rollback", call.definition.path, (request) => validateRecoveryAuthor(request, o.author === true));
         return { outcome: outcome.outcome, data: { object: outcome.plan.object, operationId: outcome.operationId, recovery: o.resume ? "continue" : "rollback" }, changes: outcome.changes, warnings: outcome.plan.warnings ?? [] };
     }
     const kind = call.definition.inputKind;

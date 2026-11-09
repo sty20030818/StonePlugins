@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "cliContract": 1,
   "ruleContract": 1,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "source": {
     "repository": "https://github.com/sty20030818/StoneDocs",
-    "revision": "3f514effbe92f834379ff845b47fcdecdffd8a7b",
+    "revision": "f190272711ce9fc1d8c921b4739a1d17bb87a1de",
     "state": "commit",
     "files": [
       {
@@ -26,7 +26,7 @@
       },
       {
         "path": "src/cli/create.ts",
-        "sha256": "c98ae66f54d248dfa3ef0bf46ddde21c2b919356112083b71d0fd1b04409a0ae"
+        "sha256": "6ee9e7afdb3d913a1b73d43ac86b0ac0f8358520d45e4ef5d566be69e75d29b0"
       },
       {
         "path": "src/cli/entry.ts",
@@ -42,7 +42,11 @@
       },
       {
         "path": "src/cli/progress.ts",
-        "sha256": "9cc4856d648a40e65295734b8a0603a951e8f8d3ada4110559273c8ef82be13e"
+        "sha256": "b3aa02040e7757b77de8c9ed606b23e5358ceb9776fcfe71f254353568085a7f"
+      },
+      {
+        "path": "src/cli/recovery.ts",
+        "sha256": "689a82f9047a697a42a23c339058ca07c0b124e8998ae87218b2298137e25571"
       },
       {
         "path": "src/cli/rules.ts",
@@ -82,7 +86,7 @@
       },
       {
         "path": "src/files/write.ts",
-        "sha256": "149579462f57ff4079394bbdef3c1ce00c528c648e871a83a3c99eafa4e923c6"
+        "sha256": "30d422bd68f59c1e0f95e5de1fe4092c848d8cf22a2e7c414a3cbed6a1c3b0ac"
       },
       {
         "path": "src/rules/bundle.ts",
@@ -166,7 +170,7 @@
     },
     {
       "path": "lib/cli/create.js",
-      "sha256": "add2267f147ab171bd445bbfdce93103826852010e8da086089544911dd2274d",
+      "sha256": "a0ce5ac77795e6284621f530dcbebf78c99660a5883fe7d2d8c09797165ed52b",
       "executable": false
     },
     {
@@ -186,7 +190,12 @@
     },
     {
       "path": "lib/cli/progress.js",
-      "sha256": "237eeeab76f1314e10d0e40f1981c72fec6a2e24ae3e4ef6e8fb8d1b1ae4424d",
+      "sha256": "a0714261a0332e0b024b71d0099cf5d56eb77046db21b6e8b221a2d3762f64ee",
+      "executable": false
+    },
+    {
+      "path": "lib/cli/recovery.js",
+      "sha256": "191fe7281b895ec3e383c516b72c97ebf42dd0a91ab9448386eb666f67e6388c",
       "executable": false
     },
     {
@@ -236,7 +245,7 @@
     },
     {
       "path": "lib/files/write.js",
-      "sha256": "d54a3f50561478253d378832e513d117307cd86e0c4ca823f9ed55a8efd0ef0f",
+      "sha256": "131f00589a5223eab22ad001189f8f6f50c6b25dfacf7ea9d1122d18642bd18b",
       "executable": false
     },
     {
@@ -316,7 +325,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "bdbb09cb93fc595d0f3e2cea6639d2d0c7de28a070ed8ff8b4f87db41a57a5c9",
+      "sha256": "a1a40f4d46617dfb7b2ffff2dcfa15dbc914a3146292aeb68ef4675e1a459040",
       "executable": false
     },
     {

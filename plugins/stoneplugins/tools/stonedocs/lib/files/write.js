@@ -503,11 +503,12 @@ function claimRecovery(directory, journal) {
         throw error;
     }
 }
-export function recoverPlan(rootInput, operationId, action, command) {
+export function recoverPlan(rootInput, operationId, action, command, validateRequest) {
     const root = realpathSync(rootInput);
     if (!["continue", "rollback"].includes(action))
         fail("PLAN_INVALID", "未知恢复动作。", "recovery", 2);
     const { directory, journal } = loadJournal(root, operationId, command);
+    validateRequest?.(journal.plan.request);
     const claim = claimRecovery(directory, journal);
     let writing = false;
     try {

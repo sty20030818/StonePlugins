@@ -4,7 +4,7 @@
 
 九项文档工作流，与 engineering 共十个技能入口。各入口可依据足够的目标、约束和事实独立使用，通过项目文件接续；不要求前序调用记录。
 
-开发树的配套 CLI 适配尚未发布，个人正式安装尚未更新。本地正式协议安装、实际调用及固定产物结果由 [StoneDocs T0058](https://github.com/sty20030818/StoneDocs/blob/b60ee7f26d3046025f7987bd54c611472264034a/docs/goals/v1/phases/p003-cli/tasks.md#result-task-t0058-paired-cli-acceptance)持有；既有 v0.8.1 规则、发布、安装和正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)；[v0.7.0 验证](evals/v0.7.0.md)保留旧版六项工作流的结果，不直接继承为新模型通过。
+开发树的配套 CLI 适配尚未发布，个人正式安装尚未更新。本地正式协议安装、实际调用、固定产物与恢复修复的当前结论由 [StoneDocs P003 验收](https://github.com/sty20030818/StoneDocs/blob/f9099df15f5c0c634f3b9f6ac85c25a98cc7d17b/docs/goals/v1/phases/p003-cli/verification.md#result-phase-p003-p003-composed-acceptance)持有，其中引用原技能回合与本轮补验，不将旧版回合外推为新恢复分支的模型通过；既有 v0.8.1 规则、发布、安装和正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)；[v0.7.0 验证](evals/v0.7.0.md)保留旧版六项工作流的结果，不直接继承为新模型通过。
 
 ## 职责与使用
 
