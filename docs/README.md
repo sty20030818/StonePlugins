@@ -1,10 +1,8 @@
 # StonePlugins 文档索引
 
-开发树的同源 CLI 候选及使用入口见[文档工作流](document-workflow.md)；任务与实际验证由 StoneDocs P003 T0058 维护。候选结果与以下已发布版本分别解释，未发布内容不继承旧版的宿主行为通过。
+## 文档工作流与版本范围
 
-## 当前文档工作流
-
-[文档工作流](document-workflow.md)说明 v0.8.1 的九项文档工作流、Goal → Phase → Task 模型和十一份固定规则资源；加上 engineering，共十个技能入口。发布、安装与正式宿主实际结果见 [v0.8.1 验证](evals/v0.8.1.md)。
+[文档工作流](document-workflow.md)说明九项入口、Goal → Phase → Task、开发树的固定配套与权威验收入口；加上 engineering，共十个技能。任务及实际结果由 StoneDocs 对应目标与阶段持有，此索引不再单独指向某个早期实现任务。已发布 v0.8.1 的发布、安装与正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)，按其固定 tag 解释，不把开发树变化视为旧正式版已包含。
 
 [v0.8.0 验证](evals/v0.8.0.md)保留九项工作流的原正式批次；[v0.7.0 验证](evals/v0.7.0.md)保留六项工作流版本的实测，[P007 开发记录](evals/planning-skills-development.md)、[v0.6.1](evals/v0.6.1.md)和更早档案只代表各自时点。
 
