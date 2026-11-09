@@ -1,0 +1,338 @@
+{
+  "title": "StonePlugins v0.8.1 正式安装后三个定向行为样例",
+  "date": "2026-11-09",
+  "kind": "脱敏可复现样例及真实工具轨迹摘录；不包含完整私有日志",
+  "normativeSources": {
+    "pluginRelease": "https://github.com/sty20030818/StonePlugins/releases/tag/v0.8.1",
+    "pluginVersion": "0.8.1",
+    "pluginRoot": "https://github.com/sty20030818/StonePlugins/tree/v0.8.1/plugins/stoneplugins",
+    "upstreamRepository": "https://github.com/sty20030818/StoneDocs",
+    "upstreamCommit": "7d9171cc7931f4eef0e82dc4b8e212a32672cb9e",
+    "upstreamConventions": "https://github.com/sty20030818/StoneDocs/blob/7d9171cc7931f4eef0e82dc4b8e212a32672cb9e/docs/conventions.md",
+    "fixtureAdoption": "合成项目引用正式安装的固定规则；附件不复制插件或规范全文。",
+    "pluginReleaseCommit": "4ff4617ffe053502ff582ba0a33e8dae07574bbe"
+  },
+  "execution": {
+    "cliVersion": "0.164.0",
+    "commandTemplate": [
+      "codex",
+      "exec",
+      "--ephemeral",
+      "--json",
+      "--sandbox",
+      "read-only",
+      "--skip-git-repo-check",
+      "-C",
+      "<FIXTURE_ROOT>/<case-directory>",
+      "-"
+    ],
+    "stdin": "对应 case.naturalLanguageInput",
+    "defaultModelConfiguration": {
+      "observedAt": "2026-11-09T04:18:48.264545+00:00",
+      "source": "existing user default config; selected non-secret fields only",
+      "model": "gpt-6.1-sol",
+      "model_reasoning_effort": "ultra",
+      "profile": null,
+      "configModifiedAt": "2026-11-09T04:12:00.086011+00:00",
+      "launchOverrides": {
+        "model": false,
+        "reasoningEffort": false,
+        "profile": false,
+        "CODEX_HOME": false
+      },
+      "limitation": "配置读回与命令实参证明采用默认配置；不等同于模型服务端路由的独立网络取证。",
+      "selectedFieldsStillMatchAtEnd": true
+    },
+    "turnsPerCase": 1,
+    "hostPermission": "外层 app-server 初始化使用标准 require_escalated，父任务明确授权；内层始终 read-only。",
+    "dangerousBypass": false,
+    "modelOrEffortOverrides": false,
+    "fixtureFilesUnchanged": true,
+    "inspectedPluginFilesUnchanged": true,
+    "manualConfigurationOrTrustEdits": false,
+    "fullConfigurationReadback": "全部样例结束后，root通过正式config/read逐字段比较：仅市场ref与三个已授权Hook内容信任值变化，无临时项目信任或其他配置变化；个人AGENTS字节不变。",
+    "cacheIntegrity": {
+      "directBeforeAfterScope": "runner实际保存的9个manifest/package/source及Skill/SOP文件",
+      "directBeforeAfterUnchanged": true,
+      "afterRunFullCacheComparedToTag": {
+        "tag": "v0.8.1",
+        "commit": "4ff4617ffe053502ff582ba0a33e8dae07574bbe",
+        "tagFileCount": 41,
+        "cacheFileCount": 41,
+        "missingOrExtra": [],
+        "mismatches": []
+      },
+      "beforeRunFullCacheEvidence": "root于启动前报告正式安装41/41缓存与同一tag匹配；本runner未另保存全部41文件的启动前哈希。"
+    },
+    "completedModelTurns": 3,
+    "successfulCLIProcesses": 3,
+    "failedCLIProcessesBeforeModelTurn": 3,
+    "totalCLIProcesses": 6
+  },
+  "failedAttempts": [
+    {
+      "stage": "runner预检",
+      "result": "未启动模型调用",
+      "actualFailure": "KeyError: 'version'",
+      "cause": "临时runner误从package.json取版本；正式插件版本由.codex-plugin/plugin.json拥有。",
+      "handling": "只修正临时runner读取位置后继续，未改安装或仓库。"
+    },
+    {
+      "stage": "首批外层沙箱启动",
+      "cases": [
+        "task",
+        "design",
+        "verify"
+      ],
+      "processExitCodes": [
+        1,
+        1,
+        1
+      ],
+      "jsonlEvents": 0,
+      "actualStderr": "Error: failed to initialize in-process app-server client: Operation not permitted (os error 1)",
+      "handling": "不判模型行为失败或通过；父任务确认已有授权后经标准require_escalated启动外层，内层只读参数不变。"
+    }
+  ],
+  "cases": [
+    {
+      "id": "task",
+      "workingDirectory": "case-task/lab",
+      "naturalLanguageInput": "请使用当前已安装的 stoneplugins:task 接续被试产品 PocketSales 的 T0004。只读核对当前任务条件和实现，完成本次可以完成的核对并给出下一步。不要写文件、操作 Git、运行程序、启动服务或数据库；只依据实际读到的材料返回结论。",
+      "processExitCode": 0,
+      "seconds": 135.68,
+      "completedTurns": 1,
+      "actualReadEvidence": [
+        {
+          "privateLog": "task.jsonl",
+          "jsonlLine": 8,
+          "eventType": "item.completed",
+          "itemId": "item_4",
+          "command": "/bin/zsh -lc 'cat <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/skills/task/SKILL.md'",
+          "exitCode": 0,
+          "fileRelativeToPlugin": "skills/task/SKILL.md",
+          "fullBodyExactMatch": true,
+          "fileSha256": "d89261269096ffa52f53563d5b8ce52e012fff6a52dba4a97138dbd9fb7fb87c",
+          "toolOutputSha256": "d89261269096ffa52f53563d5b8ce52e012fff6a52dba4a97138dbd9fb7fb87c",
+          "toolOutputBytes": 1556,
+          "toolOutputExcerpt": "拆分、接续、执行或移交已明确的阶段任务。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[任务 SOP](../../references/docs-system/sop/task.md)；任务操作、移交及完成判断由这些文档维护。记录骨架见[任务输出结构与示例](../../references/docs-system/sop/task.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。",
+          "publicFile": "https://github.com/sty20030818/StonePlugins/blob/v0.8.1/plugins/stoneplugins/skills/task/SKILL.md"
+        },
+        {
+          "privateLog": "task.jsonl",
+          "jsonlLine": 18,
+          "eventType": "item.completed",
+          "itemId": "item_9",
+          "command": "/bin/zsh -lc 'cat <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/references/docs-system/sop/task.md\ncat <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/references/docs-system/source.json'",
+          "exitCode": 0,
+          "fileRelativeToPlugin": "references/docs-system/sop/task.md",
+          "fullBodyExactMatch": true,
+          "fileSha256": "914d668a1875c94a00a1c24b510d6de152cae90749745661212bbe5f36577be2",
+          "toolOutputSha256": "aa8bbcf87625f574767a5d73821c9a124c7d1230e189f059dfe57a2ab28808fe",
+          "toolOutputBytes": 5457,
+          "toolOutputExcerpt": "1. 先核对项目根及适用规范，再按成果或 Task ID 定位本项目所属 Phase 与唯一条目，明确本次授权、完成条件、依赖和状态。实验任务与被试产品任务分别在各自项目接续，不能只凭相同编号选取条目。找不到承接阶段时先澄清或规划，不建立阶段外 Task。",
+          "publicFile": "https://github.com/sty20030818/StonePlugins/blob/v0.8.1/plugins/stoneplugins/references/docs-system/sop/task.md"
+        }
+      ],
+      "behaviorEvidence": {
+        "privateLog": "task.jsonl",
+        "finalMessageLine": 30,
+        "excerpts": [
+          "已按当前安装的 `stoneplugins:task` 完成 PocketSales **P001/T0004 的只读核对**，结论足以交接。",
+          "当前提供的代码仅导出函数，没有文件读取、JSON 解析、命令行入口或输出。",
+          "明确 P001 不依赖同步方案确认；当前也没有同步实施授权。",
+          "静态符合不代表运行验收通过。"
+        ]
+      },
+      "independentReview": {
+        "targetedBehavior": "符合",
+        "observed": [
+          "正确定位被试产品 PocketSales/P001/T0004，没有采用 DocProbeLab 同编号任务。",
+          "完成当前静态核对，发现本地 CLI 入口尚缺的实际缺口。",
+          "明确 P002 未确认同步选择不阻塞 P001 当前工作。",
+          "没有把静态符合称作运行通过，没有写回任务状态。"
+        ]
+      },
+      "shellToolCount": 10,
+      "fixtureProgramExecution": false,
+      "gitServiceDatabaseOrBrowserOperations": false
+    },
+    {
+      "id": "design",
+      "workingDirectory": "case-design",
+      "naturalLanguageInput": "请使用当前已安装的 stoneplugins:design，为 TinyLedger P001 已确认的归档计数增量形成可交给下一位执行者的设计草案。先读取现有资料和实现。仅在回复中给出设计，不写文件、不运行程序、不操作 Git，不启动服务或数据库。",
+      "processExitCode": 0,
+      "seconds": 167.94,
+      "completedTurns": 1,
+      "actualReadEvidence": [
+        {
+          "privateLog": "design.jsonl",
+          "jsonlLine": 8,
+          "eventType": "item.completed",
+          "itemId": "item_4",
+          "command": "/bin/zsh -lc 'cat <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/skills/design/SKILL.md'",
+          "exitCode": 0,
+          "fileRelativeToPlugin": "skills/design/SKILL.md",
+          "fullBodyExactMatch": true,
+          "fileSha256": "2a0073bbc1d220864cf357f3cf3482c78d2ab1334f5a2d1e479a54a0af2820a4",
+          "toolOutputSha256": "2a0073bbc1d220864cf357f3cf3482c78d2ab1334f5a2d1e479a54a0af2820a4",
+          "toolOutputBytes": 1648,
+          "toolOutputExcerpt": "为明确的项目交付目标形成或审查实施方案。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[实施设计 SOP](../../references/docs-system/sop/design.md)；输入、操作、写回与完成判断由这些文档维护。填写结构见[设计输出结构与示例](../../references/docs-system/sop/design.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。",
+          "publicFile": "https://github.com/sty20030818/StonePlugins/blob/v0.8.1/plugins/stoneplugins/skills/design/SKILL.md"
+        },
+        {
+          "privateLog": "design.jsonl",
+          "jsonlLine": 15,
+          "eventType": "item.completed",
+          "itemId": "item_7",
+          "command": "/bin/zsh -lc 'cat <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/references/docs-system/conventions.md <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/references/docs-system/sop/design.md <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/references/docs-system/source.json'",
+          "exitCode": 0,
+          "fileRelativeToPlugin": "references/docs-system/sop/design.md",
+          "fullBodyExactMatch": true,
+          "fileSha256": "555b0c4cf772b7a46a78bce93aa83bd333c21e2090cff71c9b2dbc5636c834dd",
+          "toolOutputSha256": "c90ea1300a388a331e55f3fc252dd9d17cabbc3f4670f402c7f4286563a12ce5",
+          "toolOutputBytes": 16428,
+          "toolOutputExcerpt": "5. 解释选择与代价，重要长期取舍引用 decision，不维护第二份决定正文。涉及运行环境时，说明当前成果所需的最小可运行基线、环境前提和运行方式；按 [verify](verify.md)安排关键路径和失败路径的必要验证，不把计划写成实际成功。",
+          "publicFile": "https://github.com/sty20030818/StonePlugins/blob/v0.8.1/plugins/stoneplugins/references/docs-system/sop/design.md"
+        }
+      ],
+      "behaviorEvidence": {
+        "privateLog": "design.jsonl",
+        "finalMessageLine": 32,
+        "excerpts": [
+          "保持原输入字段约束、本地只读方式和 Node 22.18+ 环境，不增加第三方依赖、HTTP 或持久化。",
+          "`显式路径参数 → readFile → JSON.parse → countCustomers → 一次性输出 JSON 和换行`",
+          "以下均为后续计划，本轮未执行。",
+          "若采用上述方案，当前成果没有阻断实施的技术待决项；本草案不改变 P001 状态，也不代表功能已交付。"
+        ]
+      },
+      "independentReview": {
+        "targetedBehavior": "符合当前SOP运行方式要求；额外检查子项部分覆盖",
+        "observed": [
+          "读取当前 Node CLI 与 README，沿用已确认技术及两个既有模块。",
+          "说明 Node 22.18+、本地显式 JSON 路径输入、进程输出/错误路径、无包/网络/数据库前提及后续验证。",
+          "设计草案明确未实施，未因 P002 UI/远端技术未定而阻断当前设计。"
+        ],
+        "extraCheck": {
+          "criterion": "复验预设额外检查：最终输出中给出可直接复制的完整启动命令。",
+          "result": "部分覆盖：实际读取 README 中的命令，但最终回复没有重列 node src/cli.mjs fixtures/customers.json。",
+          "classification": "不是已确认的SOP违背；SOP要求说明运行方式，不要求逐字重复命令。现有说明加已读README足以接续，但单看最终回复的复制便利性有所缺失。",
+          "action": "如实保留，不补跑凑通过，不扩大规范。"
+        }
+      },
+      "shellToolCount": 12,
+      "fixtureProgramExecution": false,
+      "gitServiceDatabaseOrBrowserOperations": false
+    },
+    {
+      "id": "verify",
+      "workingDirectory": "case-verify",
+      "naturalLanguageInput": "请使用当前已安装的 stoneplugins:verify，核对 SnapshotReport P001/T0007 当前交付对象能否按其完成条件通过。只检查已有文件和证据，逐条件给出判断及必要接续；不要构建、运行程序、写文件、操作 Git，不启动服务或数据库。",
+      "processExitCode": 0,
+      "seconds": 102.9,
+      "completedTurns": 1,
+      "actualReadEvidence": [
+        {
+          "privateLog": "verify.jsonl",
+          "jsonlLine": 10,
+          "eventType": "item.completed",
+          "itemId": "item_5",
+          "command": "/bin/zsh -lc 'cat <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/skills/verify/SKILL.md'",
+          "exitCode": 0,
+          "fileRelativeToPlugin": "skills/verify/SKILL.md",
+          "fullBodyExactMatch": true,
+          "fileSha256": "8d51187b9a348e9da09cf65cfc71f1dd96bfe9c7a716d869de3da255f1fa8ab1",
+          "toolOutputSha256": "8d51187b9a348e9da09cf65cfc71f1dd96bfe9c7a716d869de3da255f1fa8ab1",
+          "toolOutputBytes": 1424,
+          "toolOutputExcerpt": "验收或复验明确的交付对象，或核对已有证据。先读取项目入口、[共同约定](../../references/docs-system/conventions.md)与[验收 SOP](../../references/docs-system/sop/verify.md)；对象和标准版本、按需证据、复验及完成判断由这些文档维护。记录骨架见[验收输出结构与示例](../../references/docs-system/sop/verify.md#输出结构与示例)，资源版本见[固定快照清单](../../references/docs-system/source.json)。",
+          "publicFile": "https://github.com/sty20030818/StonePlugins/blob/v0.8.1/plugins/stoneplugins/skills/verify/SKILL.md"
+        },
+        {
+          "privateLog": "verify.jsonl",
+          "jsonlLine": 22,
+          "eventType": "item.completed",
+          "itemId": "item_8",
+          "command": "/bin/zsh -lc 'cat <CODEX_HOME>/plugins/cache/stonefish/stoneplugins/0.8.1/references/docs-system/sop/verify.md'",
+          "exitCode": 0,
+          "fileRelativeToPlugin": "references/docs-system/sop/verify.md",
+          "fullBodyExactMatch": true,
+          "fileSha256": "a48a90c7555ea52b0cd87830ba1490d8467df9b935707ba8acde7691299f1337",
+          "toolOutputSha256": "a48a90c7555ea52b0cd87830ba1490d8467df9b935707ba8acde7691299f1337",
+          "toolOutputBytes": 3541,
+          "toolOutputExcerpt": "2. 如实定位对象和标准版本，优先引用已有提交、构建或产物。正式取证前确认本批相关写入已结束，所用运行实例或产物对应受检文件。检查工作树时注明未提交状态、受检范围及影响；HEAD 不能代表未提交改动。结果不能无条件适用于后续变化。",
+          "publicFile": "https://github.com/sty20030818/StonePlugins/blob/v0.8.1/plugins/stoneplugins/references/docs-system/sop/verify.md"
+        }
+      ],
+      "behaviorEvidence": {
+        "privateLog": "verify.jsonl",
+        "finalMessageLine": 41,
+        "excerpts": [
+          "**当前交付对象不能通过，正式取证的前提也未满足。**",
+          "旧退出码 `0` 不能支持当前通过",
+          "交接明确这是合成场景输入；上述停写判断依据该输入，不表示发现了真实后台进程。",
+          "在原 `verification.md` 追加本批结果，保留旧批记录，再同步 T0007。"
+        ]
+      },
+      "independentReview": {
+        "targetedBehavior": "符合",
+        "observed": [
+          "根据合成交接识别相关写入未结束，明确不能开始正式取证。",
+          "识别 r2 源码与 r1 产物不匹配，以及产物缺失 archivedCount。",
+          "拒绝将旧标准/r1 的 exit 0 用于当前通过。",
+          "要求停写、更新受影响产物并追加复验，保留旧记录；没有把验收任务交付与被验对象通过混为一谈。"
+        ]
+      },
+      "shellToolCount": 17,
+      "fixtureProgramExecution": false,
+      "gitServiceDatabaseOrBrowserOperations": false
+    }
+  ],
+  "reproduction": {
+    "steps": [
+      "新建私有临时目录作为 FIXTURE_ROOT。",
+      "将 fixtureFiles 的相对路径和UTF-8内容写入 FIXTURE_ROOT；不要复制个人AGENTS、配置或Hook上下文。",
+      "通过正式安装取得 v0.8.1，不改安装缓存。",
+      "按每例 workingDirectory、naturalLanguageInput 和 commandTemplate 启动一次新进程；不传模型、推理或profile覆盖。",
+      "保存私有JSONL，核对真实工具路径/退出码/完整正文，并审阅关键行为。外层权限不足时记录失败，不使用危险bypass。"
+    ],
+    "fixtureFiles": {
+      "case-design/AGENTS.md": "# TinyLedger 协作入口\nTinyLedger 是本地 Node CLI 项目。规范采用当前正式安装的 StonePlugins 文档工作流。\n当前目标见 docs/goals/v1/plan.md，具体增量见 P001 的 spec-deltas.md，已有结构与命令由 docs/architecture.md 和 README.md 拥有。\n本轮仅返回设计草案，不写文件、不运行程序、不操作 Git，不启动服务或数据库。\n",
+      "case-design/README.md": "# TinyLedger\n本地只读客户计数工具。当前环境前提为 Node 22.18+，只使用 Node 内置模块，没有第三方运行依赖。\n从项目根运行：node src/cli.mjs fixtures/customers.json\n当前输出 JSON，只含 activeCount。输入路径由调用者显式给定。\n",
+      "case-design/docs/architecture.md": "# 当前架构\n单进程 CLI，不含 Web、HTTP、数据库或构建产物。\nsrc/cli.mjs 负责参数和本地 JSON 读取；src/count.mjs 提供纯计数函数。\n输入为客户数组，每项包含 id、name、archivedAt；archivedAt 为 null 代表未归档。\n程序不写输入文件。运行依赖仅 Node 内置 fs/promises，不需安装包、密钥、端口或迁移。\n",
+      "case-design/docs/goals/v1/phases/p001-count/plan.md": "---\nid: P001\nstatus: todo\n---\n# 归档计数\n当前成果是在既有 CLI 输出中新增 archivedCount，保留 activeCount。保持相同输入和纯本地只读运行方式。\n退出条件：实施方案与必要验证可审查，当前成果所需关键选择明确。\n",
+      "case-design/docs/goals/v1/phases/p001-count/spec-deltas.md": "# 计数未来差异\n已确认：合法数组中 archivedAt 非 null 的项计入 archivedCount，null 的项计入 activeCount；空数组二者为 0。\nCLI 成功输出恰好包含 activeCount、archivedCount 两个非负整数。读取或 JSON 解析失败时退出非零，stderr 给出可理解错误，不输出成功 JSON。\n本次不改变输入字段约束，不引入第三方依赖，不增加 HTTP 或持久化。\n",
+      "case-design/docs/goals/v1/plan.md": "---\nid: V1\nstatus: doing\n---\n# 本地统计增量\nP001 在当前 CLI 上增加归档客户统计。P002 未来考虑 UI 与远端输入，尚未选择技术。\n",
+      "case-design/fixtures/customers.json": "[\n  {\n    \"id\": \"c1\",\n    \"name\": \"样例甲\",\n    \"archivedAt\": null\n  },\n  {\n    \"id\": \"c2\",\n    \"name\": \"样例乙\",\n    \"archivedAt\": \"2026-10-01T00:00:00.000Z\"\n  }\n]\n",
+      "case-design/src/cli.mjs": "import { readFile } from 'node:fs/promises'\nimport { countCustomers } from './count.mjs'\ntry {\n  if (!process.argv[2]) throw new Error('请提供客户 JSON 路径')\n  const customers = JSON.parse(await readFile(process.argv[2], 'utf8'))\n  process.stdout.write(JSON.stringify(countCustomers(customers)) + '\\n')\n} catch (error) {\n  process.stderr.write(String(error.message) + '\\n')\n  process.exitCode = 1\n}\n",
+      "case-design/src/count.mjs": "export function countCustomers(customers) {\n  if (!Array.isArray(customers)) throw new TypeError('客户必须是数组')\n  return { activeCount: customers.filter((customer) => customer.archivedAt === null).length }\n}\n",
+      "case-task/lab/AGENTS.md": "# DocProbeLab 协作入口\n本目录是工作流实验项目 DocProbeLab。当前被试产品是 [PocketSales](../product/AGENTS.md)，产品任务由该项目拥有。\n已知任务时读取所属 Goal/Phase plan 与唯一 tasks，沿相关材料接续。采用当前正式安装的 StonePlugins 文档工作流，不在此复制规范。\n本轮为只读审查，不写文件、不运行服务、不操作 Git 或数据库。\n",
+      "case-task/lab/docs/goals/v1/phases/p001-notes/plan.md": "---\nid: P001\nstatus: doing\n---\n# 实验笔记\n本阶段只整理工作流实验笔记。\n",
+      "case-task/lab/docs/goals/v1/phases/p001-notes/tasks.md": "# P001 任务清单\n## T0004 · 整理实验笔记\n- 状态：todo\n- 交付物：实验观察的分类建议。\n- 完成条件：区分方法问题与产品问题。\n- 验证结果：未执行。\n",
+      "case-task/lab/docs/goals/v1/plan.md": "---\nid: V1\nstatus: doing\n---\n# 工作流实验\nP001 的目标是整理实验方法，产品成果不归本项目拥有。\n",
+      "case-task/product/AGENTS.md": "# PocketSales 协作入口\n本项目是被试产品 PocketSales，项目根为本文件所在目录。Task 编号只在本项目内解释。\n已知任务从 docs/goals/v1/plan.md 及所属阶段唯一 tasks.md 进入，相关实现位于 src；规范采用当前正式安装的 StonePlugins 文档工作流。\n本轮只读，不写文件、不操作 Git、不启动服务或数据库。\n",
+      "case-task/product/docs/goals/v1/phases/p001-local/plan.md": "---\nid: P001\nstatus: doing\n---\n# 本地客户清单\n当前成果：Node 内置模块读取本地 JSON，默认只列出 active 客户。\n范围：本地只读 CLI；不包含网络、账号、同步或界面。\n退出条件：当前规则与实现差异可定位，当前切片的执行步骤明确。\n",
+      "case-task/product/docs/goals/v1/phases/p001-local/tasks.md": "# P001 任务清单\n## T0004 · 核对当前本地清单切片\n- 状态：todo\n- 交付物：当前规则与实现的差异结论及实施接续步骤。\n- 完成条件：读取 src/list.mjs 与 docs/specs/list.md，判断当前切片还有什么需要实现或验证；只读结论足以交给下个执行者。\n- 材料：[当前规格](../../../../specs/list.md)、src/list.mjs。\n- 验证结果：未执行。\n- 接续说明：未来同步方案见 P002，尚未决定。\n",
+      "case-task/product/docs/goals/v1/phases/p002-sync/plan.md": "---\nid: P002\nstatus: todo\n---\n# 远端同步\n未来选择：服务端采用何种账号服务、部署到哪里、离线冲突如何合并均未确认。\n当前没有授权实施同步，不改变 P001 本地文件输入契约。\n",
+      "case-task/product/docs/goals/v1/plan.md": "---\nid: V1\nstatus: doing\n---\n# 本地客户清单\nP001 提供本地客户清单 CLI，P002 再研究远端同步。\nP001 的完成不以 P002 已开始或同步方案确认作为条件。\n",
+      "case-task/product/docs/specs/list.md": "# 本地客户清单\n默认只返回 active 为 true 的客户名称，保持输入顺序。\n缺少客户数组时明确拒绝。当前不支持远端读取。\n",
+      "case-task/product/src/list.mjs": "export function listCustomers(input) {\n  if (!Array.isArray(input)) throw new TypeError('客户必须是数组')\n  return input.filter((customer) => customer.active === true).map((customer) => customer.name)\n}\n",
+      "case-verify/AGENTS.md": "# SnapshotReport 协作入口\n本目录是合成报表项目 SnapshotReport。规范采用当前正式安装的 StonePlugins 文档工作流。\n任务见 docs/goals/v1/phases/p001-report/tasks.md，当前目标、源码、待验产物和已有记录均在本目录。\n本轮仅核对已有证据，不构建、不运行程序、不写文件、不操作 Git，不启动服务或数据库。\n",
+      "case-verify/artifacts/report.json": "{\n  \"builtFrom\": \"r1\",\n  \"result\": {\n    \"activeCount\": 1\n  }\n}\n",
+      "case-verify/docs/goals/v1/phases/p001-report/plan.md": "---\nid: P001\nstatus: doing\n---\n# 客户统计报表\n退出条件：受检产物对应停止编辑后的受检源码，实际输出满足当前计数标准，方法与限制可追溯。\n",
+      "case-verify/docs/goals/v1/phases/p001-report/tasks.md": "# P001 任务清单\n## T0007 · 复验当前计数产物\n- 状态：doing\n- 交付物：当前源码与产物的逐条件验收判断。\n- 完成条件：产物对应本批停止编辑的源码，输出 activeCount、archivedCount，不能只凭旧检查退出 0 判定当前产物通过。\n- 材料：src/report.mjs、artifacts/report.json、[现有记录](verification.md)、[交接](../../../../handoff.md)。\n- 验证结果：旧批 r1 结果见 verification，当前批尚未判断。\n",
+      "case-verify/docs/goals/v1/phases/p001-report/verification.md": "# P001 验收记录\n## 2026-11-09 · 旧批\n- 对象版本：源码 r1，对应产物 artifacts/report.json 的 builtFrom 为 r1。\n- 标准版本：旧标准只要求 activeCount。\n- 方法：计数检查，退出码 0。\n- 实际结果：r1 的 activeCount 等于 1。\n- 限制与后续：不覆盖尚未写入的 archivedCount 增量，不把结果用于后续文件版本。\n",
+      "case-verify/docs/goals/v1/plan.md": "---\nid: V1\nstatus: doing\n---\n# 客户统计报表\nP001 交付与当前源码匹配的客户统计产物。\n",
+      "case-verify/docs/handoff.md": "# 当前交接\n11:03 同伴把 src/report.mjs 从 r1 改为 r2，新增 archivedCount。\n11:04 当前产物仍为 r1，没有重新生成；同伴的本批相关源码写入仍在进行，尚未收到停止编辑信号。\n本说明是合成场景的交接输入，不代表真实后台进程。请按所述状态判断能否开始正式取证。\n",
+      "case-verify/src/report.mjs": "export const revision = 'r2'\nexport function render(customers) {\n  return {\n    activeCount: customers.filter((c) => c.archivedAt === null).length,\n    archivedCount: customers.filter((c) => c.archivedAt !== null).length,\n  }\n}\n"
+    }
+  },
+  "limitations": [
+    "仅三个合成定向样例，每例一个新进程；不是24回合全链或旧会话刷新验证。",
+    "未运行被试项目程序、构建、浏览器、服务或数据库；不据静态设计宣称运行成功。",
+    "verify写入进行中为明确标注的合成交接输入，不是真实并发写入进程。",
+    "默认model/effort来自现有配置定向读回与未覆盖的命令实参，不是服务端模型路由的独立网络取证。",
+    "完整私有JSONL未随附件提交；保留真实工具事件定位、输出摘要、与公开固定正文的精确匹配及关键行为摘录供审查。",
+    "design可复制启动命令额外子项部分覆盖，不能笼统称全部预设检查通过。",
+    "本批明确点名目标技能，证明正式加载与有限行为；不作为九项自然语言自动路由的新覆盖。"
+  ]
+}
