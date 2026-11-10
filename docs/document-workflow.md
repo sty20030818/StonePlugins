@@ -4,7 +4,7 @@
 
 九项核心文档工作流，另有 engineering 与 linear 适配，共十一个技能入口。各入口可依据足够的目标、约束和事实独立使用，通过项目文件接续；不要求前序调用记录。
 
-开发树的配套 CLI 适配尚未发布，个人正式安装尚未更新。本地正式协议安装、实际调用、固定产物与恢复修复的当前结论由 [StoneDocs P003 验收](https://github.com/sty20030818/StoneDocs/blob/40d6a43e8a663478f2c6addf000216e85c280170/docs/goals/v1/phases/p003-cli/verification.md#result-phase-p003-p003-composed-acceptance)持有，其中引用原技能回合与本轮补验，不将旧版回合外推为新恢复分支的模型通过；既有 v0.8.1 规则、发布、安装和正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)；[v0.7.0 验证](evals/v0.7.0.md)保留旧版六项工作流的结果，不直接继承为新模型通过。
+v0.9.0 包含 CLI 0.1.1 配套与独立 linear 适配；本版检查、分发、安装与宿主验收的实际结果见 [v0.9.0 验证](evals/v0.9.0.md)。本地正式协议安装、实际调用、固定产物与恢复修复的当前结论由 [StoneDocs P003 验收](https://github.com/sty20030818/StoneDocs/blob/40d6a43e8a663478f2c6addf000216e85c280170/docs/goals/v1/phases/p003-cli/verification.md#result-phase-p003-p003-composed-acceptance)持有，其中引用原技能回合与本轮补验，不将旧版回合外推为新恢复分支的模型通过；既有 v0.8.1 规则、发布、安装和正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)；[v0.7.0 验证](evals/v0.7.0.md)保留旧版六项工作流的结果，不直接继承为新模型通过。
 
 ## 职责与使用
 

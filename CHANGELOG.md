@@ -2,6 +2,20 @@
 
 所有重要变更均遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 格式，并采用[语义化版本](https://semver.org/)。
 
+## [未发布]
+
+## [0.9.0] - 2026-11-10
+
+### 新增
+
+- 随完整插件分发 StoneDocs 同源 CLI 0.1.1、固定规则和来源清单；九项核心工作流从实际安装位置调用工具，无需另装全局 CLI。
+- 提供独立 linear 看板适配入口及固定来源指南，与核心文档工作流按需配合。
+
+### 变更
+
+- CLI 配套纳入恢复合同修复，技能统一说明预览、应用、结果未知及显式恢复的调用边界。
+- 包级检查覆盖完整 CLI 产物、规则契约和 Linear 指南来源；候选检查、正式分发、实际安装与模型行为分别记录。
+
 ## [0.8.1] - 2026-11-09
 
 ### 修复
@@ -28,8 +42,6 @@
 ### 验证与文档
 
 - 包级校验覆盖十个技能入口及十一份固定规则资源，版本检查、安装和实际宿主行为分别记录。
-
-## [未发布]
 
 ## [0.7.0] - 2026-11-05
 
@@ -280,7 +292,10 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.7.0...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/sty20030818/StonePlugins/compare/v0.8.1...v0.9.0
+[0.8.1]: https://github.com/sty20030818/StonePlugins/compare/v0.8.0...v0.8.1
+[0.8.0]: https://github.com/sty20030818/StonePlugins/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/sty20030818/StonePlugins/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/sty20030818/StonePlugins/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/sty20030818/StonePlugins/compare/v0.5.5...v0.6.0

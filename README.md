@@ -2,9 +2,13 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-## 开发候选
+## v0.9.0
 
-当前开发树增加 StoneDocs 同源配套 CLI：完整插件携带 JavaScript、固定规则和来源清单，九个工作流按实际安装位置调用同一工具，无需另装全局 CLI。导入与调用方式见[文档工作流](docs/document-workflow.md)及[配套 CLI 用法](plugins/stoneplugins/references/cli.md)。开发树另有独立的 `linear` 看板适配入口，读取从 StoneDocs 作者源生成的固定操作指南，与九项核心工作流按需配合。这些是未发布候选；下述 v0.8.1 安装和历史结果仍对应其固定 tag，不把新适配视为旧正式版已包含。
+本版本增加 StoneDocs 同源配套 CLI 0.1.1：完整插件携带 JavaScript、固定规则和来源清单，九个工作流按实际安装位置调用同一工具，无需另装全局 CLI。另有独立的 `linear` 看板适配入口，读取从 StoneDocs 作者源生成的固定操作指南，与九项核心工作流按需配合；加上 engineering 共十一个技能入口。导入与调用方式见[文档工作流](docs/document-workflow.md)及[配套 CLI 用法](plugins/stoneplugins/references/cli.md)。
+
+本版的三份来源分别固定：CLI 0.1.1 程序为 StoneDocs `f190272711ce9fc1d8c921b4739a1d17bb87a1de`，见[产物清单](plugins/stoneplugins/tools/stonedocs/artifact.json)；十一份规范为 `3ffbf2dd4a5c949cad2915c4291b1514aa1bd072`，见[规范清单](plugins/stoneplugins/tools/stonedocs/rules/source.json)；Linear 指南为 `425aba5f649347e366f4f11f8217090276041e1f`，见[指南来源头](plugins/stoneplugins/references/linear.md)。程序、插件和项目采用版本独立，更新插件不自动升级项目规则。
+
+本版包级检查、分发、安装与宿主验收的实际结果见 [v0.9.0 验证](docs/evals/v0.9.0.md)，发布状态以 [GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.9.0) 为准。下述 v0.8.1 历史结果仍对应其固定 tag，不把新适配视为旧正式版已包含。
 
 ## 已发布版本 v0.8.1
 
@@ -49,11 +53,11 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ```bash
 node --version
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.8.1
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.9.0
 codex plugin add stoneplugins@stonefish
 ```
 
-上述固定 `v0.8.1` 包含十个入口、元数据及所需资源，不需要另跑 Skills CLI 给 Codex 安装这些技能。文档工作流目前按完整插件分发，不支持单独复制其中一个技能目录。开发试验可在仓库根目录使用 `codex plugin marketplace add .`；本地来源与 GitHub 来源不能在同一 marketplace ID 下混用，固定 ref 也不会自动跟随未来版本。
+v0.9.0 包含十一个入口、配套 CLI、元数据及所需资源，不需要另跑 Skills CLI 或安装全局 CLI 给 Codex 补齐这些内容。文档工作流目前按完整插件分发，不支持单独复制其中一个技能目录。开发试验可在仓库根目录使用 `codex plugin marketplace add .`；本地来源与 GitHub 来源不能在同一 marketplace ID 下混用，固定 ref 也不会自动跟随未来版本。
 
 安装后，在新任务中审查并信任 `SessionStart`、`SubagentStart`、`UserPromptSubmit` 三个 Hook，核对原生入口 `$stoneplugins:engineering` 和资源位置；再分别验证生命周期送达、完整核心和按需读取细则。插件安装不自动信任 Hook，配置变化后可能需要重新审核。当前任务里已加载的旧上下文不能作为新安装验收证据。
 
@@ -61,7 +65,7 @@ codex plugin add stoneplugins@stonefish
 
 ### 其他 CLI：只安装同源 Skill
 
-检出 `v0.8.1` 后，在仓库根目录中以 Grok 为例：
+检出 `v0.9.0` 后，在仓库根目录中以 Grok 为例：
 
 ```bash
 npx skills add ./plugins/stoneplugins --skill engineering -g -a grok --copy
