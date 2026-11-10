@@ -8,7 +8,7 @@
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.js\"",
             "timeout": 5,
-            "statusMessage": "正在加载石头鱼的工程规则……"
+            "statusMessage": "对话开始：加载工程规则"
           }
         ]
       }
@@ -20,7 +20,7 @@
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.js\"",
             "timeout": 5,
-            "statusMessage": "正在加载石头鱼的工程规则……"
+            "statusMessage": "子 Agent 启动：加载工程规则"
           }
         ]
       }
@@ -31,7 +31,8 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/hooks/inject-context.js\"",
-            "timeout": 5
+            "timeout": 5,
+            "statusMessage": "每轮提问：提醒工程规则"
           }
         ]
       }

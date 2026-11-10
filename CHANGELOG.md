@@ -4,6 +4,12 @@
 
 ## [未发布]
 
+## [0.9.1] - 2026-11-10
+
+### 修复
+
+- 钩子审查与运行提示分别显示对话开始、每轮提问和子 Agent 启动的用途，便于区分三个工程钩子。
+
 ## [0.9.0] - 2026-11-10
 
 ### 新增
@@ -292,7 +298,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.9.0...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.9.1...HEAD
+[0.9.1]: https://github.com/sty20030818/StonePlugins/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/sty20030818/StonePlugins/compare/v0.8.1...v0.9.0
 [0.8.1]: https://github.com/sty20030818/StonePlugins/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/sty20030818/StonePlugins/compare/v0.7.0...v0.8.0

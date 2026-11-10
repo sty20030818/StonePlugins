@@ -2,7 +2,9 @@
 
 ## 文档工作流与版本范围
 
-[文档工作流](document-workflow.md)说明九项核心入口、独立 linear 适配、Goal → Phase → Task、v0.9.0 的固定配套与权威验收入口；加上 engineering，共十一个技能。本版检查、分发、安装与宿主验收的实际结果见 [v0.9.0 验证](evals/v0.9.0.md)。任务及实际结果由 StoneDocs 对应目标与阶段持有，此索引不再单独指向某个早期实现任务。已发布 v0.8.1 的发布、安装与正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)，按其固定 tag 解释，不把本版变化视为旧正式版已包含。
+当前 v0.9.1 调整三个工程钩子的显示文案，检查、分发与安装结果见 [v0.9.1 验证](evals/v0.9.1.md)。文档工作流配套沿用 v0.9.0 的固定来源，以下记录按各自版本解释。
+
+[文档工作流](document-workflow.md)说明九项核心入口、独立 linear 适配、Goal → Phase → Task、v0.9.0 的固定配套与权威验收入口；加上 engineering，共十一个技能。v0.9.0 的检查、分发、安装与宿主验收结果见 [v0.9.0 验证](evals/v0.9.0.md)。任务及实际结果由 StoneDocs 对应目标与阶段持有，此索引不再单独指向某个早期实现任务。已发布 v0.8.1 的发布、安装与正式宿主结果见 [v0.8.1 验证](evals/v0.8.1.md)，按其固定 tag 解释，不把本版变化视为旧正式版已包含。
 
 [v0.8.0 验证](evals/v0.8.0.md)保留九项工作流的原正式批次；[v0.7.0 验证](evals/v0.7.0.md)保留六项工作流版本的实测，[P007 开发记录](evals/planning-skills-development.md)、[v0.6.1](evals/v0.6.1.md)和更早档案只代表各自时点。
 
@@ -58,7 +60,7 @@
 
 ## 版本与开发验证档案
 
-[v0.3.4](evals/v0.3.4.md)、[v0.3.5](evals/v0.3.5.md)、[v0.3.6](evals/v0.3.6.md)、[v0.3.7](evals/v0.3.7.md)、[v0.4.0](evals/v0.4.0.md)、[v0.4.1](evals/v0.4.1.md)、[v0.5.0 候选](evals/v0.5.0.md)、[独立 Skill 开发验证](evals/independent-skill-development.md)、[完整插件首次候选验证](evals/codex-first-bundled-development.md) 与 [v0.5.1 评测](evals/v0.5.1.md)均为对应版本的历史证据；后续版本档案包括 [v0.5.2](evals/v0.5.2.md)、[v0.5.3](evals/v0.5.3.md)、[v0.5.4](evals/v0.5.4.md)、[v0.5.5](evals/v0.5.5.md) 与 [v0.6.0](evals/v0.6.0.md)；[v0.8.1 验证](evals/v0.8.1.md)保留该正式版的分发、安装与有限行为结果，[v0.7.0 验证](evals/v0.7.0.md)保留旧版结果。当前版本的证据边界见 [v0.9.0 验证](evals/v0.9.0.md)。
+[v0.3.4](evals/v0.3.4.md)、[v0.3.5](evals/v0.3.5.md)、[v0.3.6](evals/v0.3.6.md)、[v0.3.7](evals/v0.3.7.md)、[v0.4.0](evals/v0.4.0.md)、[v0.4.1](evals/v0.4.1.md)、[v0.5.0 候选](evals/v0.5.0.md)、[独立 Skill 开发验证](evals/independent-skill-development.md)、[完整插件首次候选验证](evals/codex-first-bundled-development.md) 与 [v0.5.1 评测](evals/v0.5.1.md)均为对应版本的历史证据；后续版本档案包括 [v0.5.2](evals/v0.5.2.md)、[v0.5.3](evals/v0.5.3.md)、[v0.5.4](evals/v0.5.4.md)、[v0.5.5](evals/v0.5.5.md) 与 [v0.6.0](evals/v0.6.0.md)；[v0.8.1 验证](evals/v0.8.1.md)保留该正式版的分发、安装与有限行为结果，[v0.7.0 验证](evals/v0.7.0.md)保留旧版结果。当前版本的证据边界见 [v0.9.1 验证](evals/v0.9.1.md)。
 
 保留原始成功、失败、PENDING 和证据不足，不改写为新版本通过。v0.5.0 文件开头“尚未发布”属于当时的候选快照；发布状态与宿主行为验收本来就是两种证据。新方案必须留下自己的原始轨迹，不能继承这些结论。
 
