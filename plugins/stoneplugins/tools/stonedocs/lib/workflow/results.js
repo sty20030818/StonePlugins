@@ -63,10 +63,21 @@ function parseLiteral(lines, cursor) {
 }
 function parseBlock(owner, file, raw) {
     const lines = normalize(raw).split("\n");
-    const header = new RegExp("^" + (owner.kind === "task" ? "### " : "## ") + "(\\d{4}-\\d{2}-\\d{2}) · ([a-z0-9-]+)$").exec(lines[2] ?? "");
+    const cursor = { index: 1 };
+    while (lines[cursor.index] === "")
+        cursor.index++;
+    const anchorLine = lines[cursor.index++];
+    while (lines[cursor.index] === "")
+        cursor.index++;
+    const headerLine = lines[cursor.index++];
+    const header = new RegExp("^" + (owner.kind === "task" ? "### " : "## ") + "(\\d{4}-\\d{2}-\\d{2}) · ([a-z0-9-]+)$").exec(headerLine ?? "");
     if (!header)
         throw new Error("批次标题无效。");
-    const cursor = { index: 4 };
+    if (lines[cursor.index++] !== "")
+        throw new Error("批次标题间隔无效。");
+    while (lines[cursor.index] === "")
+        cursor.index++;
+    const bodyStart = cursor.index;
     const values = [];
     const evidence = [];
     for (let index = 0; index < LABELS.length; index++) {
@@ -91,8 +102,15 @@ function parseBlock(owner, file, raw) {
         if (index < LABELS.length - 1 && (lines[cursor.index++] !== ""))
             throw new Error("字段间隔无效。");
     }
+    const bodyEnd = cursor.index;
+    while (lines[cursor.index] === "")
+        cursor.index++;
+    if (lines[cursor.index++] !== END || cursor.index !== lines.length)
+        throw new Error("批次闭合边界无效。");
     const input = validate({ schemaVersion: 1, date: header[1], batch: header[2], objectVersion: values[0], standardVersion: values[1], method: values[2], actual: values[3], evidence, limits: values[5] ? values[5].split("\n") : [] });
-    if (block(owner, file, input) !== normalize(raw))
+    // 仅忽略边界外新增空行；字段、引用与 literal 围栏内原文仍逐字核对。
+    const comparable = [lines[0], anchorLine, headerLine, "", ...lines.slice(bodyStart, bodyEnd), END].join("\n");
+    if (block(owner, file, input) !== comparable)
         throw new Error("批次正文与版本 1 格式不一致。");
     return input;
 }

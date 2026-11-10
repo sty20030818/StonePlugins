@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "cliContract": 1,
   "ruleContract": 1,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "source": {
     "repository": "https://github.com/sty20030818/StoneDocs",
-    "revision": "f190272711ce9fc1d8c921b4739a1d17bb87a1de",
+    "revision": "597212236e533e936fb35c2943c820f018e3ee70",
     "state": "commit",
     "files": [
       {
@@ -142,7 +142,7 @@
       },
       {
         "path": "src/workflow/results.ts",
-        "sha256": "2dde67e07d76f1d6cb58a4021a567a2913c87337b2712ff2f3f46661e16da37c"
+        "sha256": "3d3109541b8f07fdf08a1a4995899337c443d02cfa531b81f37cd63899619c8c"
       },
       {
         "path": "src/workflow/upgrade.ts",
@@ -315,7 +315,7 @@
     },
     {
       "path": "lib/workflow/results.js",
-      "sha256": "cab4797b561f73b9dd739ca59c262adae09f841bd80adf906b4f357ce6a8a767",
+      "sha256": "d09ce0c3785e12372fb2c2bf58f02d7d909d4df8856f6786fb70bb9db1437520",
       "executable": false
     },
     {
@@ -325,7 +325,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "a1a40f4d46617dfb7b2ffff2dcfa15dbc914a3146292aeb68ef4675e1a459040",
+      "sha256": "516d13c584ec4fccee415d6366e82d2b5aea3bcbd3453f8c98ceaf67a74dfff6",
       "executable": false
     },
     {

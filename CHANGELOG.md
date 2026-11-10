@@ -4,6 +4,13 @@
 
 ## [未发布]
 
+## [0.9.2] - 2026-11-10
+
+### 修复
+
+- 原生结果 v1 在 Markdown 格式器为 marker、anchor、标题及闭合边界增加空行后仍可读回，同批次同内容保持无变化，异内容继续报冲突。
+- 配套 CLI 提升到 0.1.2，字段顺序、literal 原文、证据目标和围栏安全仍严格校验，v1 writer 输出与规则契约保持原样。
+
 ## [0.9.1] - 2026-11-10
 
 ### 修复
@@ -298,7 +305,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.9.1...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.9.2...HEAD
+[0.9.2]: https://github.com/sty20030818/StonePlugins/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/sty20030818/StonePlugins/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/sty20030818/StonePlugins/compare/v0.8.1...v0.9.0
 [0.8.1]: https://github.com/sty20030818/StonePlugins/compare/v0.8.0...v0.8.1
