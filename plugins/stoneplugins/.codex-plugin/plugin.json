@@ -19,8 +19,8 @@
   ],
   "interface": {
     "displayName": "StonePlugins",
-    "shortDescription": "工程规则与九项独立文档工作流",
-    "longDescription": "engineering 持有工程规则并由现有 Hook 送达。idea、compare、decide、story、plan、design、task、verify、review 可独立使用，并通过文档组合成成果工作流，共用带来源记录的共同约定与 SOP。安装、加载和实际行为分别验证。",
+    "shortDescription": "工程规则、文档工作流与 Linear 看板适配",
+    "longDescription": "engineering 持有工程规则并由现有 Hook 送达。idea、compare、decide、story、plan、design、task、verify、review 为九项可独立组合的核心文档工作流；linear 独立适配目标总览、阶段与任务看板。固定规则、配套 CLI 和 Linear 指南随包提供，安装、加载与实际行为分别验证。",
     "developerName": "石头鱼",
     "category": "Developer Tools",
     "capabilities": [

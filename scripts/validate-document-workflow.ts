@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { readLinearGuide } from "./linear-guide.ts";
 
-const SKILL_NAMES = ["compare", "decide", "design", "engineering", "idea", "plan", "review", "story", "task", "verify"];
+const SOP_NAMES = ["compare", "decide", "design", "idea", "plan", "review", "story", "task", "verify"];
+const SKILL_NAMES = ["compare", "decide", "design", "engineering", "idea", "linear", "plan", "review", "story", "task", "verify"];
 const SOURCE_REPOSITORY = "https://github.com/sty20030818/StoneDocs";
 type Artifact = {
   root: string;
@@ -161,9 +163,10 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
   };
 
   const skillsRoot = path.join(root, "skills");
-  const workflowSkills = new Map(SKILL_NAMES.filter((name) => name !== "engineering").map((name) => [path.join(skillsRoot, name, "SKILL.md"), name]));
+  const workflowSkills = new Map(SOP_NAMES.map((name) => [path.join(skillsRoot, name, "SKILL.md"), name]));
+  const linearSkill = path.join(skillsRoot, "linear/SKILL.md");
   requireResource(skillsRoot, true);
-  assert.deepEqual(readdirSync(skillsRoot).sort(), SKILL_NAMES, "插件必须且只能包含十项技能 engineering 与九项文档工作流");
+  assert.deepEqual(readdirSync(skillsRoot).sort(), SKILL_NAMES, "插件必须且只能包含十一项技能：engineering、linear 与九项文档工作流");
   const discovered: string[] = [];
   const visitedDirectories = new Set<string>();
   const discover = (directory: string): void => {
@@ -182,7 +185,7 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
     }
   };
   discover(skillsRoot);
-  assert.deepEqual(discovered.sort(), SKILL_NAMES.map((name) => `${name}/SKILL.md`), "十项 Skill 必须分别只有唯一包内发现入口");
+  assert.deepEqual(discovered.sort(), SKILL_NAMES.map((name) => `${name}/SKILL.md`), "十一项 Skill 必须分别只有唯一包内发现入口");
 
   const markdownFiles: string[] = [];
   const skillBodies = new Map<string, string>();
@@ -221,6 +224,10 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
   const cliGuide = path.join(root, "references/cli.md");
   requireResource(cliGuide);
   markdownFiles.push(cliGuide);
+  const linearGuide = path.join(root, "references/linear.md");
+  requireResource(linearGuide);
+  readLinearGuide(linearGuide, options);
+  markdownFiles.push(linearGuide);
 
   const checked = new Set<string>();
   for (let index = 0; index < markdownFiles.length; index++) {
@@ -244,6 +251,14 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
         markdownFiles.push(destination);
         if (anchor) assert.ok(markdownAnchors(readFileSync(destination, "utf8")).has(anchor), `缺少 Markdown 锚点：${target}`);
       }
+    }
+    if (file === linearSkill) {
+      const required = [
+        ["共同约定", links.some((link) => link.destination === path.join(docsRoot, "conventions.md"))],
+        ["Linear 操作指南", links.some((link) => link.destination === linearGuide)],
+        ["配套 CLI 用法", links.some((link) => link.destination === cliGuide)],
+      ] as const;
+      for (const [label, present] of required) assert.ok(present, `缺少必需文档入口：linear/${label}`);
     }
     const name = workflowSkills.get(file);
     if (name) {

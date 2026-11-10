@@ -1,0 +1,7 @@
+interface:
+  display_name: "Linear"
+  short_description: "将仓库目标、阶段与任务展示到 Linear，维护总览、归属和实际进展"
+  default_prompt: "使用 $linear 按本项目文档维护 Linear 总览与看板，先核对目标和授权，再更新并读回。"
+
+policy:
+  allow_implicit_invocation: true

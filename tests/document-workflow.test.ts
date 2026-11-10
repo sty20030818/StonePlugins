@@ -6,6 +6,7 @@ import path from "node:path";
 import test, { type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
 import { validateDocumentWorkflow } from "../scripts/validate-document-workflow.ts";
+import { encodeLinearGuide, LINEAR_GUIDE_PATH, LINEAR_GUIDE_REPOSITORY, readLinearGuide } from "../scripts/linear-guide.ts";
 
 const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../plugins/stoneplugins");
 const SOP_NAMES = ["idea", "compare", "decide", "story", "plan", "design", "task", "verify", "review"];
@@ -27,13 +28,14 @@ function fixture(t: TestContext) {
   const docsRoot = path.join(packageRoot, "rules/docs");
   mkdirSync(path.join(pluginRoot, "references"), { recursive: true });
   writeFileSync(path.join(pluginRoot, "references/cli.md"), "# CLI\n\n[Tool](../tools/stonedocs/lib/cli/main.js)\n");
-  for (const name of ["engineering", ...SOP_NAMES]) {
+  for (const name of ["engineering", "linear", ...SOP_NAMES]) {
     const skillRoot = path.join(pluginRoot, "skills", name);
     mkdirSync(path.join(skillRoot, "agents"), { recursive: true });
-    const body = name === "engineering" ? "Engineering rules.\n" : `[Rules](../../tools/stonedocs/rules/docs/conventions.md#rules)\n[Workflow](../../tools/stonedocs/rules/docs/sop/${name}.md)\n[Output](../../tools/stonedocs/rules/docs/sop/${name}.md#输出结构与示例)\n[Source](../../tools/stonedocs/rules/source.json)\n[CLI](../../references/cli.md)\n`;
+    const body = name === "engineering" ? "Engineering rules.\n" : name === "linear" ? "[Rules](../../tools/stonedocs/rules/docs/conventions.md#rules)\n[Guide](../../references/linear.md)\n[CLI](../../references/cli.md)\n" : `[Rules](../../tools/stonedocs/rules/docs/conventions.md#rules)\n[Workflow](../../tools/stonedocs/rules/docs/sop/${name}.md)\n[Output](../../tools/stonedocs/rules/docs/sop/${name}.md#输出结构与示例)\n[Source](../../tools/stonedocs/rules/source.json)\n[CLI](../../references/cli.md)\n`;
     writeFileSync(path.join(skillRoot, "SKILL.md"), `---\nname: ${name}\ndescription: "A focused workflow."\n---\n\n${body}`);
     writeFileSync(path.join(skillRoot, "agents/openai.yaml"), `interface:\n  display_name: "${name}"\n  short_description: "A focused workflow"\n  default_prompt: "Use $${name} for this work."\n\npolicy:\n  allow_implicit_invocation: true\n`);
   }
+  writeFileSync(path.join(pluginRoot, "references/linear.md"), encodeLinearGuide(Buffer.from("# Linear\n\n[Official](https://linear.app/docs/documents)\n"), { repository: LINEAR_GUIDE_REPOSITORY, revision: "35e6497a59bc8f008d73268caf791f4a6bdc92d9", state: "commit", path: LINEAR_GUIDE_PATH }));
   writeFileSync(path.join(docsRoot, "conventions.md"), "# Rules\n\n[Workflows](sop/README.md)\n");
   writeFileSync(path.join(docsRoot, "sop/README.md"), "# Workflows\n");
   for (const name of SOP_NAMES) {
@@ -59,7 +61,7 @@ function appendTask(pluginRoot: string, content: string) {
   writeFileSync(file, `${readFileSync(file, "utf8")}\n${content}\n`);
 }
 
-test("十项技能与固定来源在独立目录中可验证，忽略围栏示例和 HTTP 背景链接", (t) => {
+test("十一项技能与固定来源在独立目录中可验证，忽略围栏示例和 HTTP 背景链接", (t) => {
   const { pluginRoot } = fixture(t);
   appendTask(pluginRoot, "```markdown\n[Example](missing-example.md)\n```\n~~~markdown\n[Example](another-missing.md)\n~~~\n[Background](https://example.com/background)\n`[Inline example](not-a-resource.md)`");
   assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot));
@@ -180,6 +182,9 @@ test("完整安装包的正文缩水或全部错指合法 SOP 无法通过发布
     const source = JSON.parse(readFileSync(sourcePath, "utf8"));
     source.source.state = "commit";
     writeFileSync(sourcePath, JSON.stringify(source));
+    const linearGuidePath = path.join(pluginRoot, "references/linear.md");
+    const linearGuide = readLinearGuide(linearGuidePath);
+    writeFileSync(linearGuidePath, encodeLinearGuide(linearGuide.body, { ...linearGuide.source, state: "commit" }));
     const skill = path.join(pluginRoot, "skills/task/SKILL.md");
     const original = readFileSync(skill, "utf8");
     writeFileSync(skill, mode === "single-line" ? `${original.match(/^---\n[\s\S]*?\n---\n/)![0]}\nRun task.\n` : original.replaceAll("sop/task.md", "sop/design.md"));
@@ -188,15 +193,15 @@ test("完整安装包的正文缩水或全部错指合法 SOP 无法通过发布
 });
 
 test("每个必需技能缺失、额外技能或嵌套重复发现均被拒绝", (t) => {
-  for (const name of ["engineering", ...SOP_NAMES]) {
+  for (const name of ["engineering", "linear", ...SOP_NAMES]) {
     const { pluginRoot } = fixture(t);
     rmSync(path.join(pluginRoot, "skills", name), { recursive: true });
-    assert.throws(() => validateDocumentWorkflow(pluginRoot), /十项技能/);
+    assert.throws(() => validateDocumentWorkflow(pluginRoot), /十一项技能/);
   }
   const { pluginRoot } = fixture(t);
   const extra = path.join(pluginRoot, "skills/extra");
   cpSync(path.join(pluginRoot, "skills/task"), extra, { recursive: true });
-  assert.throws(() => validateDocumentWorkflow(pluginRoot), /十项技能/);
+  assert.throws(() => validateDocumentWorkflow(pluginRoot), /十一项技能/);
   rmSync(extra, { recursive: true });
   mkdirSync(path.join(pluginRoot, "skills/story/nested"));
   writeFileSync(path.join(pluginRoot, "skills/story/nested/SKILL.md"), "# Duplicate\n");
@@ -308,4 +313,31 @@ test("静态格式已声明固定提交的完整候选可验证；不证明真�
   artifact.source.state = "commit";
   writeFileSync(file, JSON.stringify(artifact));
   assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot, { release: true }));
+});
+
+test("Linear 适配器独立于九项 SOP，三类必需入口不能省略", (t) => {
+  for (const label of ["Rules", "Guide", "CLI"]) {
+    const { pluginRoot } = fixture(t);
+    assert.equal(readFileSync(path.join(pluginRoot, "skills/linear/SKILL.md"), "utf8").includes("sop/linear.md"), false);
+    const skill = path.join(pluginRoot, "skills/linear/SKILL.md");
+    writeFileSync(skill, readFileSync(skill, "utf8").split("\n").filter((line) => !line.startsWith(`[${label}]`)).join("\n"));
+    assert.throws(() => validateDocumentWorkflow(pluginRoot), /缺少必需文档入口：linear/);
+  }
+});
+
+test("Linear 指南损坏与候选发布被拒绝，CLI 和十一份规范仍为独立合同", (t) => {
+  const { pluginRoot, packageRoot } = fixture(t);
+  const file = path.join(pluginRoot, "references/linear.md");
+  const original = readFileSync(file);
+  writeFileSync(file, Buffer.concat([original, Buffer.from("\nmanual edit\n")]));
+  assert.throws(() => validateDocumentWorkflow(pluginRoot), /摘要/);
+  writeFileSync(file, original);
+  const artifactPath = path.join(packageRoot, "artifact.json");
+  const artifact = JSON.parse(readFileSync(artifactPath, "utf8"));
+  artifact.source.state = "commit";
+  writeFileSync(artifactPath, JSON.stringify(artifact));
+  assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot, { release: true }));
+  writeFileSync(file, encodeLinearGuide(Buffer.from("# Linear candidate\n"), { repository: LINEAR_GUIDE_REPOSITORY, revision: "a".repeat(40), state: "working-tree", path: LINEAR_GUIDE_PATH }));
+  assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot));
+  assert.throws(() => validateDocumentWorkflow(pluginRoot, { release: true }), /Linear 指南.*候选/);
 });

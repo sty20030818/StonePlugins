@@ -13,7 +13,8 @@
     "validate:release": "node scripts/validate-repository.ts --release",
     "test": "node --test tests/*.test.ts",
     "check": "npm run typecheck && npm run build && npm run validate && npm test",
-    "import:stonedocs": "node scripts/import-stonedocs.ts"
+    "import:stonedocs": "node scripts/import-stonedocs.ts",
+    "import:linear": "node scripts/import-linear-guide.ts"
   },
   "devDependencies": {
     "@types/node": "26.4.0",

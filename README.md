@@ -4,7 +4,7 @@ StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证�
 
 ## 开发候选
 
-当前开发树增加 StoneDocs 同源配套 CLI：完整插件携带 JavaScript、固定规则和来源清单，九个工作流按实际安装位置调用同一工具，无需另装全局 CLI。导入与调用方式见[文档工作流](docs/document-workflow.md)及[配套 CLI 用法](plugins/stoneplugins/references/cli.md)。这是未发布候选；下述 v0.8.1 安装和历史结果仍对应其固定 tag，不把新适配视为旧正式版已包含。
+当前开发树增加 StoneDocs 同源配套 CLI：完整插件携带 JavaScript、固定规则和来源清单，九个工作流按实际安装位置调用同一工具，无需另装全局 CLI。导入与调用方式见[文档工作流](docs/document-workflow.md)及[配套 CLI 用法](plugins/stoneplugins/references/cli.md)。开发树另有独立的 `linear` 看板适配入口，读取从 StoneDocs 作者源生成的固定操作指南，与九项核心工作流按需配合。这些是未发布候选；下述 v0.8.1 安装和历史结果仍对应其固定 tag，不把新适配视为旧正式版已包含。
 
 ## 已发布版本 v0.8.1
 
