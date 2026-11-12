@@ -2,7 +2,13 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-## v0.9.2
+## 开发树技术设计接续
+
+开发树接入 StoneDocs CLI 0.2.0 与 v2 十二份同源资源，design 支持新项目总体技术方案和整体架构重审，相关技能按项目本地规则读取匹配方法。消费者仍支持 v1，不自动升级旧项目；方法入口与作者模式见[文档工作流](docs/document-workflow.md)和[读取适配](plugins/stoneplugins/references/cli.md#规则与方法读取)。
+
+CLI 与规则均从 StoneDocs 固定提交 `1965e5602558bb9a3a96116deace45949ae53b23` 构建，实际身份见[产物清单](plugins/stoneplugins/tools/stonedocs/artifact.json)。这是仓内接通，尚未发布或更新个人安装；以下历史版本及安装示例继续对应各自固定 tag，不把开发树结果外推为宿主触发通过。
+
+## 已发布版本 v0.9.2
 
 配套 StoneDocs CLI 0.1.2 修复原生结果 v1 的格式接续：Markdown 格式器只在 marker、anchor、标题和闭合边界外增加空行后，结果仍可识别，同批次重试继续按内容判断无变化或冲突。字段顺序、literal 内原文、证据目标与围栏安全仍严格校验，v1 writer 输出保持原样。
 

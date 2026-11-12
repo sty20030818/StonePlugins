@@ -3,7 +3,7 @@ import path from "node:path";
 import { OperationError } from "../files/write.js";
 import { isMissing, projectPath, readProjectText } from "../documents/files.js";
 import { localUrl, markdownLinks, unquote, withoutFences } from "../documents/markdown.js";
-import { finishPlan, loadWriteContext } from "./context.js";
+import { contextRule, finishPlan, loadWriteContext } from "./context.js";
 import { validateCreateInput } from "./input.js";
 function fail(code, message, file, exitCode = 1) {
     throw new OperationError({ code, message, path: file, remedy: "核对当前项目的父级、编号、规范骨架和实际输入；修正明确缺口后重新预览，不覆盖旧内容。" }, exitCode);
@@ -34,39 +34,39 @@ function sections(raw, level = 2) {
         return { title: match[1].trim(), start: match.index, headEnd, end, body: raw.slice(headEnd, end), heading: raw.slice(match.index, match.index + match[0].length) };
     });
 }
-function skeleton(raw, kind) {
+function skeleton(raw, kind, sourcePath) {
     let source = raw;
     if (kind !== "task") {
         const matches = sections(raw, 3).filter((section) => section.title === (kind === "goal" ? "Goal plan" : "Phase plan"));
         if (matches.length !== 1)
-            fail("SOP_TEMPLATE_AMBIGUOUS", "plan SOP 的对象骨架入口必须唯一。", "docs/sop/plan.md");
+            fail("SOP_TEMPLATE_AMBIGUOUS", "plan SOP 的对象骨架入口必须唯一。", sourcePath);
         source = matches[0].body;
     }
     const blocks = [...source.matchAll(/^ {0,3}(`{3,}|~{3,})markdown[ \t]*\r?\n([\s\S]*?)^ {0,3}\1[ \t]*\r?$/gm)];
     const matching = blocks.filter((block) => kind === "task" ? /^## T0001[ \t]*·/m.test(block[2]) : /^id: /m.test(block[2]));
     if (matching.length !== 1)
-        fail("SOP_TEMPLATE_AMBIGUOUS", "对应 Markdown 骨架缺失或不唯一。", kind === "task" ? "docs/sop/task.md" : "docs/sop/plan.md");
+        fail("SOP_TEMPLATE_AMBIGUOUS", "对应 Markdown 骨架缺失或不唯一。", sourcePath);
     return matching[0][2];
 }
-function renderPlan(template, kind, input, id, ending) {
+function renderPlan(template, kind, input, id, ending, sourcePath) {
     const parts = sections(template);
     const required = kind === "goal" ? ["背景、成果与范围", "组成阶段", "整体验收条件"] : ["背景与目标", "范围", "验收与退出条件", "阶段材料"];
     const optional = kind === "goal" ? ["推进与风险", "材料与发布意图", "收尾"] : ["成果与用户故事", "推进、依赖与技术概述", "目标差异", "发布意图", "收尾"];
     for (const name of required)
         if (parts.filter((section) => section.title === name).length !== 1)
-            fail("SOP_TEMPLATE_UNSUPPORTED", "骨架必需章节缺失或重复：" + name, "docs/sop/plan.md");
+            fail("SOP_TEMPLATE_UNSUPPORTED", "骨架必需章节缺失或重复：" + name, sourcePath);
     if (parts.some((section) => !required.includes(section.title) && !optional.includes(section.title)))
-        fail("SOP_TEMPLATE_UNSUPPORTED", "骨架包含无法明确填写的章节。", "docs/sop/plan.md");
+        fail("SOP_TEMPLATE_UNSUPPORTED", "骨架包含无法明确填写的章节。", sourcePath);
     let prefix = template.slice(0, parts[0].start);
     if ([...prefix.matchAll(/^id: .+$/gm)].length !== 1 || [...prefix.matchAll(/^# [^\r\n]+$/gm)].length !== 1 || !/^status: todo\r?$/m.test(prefix))
-        fail("SOP_TEMPLATE_UNSUPPORTED", "骨架需要唯一 id、成果标题及 todo 初始状态。", "docs/sop/plan.md");
+        fail("SOP_TEMPLATE_UNSUPPORTED", "骨架需要唯一 id、成果标题及 todo 初始状态。", sourcePath);
     prefix = prefix.replace(/^id: .+$/m, "id: " + id).replace(/^# [^\r\n]+$/m, "# " + input.title);
     const criteria = input.criteria.map((value, index) => `${index + 1}. ${value}`).join("\n");
     let composition = "";
     if (kind === "goal") {
         const table = parts.find((section) => section.title === "组成阶段").body.split(/\r\n|\n|\r/).filter((line) => line.startsWith("|"));
         if (table.length < 2)
-            fail("SOP_TEMPLATE_UNSUPPORTED", "Goal 骨架缺少明确的阶段组成表头。", "docs/sop/plan.md");
+            fail("SOP_TEMPLATE_UNSUPPORTED", "Goal 骨架缺少明确的阶段组成表头。", sourcePath);
         composition = table.slice(0, 2).join("\n") + "\n\n当前没有已规划阶段。";
     }
     const values = kind === "goal" ? { "背景、成果与范围": input.scope, "组成阶段": composition, "整体验收条件": criteria } : { "背景与目标": "本阶段属于[所属目标](../../plan.md)。", "范围": input.scope, "验收与退出条件": criteria, "阶段材料": "- [任务清单](tasks.md)" };
@@ -76,17 +76,17 @@ function renderPlan(template, kind, input, id, ending) {
             result += section.heading.trimEnd() + "\n\n" + values[section.title] + "\n\n";
     return newline(result.trimEnd() + "\n", ending);
 }
-function taskSkeleton(template, input, id, phaseId, ending) {
+function taskSkeleton(template, input, id, phaseId, ending, sourcePath) {
     const marker = /^## T0001[ \t]*·[^\r\n]+/m.exec(template);
     if (!marker)
-        fail("SOP_TEMPLATE_UNSUPPORTED", "Task 骨架缺少唯一任务条目。", "docs/sop/task.md");
+        fail("SOP_TEMPLATE_UNSUPPORTED", "Task 骨架缺少唯一任务条目。", sourcePath);
     if (!input)
         return newline(template.slice(0, marker.index).replaceAll("<Phase 标识>", phaseId).trimEnd() + "\n\n尚未拆分任务。\n", ending);
     const body = template.slice(marker.index);
     const fields = { "状态": "todo", "交付物": input.deliverable, "完成条件": input.criteria.join("；"), "材料": input.materials?.join("；"), "依赖": input.dependencies, "验证结果": "尚未执行。", "接续说明": undefined };
     const found = [...body.matchAll(/^-[ \t]+([^：:\r\n]+)[：:][ \t]*(.*)$/gm)];
     if (found.length !== 7 || new Set(found.map((match) => match[1])).size !== 7 || found.some((match) => !Object.hasOwn(fields, match[1])))
-        fail("SOP_TEMPLATE_UNSUPPORTED", "Task 骨架字段缺失、重复或无法填写。", "docs/sop/task.md");
+        fail("SOP_TEMPLATE_UNSUPPORTED", "Task 骨架字段缺失、重复或无法填写。", sourcePath);
     let result = body.replace(/^## T0001[ \t]*·[^\r\n]+/m, "## " + id + " · " + input.title);
     result = result.replace(/^-[ \t]+([^：:\r\n]+)[：:][ \t]*(.*)(?:\r?\n|$)/gm, (_, name) => fields[name] === undefined ? "" : "- " + name + "：" + fields[name] + "\n");
     return newline(result.trimEnd() + "\n", ending);
@@ -167,8 +167,8 @@ export function planCreate(rootInput, kind, parent, value, author) {
     const input = validateCreateInput(kind, value);
     const context = loadWriteContext(rootInput, author, ["docs/sop/plan.md", "docs/sop/task.md"]);
     const { root } = context;
-    const planSop = readProjectText(root, "docs/sop/plan.md");
-    const taskSop = readProjectText(root, "docs/sop/task.md");
+    const planRule = contextRule(context, "docs/sop/plan.md"), taskRule = contextRule(context, "docs/sop/task.md");
+    const planSop = planRule.raw, taskSop = taskRule.raw;
     const { goal: goals, phase: phases, task: tasks } = context.objects;
     const changes = [];
     let id;
@@ -183,7 +183,7 @@ export function planCreate(rootInput, kind, parent, value, author) {
         objectPath = path.posix.join(directory, "plan.md");
         if (entryExists(root, directory))
             fail("TARGET_EXISTS", "Goal 目标目录已存在，不能覆盖或接管。", directory, 3);
-        const rendered = renderPlan(skeleton(planSop, kind), kind, input, id, eol(planSop));
+        const rendered = renderPlan(skeleton(planSop, kind, planRule.path), kind, input, id, eol(planSop), planRule.path);
         memberSection({ raw: rendered, path: objectPath });
         changes.push({ path: objectPath, before: null, after: rendered });
     }
@@ -205,20 +205,20 @@ export function planCreate(rootInput, kind, parent, value, author) {
             if (entryExists(root, directory))
                 fail("TARGET_EXISTS", "Phase 目标目录已存在，不能覆盖或接管。", directory, 3);
             const ending = eol(goal.raw);
-            changes.push({ path: objectPath, before: null, after: renderPlan(skeleton(planSop, kind), kind, input, id, ending) });
-            changes.push({ path: path.posix.join(directory, "tasks.md"), before: null, after: taskSkeleton(skeleton(taskSop, "task"), undefined, "", id, ending) });
+            changes.push({ path: objectPath, before: null, after: renderPlan(skeleton(planSop, kind, planRule.path), kind, input, id, ending, planRule.path) });
+            changes.push({ path: path.posix.join(directory, "tasks.md"), before: null, after: taskSkeleton(skeleton(taskSop, "task", taskRule.path), undefined, "", id, ending, taskRule.path) });
             changes.push({ path: goal.path, before: goal.raw, after: insertMember(goal, path.posix.relative(goalDirectory, objectPath), id, input.title, input.contribution) });
         }
         else {
             objectPath = path.posix.join(path.posix.dirname(owner.path), "tasks.md");
             const before = readProjectText(root, objectPath);
             const ending = eol(before);
-            const template = skeleton(taskSop, "task");
-            const empty = taskSkeleton(template, undefined, "", owner.id, ending);
+            const template = skeleton(taskSop, "task", taskRule.path);
+            const empty = taskSkeleton(template, undefined, "", owner.id, ending, taskRule.path);
             const hasTasks = tasks.some((task) => task.phaseId === owner.id);
             const base = !hasTasks && before.startsWith(empty) ? before.slice(0, empty.length - ("尚未拆分任务。" + ending).length) + before.slice(empty.length) : before;
             const separator = base.endsWith(ending + ending) ? "" : base.endsWith(ending) ? ending : ending + ending;
-            changes.push({ path: objectPath, before, after: base + separator + taskSkeleton(template, input, id, owner.id, ending) });
+            changes.push({ path: objectPath, before, after: base + separator + taskSkeleton(template, input, id, owner.id, ending, taskRule.path) });
         }
     }
     return finishPlan(context, kind + " new", { kind, id, path: objectPath }, { kind, parent: parent ?? null, input, author }, changes);

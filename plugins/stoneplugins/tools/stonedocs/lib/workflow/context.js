@@ -1,4 +1,5 @@
-import { readAdoption } from "../rules/format.js";
+import { readAdoption, readRuleText } from "../rules/format.js";
+import { readAuthorLayout } from "../rules/author.js";
 import { lstatSync } from "node:fs";
 import path from "node:path";
 import { checkRepository } from "../documents/check.js";
@@ -23,15 +24,23 @@ function entryExists(root, relative) {
 }
 export function loadWriteContext(rootInput, author, requiredRules = []) {
     const root = resolveProjectRoot(rootInput);
-    const adoption = readAdoption(root);
+    const authored = author ? readAuthorLayout(root) : undefined;
+    const adoption = author ? null : readAdoption(root);
     if (!adoption && !author)
         fail("ADOPTION_REQUIRED", "项目尚未采用受支持规范；先 init，或明确选择本地作者模式。", "docs/.stonedocs.json", 2);
-    if (adoption && author)
-        fail("AUTHOR_MODE_CONFLICT", "项目已有固定采用记录，不能用作者模式替代其来源；按已采用项目执行，不传 --author。", "docs/.stonedocs.json");
-    const basis = new Set(["AGENTS.md", "docs/.stonedocs.json", "docs/conventions.md", ...requiredRules, ...(adoption?.managed.files ?? [])]);
-    for (const file of new Set(["docs/conventions.md", ...requiredRules, ...(adoption?.managed.files ?? [])])) {
-        if (!projectFileExists(root, file) || !readProjectText(root, file).trim())
+    const ruleSnapshot = authored?.snapshot ?? new Map();
+    const rules = new Map();
+    const basis = new Set(["AGENTS.md", "docs/.stonedocs.json", ...ruleSnapshot.keys()]);
+    for (const target of new Set(["docs/conventions.md", ...requiredRules, ...(adoption?.managed.files ?? [])])) {
+        const file = authored?.files.find((entry) => entry.target === target)?.source ?? target;
+        if (!projectFileExists(root, file))
             fail(adoption ? "ADOPTED_RULES_MISSING" : "AUTHOR_RULES_MISSING", "本地缺少非空必要规则；不回退作者目录或远端。", file);
+        const raw = ruleSnapshot.get(file) ?? readProjectText(root, file);
+        if (!raw.trim())
+            fail(adoption ? "ADOPTED_RULES_MISSING" : "AUTHOR_RULES_MISSING", "本地缺少非空必要规则；不回退作者目录或远端。", file);
+        ruleSnapshot.set(file, raw);
+        basis.add(file);
+        rules.set(target, { path: file, raw });
     }
     const objects = { goal: [], phase: [], task: [] };
     for (const kind of ["goal", "phase", "task"]) {
@@ -61,7 +70,13 @@ export function loadWriteContext(rootInput, author, requiredRules = []) {
     }
     for (const phase of objects.phase)
         basis.add(path.posix.dirname(phase.path));
-    return { root, author, objects, basis: [...basis] };
+    return { root, author, objects, basis: [...basis], rules, ruleSnapshot };
+}
+export function contextRule(context, target) {
+    const rule = context.rules?.get(target);
+    if (!rule)
+        fail("RULE_BASIS_MISSING", "当前动作未取得必要规则。", target);
+    return rule;
 }
 export function uniqueObject(context, kind, id) {
     if (typeof id !== "string" || !id.trim())
@@ -155,5 +170,10 @@ function referencedBasis(root, changes) {
 export function finishPlan(context, command, object, request, changes, extraBasis = []) {
     const warnings = checkChanges(context.root, changes);
     const basis = new Set([...context.basis, ...referencedBasis(context.root, changes), ...extraBasis]);
-    return { schemaVersion: 1, projectRoot: context.root, command, object, request, changes, warnings, guards: [...basis].sort().map((file) => captureGuard(context.root, file, changes)) };
+    const guards = [...basis].sort().map((file) => captureGuard(context.root, file, changes));
+    for (const [file, raw] of context.ruleSnapshot ?? []) {
+        if (readRuleText(context.root, file, "CONTENT_CHANGED", true) !== raw)
+            fail("CONTENT_CHANGED", "规则或作者布局在规划中发生变化；重新读取后预览。", file, 3);
+    }
+    return { schemaVersion: 1, projectRoot: context.root, command, object, request, changes, warnings, guards };
 }

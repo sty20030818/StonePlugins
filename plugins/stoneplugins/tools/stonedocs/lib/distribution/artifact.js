@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { lstatSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { readBundle } from "../rules/bundle.js";
-import { fixedSource, readRuleText, RULE_FILES, ruleFailure, ruleJson, ruleObject } from "../rules/format.js";
+import { fixedSource, isRuleContract, readRuleText, ruleFailure, ruleJson, ruleObject } from "../rules/format.js";
 import { isSemVer } from "../version.js";
 export const BUILD_INPUTS = ["package.json", "package-lock.json", "tsconfig.json", "tsconfig.build.json", "scripts/build-cli.ts"];
 export const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
@@ -21,7 +21,7 @@ export function readArtifact(directory, options = {}) {
         fail("CLI 包必须是普通目录。", directory);
     const root = realpathSync(directory);
     const record = ruleObject(ruleJson(readRuleText(root, "artifact.json", invalid), invalid, "artifact.json"), ["schemaVersion", "cliContract", "ruleContract", "version", "source", "rules", "files"], invalid, "artifact.json");
-    if (record.schemaVersion !== 1 || record.cliContract !== 1 || record.ruleContract !== 1)
+    if (record.schemaVersion !== 1 || record.cliContract !== 1 || !isRuleContract(record.ruleContract))
         fail("CLI 包或配套契约尚未支持。");
     const version = validateCliVersion(record.version);
     const declaredSource = ruleObject(record.source, ["repository", "revision", "state", "files"], invalid, "artifact.json");
@@ -41,7 +41,10 @@ export function readArtifact(directory, options = {}) {
     if (new Set(sourceFiles.map((file) => file.path)).size !== sourceFiles.length || BUILD_INPUTS.some((file) => !sourceFiles.some((entry) => entry.path === file)) || !["src/cli/main.ts", "src/distribution/artifact.ts", "src/rules/bundle.ts"].every((file) => sourceFiles.some((entry) => entry.path === file)))
         fail("CLI 构建输入缺失或重复。");
     const rules = fixedSource(record.rules, invalid, "artifact.json");
-    const expected = ["package.json", "rules/source.json", ...RULE_FILES.map((file) => "rules/" + file), ...sourceFiles.filter((file) => file.path.startsWith("src/")).map((file) => "lib/" + file.path.slice(4, -3) + ".js")].sort();
+    const bundle = readBundle(path.join(root, "rules"));
+    if (bundle.ruleContract !== record.ruleContract || JSON.stringify(bundle.source) !== JSON.stringify(rules))
+        fail("CLI 清单与固定规范来源或契约不一致。", "rules/source.json");
+    const expected = ["package.json", "rules/source.json", ...bundle.files.map((file) => "rules/" + file.path), ...sourceFiles.filter((file) => file.path.startsWith("src/")).map((file) => "lib/" + file.path.slice(4, -3) + ".js")].sort();
     if (!Array.isArray(record.files))
         fail("缺少 CLI 运行文件清单。");
     const files = record.files.map((entry) => {
@@ -85,8 +88,5 @@ export function readArtifact(directory, options = {}) {
     const exports = ruleObject(pkg.exports, [".", "./artifact"], invalid, "package.json");
     if (pkg.name !== "stonedocs" || pkg.version !== version || pkg.private !== true || pkg.type !== "module" || engines.node !== ">=22.18.0" || bin.stonedocs !== "lib/cli/main.js" || exports["."] !== "./lib/cli/main.js" || exports["./artifact"] !== "./lib/distribution/artifact.js" || JSON.stringify(pkg.files) !== JSON.stringify(["lib/", "rules/", "artifact.json"]))
         fail("CLI 包声明不符合独立、无安装脚本的运行契约。", "package.json");
-    const bundle = readBundle(path.join(root, "rules"));
-    if (JSON.stringify(bundle.source) !== JSON.stringify(rules))
-        fail("CLI 清单与固定规范来源不一致。", "rules/source.json");
-    return { root, manifest: { schemaVersion: 1, cliContract: 1, ruleContract: 1, version, source: { ...source, state: declaredSource.state, files: sourceFiles }, rules, files }, rules: bundle };
+    return { root, manifest: { schemaVersion: 1, cliContract: 1, ruleContract: bundle.ruleContract, version, source: { ...source, state: declaredSource.state, files: sourceFiles }, rules, files }, rules: bundle };
 }

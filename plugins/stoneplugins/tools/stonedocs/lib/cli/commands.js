@@ -24,8 +24,8 @@ export const COMMANDS = [
     { path: "init", summary: "盘点并采用固定规范与必要入口；默认预览，不生成空业务文档或安装工具。", usage: "init --project <目录> --rules <固定规范包> [--apply --expect <摘要>] [--dry-run] [--json]；中断恢复仅带项目与 --resume 或 --rollback", options: [...common, "rules", "apply", "expect", "dry-run", "resume", "rollback"], example: "init --project /path/to/project --rules /path/to/fixed-rules --json" },
     { path: "upgrade", summary: "比较旧规范、本地内容与目标规范；默认预览，任一冲突整次不应用。", usage: "upgrade --project <目录> --from <旧固定包> --rules <目标固定包> [--apply --expect <摘要>] [--dry-run] [--json]；恢复仅带项目与 --resume 或 --rollback，不带规范包", options: [...common, "from", "rules", "apply", "expect", "dry-run", "resume", "rollback"], example: "upgrade --project /path/to/project --from /path/to/old-rules --rules /path/to/new-rules --json" },
     { path: "check", summary: "只读检查项目的链接、身份、状态和归属，不判断业务验收。", usage: "check [--project <目录>] [--json]", options: common, example: "check --project /path/to/project --json" },
-    { path: "sop list", summary: "列出项目本地 SOP 与来源缺口。", usage: "sop list [--project <目录>] [--json]", options: common, example: "sop list --project /path/to/project" },
-    { path: "sop show", summary: "读取指定本地 SOP 完整原文；index 表示 SOP 索引。", usage: "sop show <流程名> [--project <目录>] [--json]", argument: "流程名", options: common, example: "sop show task --project /path/to/project" },
+    { path: "sop list", summary: "列出项目本地 SOP 与来源缺口；显式作者模式读取唯一作者布局。", usage: "sop list [--project <目录>] [--author] [--json]；作者模式须显式 --project", options: [...common, "author"], example: "sop list --project /path/to/project" },
+    { path: "sop show", summary: "读取指定本地 SOP 完整原文；index 表示索引，--author 显式读取作者源。", usage: "sop show <流程名> [--project <目录>] [--author] [--json]；作者模式须显式 --project", argument: "流程名", options: [...common, "author"], example: "sop show task --project /path/to/project" },
     ...["goal", "phase", "task"].flatMap((kind) => {
         const filters = kind === "goal" ? ["status"] : kind === "phase" ? ["goal", "status"] : ["goal", "phase", "status"];
         return [

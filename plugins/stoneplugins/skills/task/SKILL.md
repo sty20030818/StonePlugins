@@ -5,11 +5,13 @@ description: "在采用文档工作流的项目中，拆分、接续、执行或
 
 # Task
 
-拆分、接续、执行或移交已明确的阶段任务。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[任务 SOP](../../tools/stonedocs/rules/docs/sop/task.md)；任务操作、移交及完成判断由这些文档维护。记录骨架见[任务输出结构与示例](../../tools/stonedocs/rules/docs/sop/task.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
+拆分、接续、执行或移交已明确的阶段任务。按[规则与方法读取](../../references/cli.md#规则与方法读取)先定位项目本地适用规范；包内[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[任务 SOP](../../tools/stonedocs/rules/docs/sop/task.md)供未采用讨论或显式版本核对；任务操作、移交及完成判断由这些文档维护。记录骨架见[任务输出结构与示例](../../tools/stonedocs/rules/docs/sop/task.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
 沿项目入口定位所属 Goal 下的 Phase plan 与唯一 tasks，以及关联的 design、行为标准、决定和已有证据，使用项目现有路径。先识别本次是讨论、只读审查还是执行写回及实际授权；按项目采用的 SOP 版本和明确差异解释资料，版本未知或契约冲突按共同约定处理。
+
+项目适用 v2 时，按上述读取路线取得项目实际的[技术设计方法](../../tools/stonedocs/rules/docs/knowledge/technical-design.md#从总体设计衔接到任务)，围绕受影响实施任务的设计就绪与调查、复用通路读取相关章节；包内链接是定位参照，不覆盖本地版本。旧 v1、作者模式和未采用讨论分别按共同适配说明处理。
 
 ## 执行适配
 

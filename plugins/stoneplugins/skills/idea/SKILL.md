@@ -5,7 +5,7 @@ description: "在项目文档工作流中，记录、整理或处理尚未承诺
 
 # Idea
 
-处理尚未承诺实施的项目想法。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[想法 SOP](../../tools/stonedocs/rules/docs/sop/idea.md)；处理方式和完成判断由这些文档维护。记录骨架见[想法输出结构与示例](../../tools/stonedocs/rules/docs/sop/idea.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
+处理尚未承诺实施的项目想法。按[规则与方法读取](../../references/cli.md#规则与方法读取)先定位项目本地适用规范；包内[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[想法 SOP](../../tools/stonedocs/rules/docs/sop/idea.md)供未采用讨论或显式版本核对；处理方式和完成判断由这些文档维护。记录骨架见[想法输出结构与示例](../../tools/stonedocs/rules/docs/sop/idea.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 

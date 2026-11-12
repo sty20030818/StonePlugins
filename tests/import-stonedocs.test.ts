@@ -141,8 +141,20 @@ test("消费者独立拒绝其不支持的契约，即使新产物验证器自�
   mkdirSync(path.join(root, "lib/distribution"), { recursive: true });
   writeFileSync(path.join(root, "package.json"), '{"type":"module"}');
   const module = path.join(root, "lib/distribution/artifact.js");
-  for (const contract of ["cliContract", "ruleContract"]) {
-    writeFileSync(module, `export function readArtifact(root) { return {root,manifest:{cliContract:1,ruleContract:1,${contract}:2},validated:true}; }\n`);
+  for (const [contract, unsupported] of [["cliContract", 2], ["ruleContract", 3]] as const) {
+    writeFileSync(module, `export function readArtifact(root) { return {root,manifest:{cliContract:1,ruleContract:1,${contract}:${unsupported}},validated:true}; }\n`);
     assert.throws(() => readPairedArtifact(root), /不支持.*契约/);
+  }
+});
+
+
+test("消费者显式支持 v1/v2 规则而不自动采纳未知契约", (t) => {
+  const { temporary } = fixture(t);
+  const root = path.join(temporary, "supported reader package");
+  mkdirSync(path.join(root, "lib/distribution"), { recursive: true });
+  writeFileSync(path.join(root, "package.json"), '{"type":"module"}');
+  for (const ruleContract of [1, 2]) {
+    writeFileSync(path.join(root, "lib/distribution/artifact.js"), `export function readArtifact(root) { return {root,manifest:{cliContract:1,ruleContract:${ruleContract}}}; }\n`);
+    assert.equal(readPairedArtifact(root).manifest.ruleContract, ruleContract);
   }
 });

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test, { type TestContext } from "node:test";
@@ -19,7 +20,7 @@ function sealPackage(packageRoot: string) {
   writeFileSync(file, JSON.stringify(artifact));
 }
 
-function fixture(t: TestContext) {
+function fixture(t: TestContext, ruleContract: 1 | 2 = 1) {
   const temporary = mkdtempSync(path.join(tmpdir(), "stoneplugins-docs-test-"));
   t.after(() => rmSync(temporary, { recursive: true, force: true }));
   const pluginRoot = path.join(temporary, "plugin with spaces");
@@ -31,8 +32,9 @@ function fixture(t: TestContext) {
   for (const name of ["engineering", "linear", ...SOP_NAMES]) {
     const skillRoot = path.join(pluginRoot, "skills", name);
     mkdirSync(path.join(skillRoot, "agents"), { recursive: true });
+    const method = ruleContract === 2 && ["design", "plan", "task", "verify", "review"].includes(name) ? "[Method](../../tools/stonedocs/rules/docs/knowledge/technical-design.md)\n" : "";
     const body = name === "engineering" ? "Engineering rules.\n" : name === "linear" ? "[Rules](../../tools/stonedocs/rules/docs/conventions.md#rules)\n[Guide](../../references/linear.md)\n[CLI](../../references/cli.md)\n" : `[Rules](../../tools/stonedocs/rules/docs/conventions.md#rules)\n[Workflow](../../tools/stonedocs/rules/docs/sop/${name}.md)\n[Output](../../tools/stonedocs/rules/docs/sop/${name}.md#输出结构与示例)\n[Source](../../tools/stonedocs/rules/source.json)\n[CLI](../../references/cli.md)\n`;
-    writeFileSync(path.join(skillRoot, "SKILL.md"), `---\nname: ${name}\ndescription: "A focused workflow."\n---\n\n${body}`);
+    writeFileSync(path.join(skillRoot, "SKILL.md"), `---\nname: ${name}\ndescription: "A focused workflow."\n---\n\n${body}${method}`);
     writeFileSync(path.join(skillRoot, "agents/openai.yaml"), `interface:\n  display_name: "${name}"\n  short_description: "A focused workflow"\n  default_prompt: "Use $${name} for this work."\n\npolicy:\n  allow_implicit_invocation: true\n`);
   }
   writeFileSync(path.join(pluginRoot, "references/linear.md"), encodeLinearGuide(Buffer.from("# Linear\n\n[Official](https://linear.app/docs/documents)\n"), { repository: LINEAR_GUIDE_REPOSITORY, revision: "35e6497a59bc8f008d73268caf791f4a6bdc92d9", state: "commit", path: LINEAR_GUIDE_PATH }));
@@ -41,14 +43,19 @@ function fixture(t: TestContext) {
   for (const name of SOP_NAMES) {
     writeFileSync(path.join(docsRoot, `sop/${name}.md`), `# ${name}\n\n[Rules](../conventions.md#rules)\n\n## 操作\n\nFollow the workflow.\n\n## 输出结构与示例\n\nRecord the actual result.\n`);
   }
+  if (ruleContract === 2) writeFileSync(path.join(docsRoot, "knowledge/technical-design.md"), "# Method\n\n[Rules](../conventions.md#rules)\n");
+  else rmSync(path.join(docsRoot, "knowledge"), { recursive: true, force: true });
   const source = {
     schemaVersion: 1,
-    ruleContract: 1,
+    ruleContract,
     source: { repository: "https://github.com/sty20030818/StoneDocs", revision: "35e6497a59bc8f008d73268caf791f4a6bdc92d9" },
-    files: DOCS_FILES.map((name) => ({ path: `docs/${name}`, sha256: createHash("sha256").update(readFileSync(path.join(docsRoot, name))).digest("hex") })),
+    files: [...DOCS_FILES, ...(ruleContract === 2 ? ["knowledge/technical-design.md"] : [])].map((name) => ({ path: `docs/${name}`, sha256: createHash("sha256").update(readFileSync(path.join(docsRoot, name))).digest("hex") })),
   };
   writeFileSync(path.join(packageRoot, "rules/source.json"), JSON.stringify(source));
   const artifact = JSON.parse(readFileSync(path.join(packageRoot, "artifact.json"), "utf8"));
+  artifact.ruleContract = ruleContract;
+  artifact.files = artifact.files.filter((entry: { path: string }) => !entry.path.startsWith("rules/docs/knowledge/"));
+  if (ruleContract === 2) artifact.files.push({ path: "rules/docs/knowledge/technical-design.md", sha256: "0".repeat(64), executable: false });
   artifact.rules = source.source;
   artifact.source.state = "working-tree";
   writeFileSync(path.join(packageRoot, "artifact.json"), JSON.stringify(artifact));
@@ -73,7 +80,7 @@ test("实际完整插件复制到安装位置后不依赖原仓库路径", (t) =
   cpSync(PLUGIN_ROOT, pluginRoot, { recursive: true });
   const resources = validateDocumentWorkflow(pluginRoot);
   const docsRoot = path.join(pluginRoot, "tools/stonedocs/rules/docs");
-  assert.equal(resources.filter((file) => file.startsWith(`${docsRoot}${path.sep}`) && path.extname(file) === ".md").length, 11);
+  assert.equal(resources.filter((file) => file.startsWith(`${docsRoot}${path.sep}`) && path.extname(file) === ".md").length, 12);
 });
 
 test("九项文档技能的五类必需入口缺失均被拒绝", (t) => {
@@ -287,7 +294,7 @@ test("必需 SOP 缺失、遗留副本、快照或清单损坏均被拒绝，候
     source.files = invalid;
     writeFileSync(path.join(packageRoot, "rules/source.json"), JSON.stringify(source));
     sealPackage(packageRoot);
-    assert.throws(() => validateDocumentWorkflow(pluginRoot), /规范|清单|路径/);
+    assert.throws(() => validateDocumentWorkflow(pluginRoot), /规范|清单|路径|资源集合/);
   }
 });
 
@@ -340,4 +347,70 @@ test("Linear 指南损坏与候选发布被拒绝，CLI 和十一份规范仍为
   writeFileSync(file, encodeLinearGuide(Buffer.from("# Linear candidate\n"), { repository: LINEAR_GUIDE_REPOSITORY, revision: "a".repeat(40), state: "working-tree", path: LINEAR_GUIDE_PATH }));
   assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot));
   assert.throws(() => validateDocumentWorkflow(pluginRoot, { release: true }), /Linear 指南.*候选/);
+});
+
+
+test("v2 的五项技术设计入口必须实际链接同包方法，代码或错指不能补足", (t) => {
+  for (const name of ["design", "plan", "task", "verify", "review"]) {
+    const { pluginRoot } = fixture(t, 2);
+    assert.doesNotThrow(() => validateDocumentWorkflow(pluginRoot));
+    const file = path.join(pluginRoot, "skills", name, "SKILL.md");
+    const original = readFileSync(file, "utf8");
+    const method = "[Method](../../tools/stonedocs/rules/docs/knowledge/technical-design.md)";
+    for (const replacement of ["", "```markdown\n" + method + "\n```", "[Method](../../tools/stonedocs/rules/docs/conventions.md#rules)"]) {
+      writeFileSync(file, original.replace(method, replacement));
+      assert.throws(() => validateDocumentWorkflow(pluginRoot), /技术设计方法/);
+    }
+  }
+});
+
+test("v2 必需方法缺失或损坏时消费者拒绝，不从作者仓补缺", (t) => {
+  for (const mode of ["missing", "changed"]) {
+    const { pluginRoot, docsRoot } = fixture(t, 2);
+    const method = path.join(docsRoot, "knowledge/technical-design.md");
+    if (mode === "missing") rmSync(method);
+    else writeFileSync(method, "# Different method\n");
+    assert.throws(() => validateDocumentWorkflow(pluginRoot));
+  }
+});
+
+
+test("新固定 CLI 继续读取 v1 项目本地 SOP，显式 v2 采用才获得方法且缺失时拒绝写入", (t) => {
+  const { temporary, packageRoot: oldPackage } = fixture(t);
+  const currentPackage = path.join(temporary, "current package");
+  cpSync(path.join(PLUGIN_ROOT, "tools/stonedocs"), currentPackage, { recursive: true });
+  const cli = path.join(currentPackage, "lib/cli/main.js");
+  const run = (project: string, args: string[], input?: unknown, expected = 0) => {
+    const result = spawnSync(process.execPath, [cli, ...args, "--project", project, "--json"], {
+      cwd: temporary, encoding: "utf8", input: input === undefined ? undefined : JSON.stringify(input),
+    });
+    assert.equal(result.status, expected, result.stdout + result.stderr);
+    return JSON.parse(result.stdout);
+  };
+  const adopt = (project: string, rules: string) => {
+    mkdirSync(project);
+    const preview = run(project, ["init", "--rules", rules]);
+    assert.equal(preview.outcome, "preview");
+    assert.equal(run(project, ["init", "--rules", rules, "--apply", "--expect", preview.data.expect]).outcome, "applied");
+  };
+  const v1 = path.join(temporary, "old v1 project"), v2 = path.join(temporary, "new v2 project");
+  adopt(v1, path.join(oldPackage, "rules"));
+  const local = path.join(v1, "docs/sop/task.md");
+  writeFileSync(local, readFileSync(local, "utf8") + "\n项目本地约束继续有效。\n");
+  const oldMetadata = readFileSync(path.join(v1, "docs/.stonedocs.json"), "utf8");
+  const shown = run(v1, ["sop", "show", "task"]);
+  assert.equal(shown.data.source.ruleContract, 1);
+  assert.equal(shown.data.raw, readFileSync(local, "utf8"));
+  assert.equal(readFileSync(path.join(v1, "docs/.stonedocs.json"), "utf8"), oldMetadata);
+  assert.equal(existsSync(path.join(v1, "docs/knowledge/technical-design.md")), false);
+  adopt(v2, path.join(currentPackage, "rules"));
+  const method = path.join(v2, "docs/knowledge/technical-design.md");
+  assert.equal(readFileSync(method, "utf8"), readFileSync(path.join(currentPackage, "rules/docs/knowledge/technical-design.md"), "utf8"));
+  assert.equal(run(v2, ["sop", "show", "design"]).data.source.ruleContract, 2);
+  rmSync(method);
+  const rejected = run(v2, ["goal", "new", "--input", "-"], { schemaVersion: 1, id: "V1", title: "阻断检查", scope: "不应写入。", criteria: ["必需方法须完整。"] }, 1);
+  assert.equal(rejected.outcome, "rejected");
+  assert.equal(rejected.errors[0].code, "ADOPTED_RULES_MISSING");
+  assert.equal(existsSync(method), false);
+  assert.equal(existsSync(path.join(v2, "docs/goals")), false);
 });

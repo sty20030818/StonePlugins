@@ -5,11 +5,12 @@ import { spawnSync } from "node:child_process";
 import { readLinearGuide } from "./linear-guide.ts";
 
 const SOP_NAMES = ["compare", "decide", "design", "idea", "plan", "review", "story", "task", "verify"];
+const METHOD_SKILLS = ["design", "plan", "task", "verify", "review"];
 const SKILL_NAMES = ["compare", "decide", "design", "engineering", "idea", "linear", "plan", "review", "story", "task", "verify"];
 const SOURCE_REPOSITORY = "https://github.com/sty20030818/StoneDocs";
 type Artifact = {
   root: string;
-  manifest: { cliContract: 1; ruleContract: 1; files: { path: string }[]; source: { repository: string }; rules: { repository: string } };
+  manifest: { cliContract: 1; ruleContract: 1 | 2; files: { path: string }[]; source: { repository: string }; rules: { repository: string } };
   rules: { root: string; files: { path: string }[] };
 };
 const ARTIFACT_READER = `
@@ -37,7 +38,7 @@ export function readPairedArtifact(packageRoot: string, options: { release?: boo
   assert.ok(!result.error && result.status === 0, result.stderr?.trim() || "配套 CLI 完整性校验未完成");
   const artifact = JSON.parse(result.stdout) as Artifact;
   assert.equal(artifact?.manifest?.cliContract, 1, "当前技能不支持此配套 CLI 契约；保留现有产物并明确升级消费者，不能仅凭包自校验通过接纳");
-  assert.equal(artifact?.manifest?.ruleContract, 1, "当前技能不支持此规范契约；保留现有产物并明确升级消费者，不能自动升级项目规则");
+  assert.ok(artifact?.manifest?.ruleContract === 1 || artifact?.manifest?.ruleContract === 2, "当前技能不支持此规范契约；保留现有产物并明确升级消费者，不能自动升级项目规则");
   return artifact;
 }
 
@@ -269,6 +270,7 @@ export function validateDocumentWorkflow(pluginRoot: string, options: { release?
         ["自身输出结构与示例", links.some((link) => link.destination === sopPath && link.anchor === "输出结构与示例")],
         ["固定快照清单", links.some((link) => link.destination === sourcePath)],
         ["配套 CLI 用法", links.some((link) => link.destination === cliGuide)],
+        ...(artifact.manifest.ruleContract === 2 && METHOD_SKILLS.includes(name) ? [["技术设计方法", links.some((link) => link.destination === path.join(docsRoot, "knowledge/technical-design.md"))] as const] : []),
       ] as const;
       for (const [label, present] of required) assert.ok(present, `缺少必需文档入口：${name}/${label}`);
     }

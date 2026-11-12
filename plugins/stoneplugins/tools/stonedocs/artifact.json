@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "cliContract": 1,
-  "ruleContract": 1,
-  "version": "0.1.2",
+  "ruleContract": 2,
+  "version": "0.2.0",
   "source": {
     "repository": "https://github.com/sty20030818/StoneDocs",
-    "revision": "597212236e533e936fb35c2943c820f018e3ee70",
+    "revision": "1965e5602558bb9a3a96116deace45949ae53b23",
     "state": "commit",
     "files": [
       {
@@ -18,11 +18,11 @@
       },
       {
         "path": "scripts/build-cli.ts",
-        "sha256": "eed014ada09102bd0b5d10ada931d9e97f6773c98c10d5d585bc530f5212625f"
+        "sha256": "cb4d6aec504fda5052e8dada374205ba14653c9110d21b8f38ff38bb99d3f217"
       },
       {
         "path": "src/cli/commands.ts",
-        "sha256": "1e62625b11a54abc081859ba4c5fcae01d164a773bd474d799e0524b6727385e"
+        "sha256": "882d43633850eb8db42a46b337e4af36836c4d36f10c608e9ec52181e57d25f7"
       },
       {
         "path": "src/cli/create.ts",
@@ -38,7 +38,7 @@
       },
       {
         "path": "src/cli/main.ts",
-        "sha256": "3a96b86a1e3444162e6f99bafded2d5102ea2e304f9d3da2362ca1aaf3a70866"
+        "sha256": "7b38dcbd32d8f11c8cd77667a17b246a991b9436af06ee33215a382554e6b98f"
       },
       {
         "path": "src/cli/progress.ts",
@@ -54,7 +54,7 @@
       },
       {
         "path": "src/distribution/artifact.ts",
-        "sha256": "05ce6d39b23e9fda0ee6269cf8194b28568afd3963e64f0a705b92fcf3c7897e"
+        "sha256": "b620fecd8bc5739b18c8b738b5c99619cce887b442f6c3e01fd8f8c71787ca1f"
       },
       {
         "path": "src/documents/check.ts",
@@ -78,19 +78,23 @@
       },
       {
         "path": "src/documents/read.ts",
-        "sha256": "bc9be5272803287510c6bfa0bd87b4fa0d59d253b94fe384f4476c81218aca64"
+        "sha256": "5711ea4821b738df7cb4e77bb39bc4dd2f048c6aab83216259d783a3b2954576"
       },
       {
         "path": "src/documents/sop.ts",
-        "sha256": "097ca97950689799ff5890f6d989d1b05dfb81a29f4fb46b4ef572bdf579e745"
+        "sha256": "291269a70a801af351f42df857ab9321a3883d0c5b52d55dbd8c306c24f0ad80"
       },
       {
         "path": "src/files/write.ts",
         "sha256": "30d422bd68f59c1e0f95e5de1fe4092c848d8cf22a2e7c414a3cbed6a1c3b0ac"
       },
       {
+        "path": "src/rules/author.ts",
+        "sha256": "44c38946308e0f85c938714e502b6da4dd933124d2ae09203f05e505e19e7753"
+      },
+      {
         "path": "src/rules/bundle.ts",
-        "sha256": "2b8c49ca2874ac02e1708c5b302cd75037156f00694a09e369dfb6ed570a5d25"
+        "sha256": "0b90ec01fc65cfa5c087f45574963b13941d0dff863ee9769cad55ed700426a5"
       },
       {
         "path": "src/rules/entries.ts",
@@ -98,7 +102,7 @@
       },
       {
         "path": "src/rules/format.ts",
-        "sha256": "d20f24a4e5e76b69f18777280ab44b653cc6303b817c6fd09f5d05fca31dfd02"
+        "sha256": "58618d9a3bfb372a2ee61523c617a28ff740f933d9e343fb37f1614e8ae325ec"
       },
       {
         "path": "src/version.ts",
@@ -110,15 +114,15 @@
       },
       {
         "path": "src/workflow/context.ts",
-        "sha256": "4a095146d74c4f5e3a7628b9a18c5efc43e62eabb86769a86819a27cf5d8da69"
+        "sha256": "0ba24b1dede92e4ceebdb37b300b27804a159a8621be845ccf0d458d8d00fbc2"
       },
       {
         "path": "src/workflow/create.ts",
-        "sha256": "6fb70d9a85cf02fb790393188f3c8c8050bd3c3a8478e364bc7a28a1fc77b4d2"
+        "sha256": "ab779d339fe12f854b3de6127944ea4518ada73f7265b152198ecd9776157b90"
       },
       {
         "path": "src/workflow/init.ts",
-        "sha256": "144122fcbb8f3cc37331670f7434383551bb431b0d0a9da5540fb9218bc7aca8"
+        "sha256": "cb8cf69d0869717dee55b4d0738f38859a41d9107a4f32ed08057913608702df"
       },
       {
         "path": "src/workflow/input.ts",
@@ -142,11 +146,11 @@
       },
       {
         "path": "src/workflow/results.ts",
-        "sha256": "3d3109541b8f07fdf08a1a4995899337c443d02cfa531b81f37cd63899619c8c"
+        "sha256": "39490591289201bd5d05b87828abe5e15fc495962d43dfcff825302cf3167f92"
       },
       {
         "path": "src/workflow/upgrade.ts",
-        "sha256": "fd193e7ed8df03ba23329580cad553cef50962935f5656a0953217ade69e8896"
+        "sha256": "f5d997953b3f580b8aedbf034145b2f971996dc3f79c53c0d2a406ae4a4a9fd1"
       },
       {
         "path": "tsconfig.build.json",
@@ -160,12 +164,12 @@
   },
   "rules": {
     "repository": "https://github.com/sty20030818/StoneDocs",
-    "revision": "3ffbf2dd4a5c949cad2915c4291b1514aa1bd072"
+    "revision": "1965e5602558bb9a3a96116deace45949ae53b23"
   },
   "files": [
     {
       "path": "lib/cli/commands.js",
-      "sha256": "a35ec70869043a5030352b3cabb643f2b2558ba58766a8206858813bff51b73d",
+      "sha256": "afc1b1655e161717ce2efda64bd3c7a7df26a0d635ba17bf510a5b56b8f0b02b",
       "executable": false
     },
     {
@@ -185,7 +189,7 @@
     },
     {
       "path": "lib/cli/main.js",
-      "sha256": "023d4c6d911fe68f57f0dec45c3edf007bae806908a8a6f1ed0ef12244346234",
+      "sha256": "b35552997cc1390e43f85360bce0386bd96cc6e43388baa4cf7bece2bdd9cab6",
       "executable": true
     },
     {
@@ -205,7 +209,7 @@
     },
     {
       "path": "lib/distribution/artifact.js",
-      "sha256": "c5545021152e367a86d725a3b5b7b6bd9d5faeaf2505d3fd55ed1ed861a8e1c5",
+      "sha256": "f2b58c3e866be75220c5dd989b015c02b110d87fdf67bf8e56c7af9378096d71",
       "executable": false
     },
     {
@@ -235,12 +239,12 @@
     },
     {
       "path": "lib/documents/read.js",
-      "sha256": "ee901e1cc7fe85471c5d13bc263fcdd7e12f77fd64efc6274a1fcc7a8267b600",
+      "sha256": "671403011ff4d842f75b7c120819a5349b3e36414551d814a9b55c559006dacb",
       "executable": false
     },
     {
       "path": "lib/documents/sop.js",
-      "sha256": "1f766ad7b6beef301dc7f058cf1b871250ad55399bdb65556c91c866638b42e2",
+      "sha256": "a00fcd6da77d80d6561dad320eb9a3ee7c799138a35457d1cf842be1974912ed",
       "executable": false
     },
     {
@@ -249,8 +253,13 @@
       "executable": false
     },
     {
+      "path": "lib/rules/author.js",
+      "sha256": "d10d5781e11675a6cc716ca681a87c6db2033aa276b59ec8dfa80d1471b41a5d",
+      "executable": false
+    },
+    {
       "path": "lib/rules/bundle.js",
-      "sha256": "e7d5f0411d3e83b2b3638c79eaf12143fe01545686fe113d66660d8801025289",
+      "sha256": "0b421579925278a8d1c0e36cda749bc013c35b1e076efdfa79d8bd2ac01488fe",
       "executable": false
     },
     {
@@ -260,7 +269,7 @@
     },
     {
       "path": "lib/rules/format.js",
-      "sha256": "12f948a1e49ca8edf34a6c7680f44e4f543fa0cc8b9b72253330295210df8cf9",
+      "sha256": "77863f2d9913440d31ef799751d221ccf5ea7b82d68866c53dcac79935c01187",
       "executable": false
     },
     {
@@ -275,17 +284,17 @@
     },
     {
       "path": "lib/workflow/context.js",
-      "sha256": "dfed56d9b94902e62a499e5a76ed677b08068dd6f93ddb2db78567b1f9d9ed2a",
+      "sha256": "0b1fd72c1b18731868e7c7460e579d207a4c29c30f59c5a1ac6c222d229057ea",
       "executable": false
     },
     {
       "path": "lib/workflow/create.js",
-      "sha256": "1f759ab543fa2cfd455b6b781d555a20bdbbae8a122fd161155e2f49919cff90",
+      "sha256": "bf58a6d925100f9e2968bd3a62daca93a68b91080c09096b27f1f6a1a331bf48",
       "executable": false
     },
     {
       "path": "lib/workflow/init.js",
-      "sha256": "699cf2b8879aca86b11f596f81b2100821f4ef632955d796ab48315a7fb121f5",
+      "sha256": "16743926ebdea2d4f4ddf5edf656381a3b8f43d73c2bd63e127d8591cedca67e",
       "executable": false
     },
     {
@@ -315,27 +324,32 @@
     },
     {
       "path": "lib/workflow/results.js",
-      "sha256": "d09ce0c3785e12372fb2c2bf58f02d7d909d4df8856f6786fb70bb9db1437520",
+      "sha256": "0eda5c3663692f10cc73ac79e61ce588a724dd13986b68d827fc142f6cba2825",
       "executable": false
     },
     {
       "path": "lib/workflow/upgrade.js",
-      "sha256": "d6795472589b4b2b5e6f5d1568118078262c9e305912ab0431cb4b7851c8e791",
+      "sha256": "600a24be0ac8a667e73375233d45e96937eae670389e567ce4eb4dd6195e5b8c",
       "executable": false
     },
     {
       "path": "package.json",
-      "sha256": "516d13c584ec4fccee415d6366e82d2b5aea3bcbd3453f8c98ceaf67a74dfff6",
+      "sha256": "2a8b76e232b594e3b7b311f65a93afa282692d11e2b8bfddd01ed6f63149cdaf",
       "executable": false
     },
     {
       "path": "rules/docs/conventions.md",
-      "sha256": "8dc1c2fda92664ab13f6bd4b30c920fb76a7d7234a3944fa8d1612f2c838cbd1",
+      "sha256": "6d814419b0ea8e34bdde9e1b023d620afff3a5ee4d2e8edac0eb62f035cbc6b3",
+      "executable": false
+    },
+    {
+      "path": "rules/docs/knowledge/technical-design.md",
+      "sha256": "4e6b0c38443965d2bab98978fe8524dcdbbed67a8d1fe8c50e7ef327cc0dad6f",
       "executable": false
     },
     {
       "path": "rules/docs/sop/README.md",
-      "sha256": "493e96dfb78973232929caad8e96cd7bf8160d831e78ab91967fb689bd2d39d2",
+      "sha256": "53fbaea523e19f1e7628dd34dfa0672d2c77bf2cd7b68b1d3e15e291e75ef896",
       "executable": false
     },
     {
@@ -350,7 +364,7 @@
     },
     {
       "path": "rules/docs/sop/design.md",
-      "sha256": "555b0c4cf772b7a46a78bce93aa83bd333c21e2090cff71c9b2dbc5636c834dd",
+      "sha256": "c6b5d80a154e15b88fa3c3ac5ed744d79b4e2e1ec5f9ab7fd9df63f64e1f947b",
       "executable": false
     },
     {
@@ -360,12 +374,12 @@
     },
     {
       "path": "rules/docs/sop/plan.md",
-      "sha256": "92c5c28f40bed7107735994ecf9c240d869a7e2cabd5ca3c99f915d3add56c81",
+      "sha256": "f6c673f210632cd55645546a0926c71ff53080720184ab356460929ada86a49c",
       "executable": false
     },
     {
       "path": "rules/docs/sop/review.md",
-      "sha256": "eb9376f76b6ffba096bf3695d823c88c12283065c3a9846ccc50040c4e1640fc",
+      "sha256": "2d7850ab76fed98bf87d01e590ba8a908b148c16a1993a90fe2bcf7f736c0f76",
       "executable": false
     },
     {
@@ -375,17 +389,17 @@
     },
     {
       "path": "rules/docs/sop/task.md",
-      "sha256": "914d668a1875c94a00a1c24b510d6de152cae90749745661212bbe5f36577be2",
+      "sha256": "57e73723a7f0e67057de9830242801b9177f79dac23e400b7a0aadab0d373ae2",
       "executable": false
     },
     {
       "path": "rules/docs/sop/verify.md",
-      "sha256": "35de4a1dfd9c21e967bcdb32ba83d7ff446b1553c17e1306da0692c457c43734",
+      "sha256": "b2e05713329122e944e396ba7c5144cf8abdfa8ad0708e6be6c49872c0316568",
       "executable": false
     },
     {
       "path": "rules/source.json",
-      "sha256": "158823b7bfe36f140a2cab7cc3b3794e8019568efa80724fc276e7cf9f68401e",
+      "sha256": "1ec30a2d5a60b82f9d36418ccd3369ad97d62c5b749559b633916534d0f6f10d",
       "executable": false
     }
   ]

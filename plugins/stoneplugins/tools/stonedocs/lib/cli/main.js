@@ -56,6 +56,8 @@ function execute(args) {
             if (call.definition.action)
                 validateProgressOptions(call);
             const project = typeof call.options.project === "string" ? call.options.project : undefined;
+            if (call.definition.path.startsWith("sop ") && call.options.author && !project)
+                throw new UsageError("SOP 作者读取需要显式 --project。");
             if (project)
                 result.projectRoot = path.resolve(project);
             result.projectRoot = locateProject(project, toolRoot);
@@ -111,7 +113,7 @@ function execute(args) {
                 return { exitCode: !checked.complete ? 4 : checked.diagnostics.length ? 1 : 0, result };
             }
             if (call.definition.path.startsWith("sop ")) {
-                const { warnings, ...data } = readSop(root, call.argument);
+                const { warnings, ...data } = readSop(root, call.argument, call.options.author === true);
                 result.data = data;
                 result.warnings = warnings;
             }

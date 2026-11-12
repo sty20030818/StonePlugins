@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "ruleContract": 1,
+  "ruleContract": 2,
   "source": {
     "repository": "https://github.com/sty20030818/StoneDocs",
-    "revision": "3ffbf2dd4a5c949cad2915c4291b1514aa1bd072"
+    "revision": "1965e5602558bb9a3a96116deace45949ae53b23"
   },
   "files": [
     {
       "path": "docs/conventions.md",
-      "sha256": "8dc1c2fda92664ab13f6bd4b30c920fb76a7d7234a3944fa8d1612f2c838cbd1"
+      "sha256": "6d814419b0ea8e34bdde9e1b023d620afff3a5ee4d2e8edac0eb62f035cbc6b3"
     },
     {
       "path": "docs/sop/README.md",
-      "sha256": "493e96dfb78973232929caad8e96cd7bf8160d831e78ab91967fb689bd2d39d2"
+      "sha256": "53fbaea523e19f1e7628dd34dfa0672d2c77bf2cd7b68b1d3e15e291e75ef896"
     },
     {
       "path": "docs/sop/idea.md",
@@ -32,23 +32,27 @@
     },
     {
       "path": "docs/sop/plan.md",
-      "sha256": "92c5c28f40bed7107735994ecf9c240d869a7e2cabd5ca3c99f915d3add56c81"
+      "sha256": "f6c673f210632cd55645546a0926c71ff53080720184ab356460929ada86a49c"
     },
     {
       "path": "docs/sop/design.md",
-      "sha256": "555b0c4cf772b7a46a78bce93aa83bd333c21e2090cff71c9b2dbc5636c834dd"
+      "sha256": "c6b5d80a154e15b88fa3c3ac5ed744d79b4e2e1ec5f9ab7fd9df63f64e1f947b"
     },
     {
       "path": "docs/sop/task.md",
-      "sha256": "914d668a1875c94a00a1c24b510d6de152cae90749745661212bbe5f36577be2"
+      "sha256": "57e73723a7f0e67057de9830242801b9177f79dac23e400b7a0aadab0d373ae2"
     },
     {
       "path": "docs/sop/verify.md",
-      "sha256": "35de4a1dfd9c21e967bcdb32ba83d7ff446b1553c17e1306da0692c457c43734"
+      "sha256": "b2e05713329122e944e396ba7c5144cf8abdfa8ad0708e6be6c49872c0316568"
     },
     {
       "path": "docs/sop/review.md",
-      "sha256": "eb9376f76b6ffba096bf3695d823c88c12283065c3a9846ccc50040c4e1640fc"
+      "sha256": "2d7850ab76fed98bf87d01e590ba8a908b148c16a1993a90fe2bcf7f736c0f76"
+    },
+    {
+      "path": "docs/knowledge/technical-design.md",
+      "sha256": "4e6b0c38443965d2bab98978fe8524dcdbbed67a8d1fe8c50e7ef327cc0dad6f"
     }
   ]
 }

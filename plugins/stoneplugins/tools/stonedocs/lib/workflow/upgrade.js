@@ -3,7 +3,7 @@ import { resolveProjectRoot } from "../documents/project.js";
 import { OperationError } from "../files/write.js";
 import { readBundle } from "../rules/bundle.js";
 import { adoptEntry } from "../rules/entries.js";
-import { ENTRY_SECTIONS, parseAdoption, RULE_FILES } from "../rules/format.js";
+import { ENTRY_SECTIONS, parseAdoption } from "../rules/format.js";
 import { currentAdoptionFile, inventoryAdoption, METADATA, SOP_INDEX_ALIAS } from "./adoption.js";
 import { finishPlan } from "./context.js";
 function diagnostic(code, message, file) {
@@ -56,20 +56,42 @@ export function planUpgrade(rootInput, oldBundleDirectory, targetBundleDirectory
         conflicts.push(diagnostic(code, reason, file));
     };
     if (sameSource(old.source, target.source)) {
+        if (old.ruleContract !== target.ruleContract || JSON.stringify(old.files.map((file) => file.path)) !== JSON.stringify(target.files.map((file) => file.path)))
+            conflict("source.json", null, null, null, "UPGRADE_SOURCE_CONTENT_CONFLICT", "相同来源身份包含不同契约或资源集合。");
         for (const resource of old.files) {
             const next = target.files.find((candidate) => candidate.path === resource.path);
-            if (resource.sha256 !== next.sha256)
+            if (next && resource.sha256 !== next.sha256)
                 conflict(resource.path, resource.raw, null, next.raw, "UPGRADE_SOURCE_CONTENT_CONFLICT", "相同来源身份的两份包含有不同原文，不能用同一版本替换规范。");
         }
         if (conflicts.length)
             throw new UpgradeConflict(comparisons, conflicts, sources, mode);
     }
+    if (target.ruleContract < adopted.ruleContract || target.ruleContract < old.ruleContract)
+        fail("UPGRADE_DOWNGRADE", "不允许隐式降级规则契约。", "source.json");
     const effectiveBase = mode === "already-adopted" ? target : old;
-    const basis = new Set([METADATA, SOP_INDEX_ALIAS, ...RULE_FILES, ...ENTRY_SECTIONS.map((entry) => entry.path)]);
-    for (const resource of effectiveBase.files) {
-        const next = target.files.find((candidate) => candidate.path === resource.path), current = localFile(root, resource.path);
+    if (adopted.ruleContract !== effectiveBase.ruleContract || JSON.stringify(adopted.managed.files) !== JSON.stringify(effectiveBase.files.map((file) => file.path)))
+        fail("UPGRADE_BASE_RESOURCE_MISMATCH", "固定基线的契约及资源集合不匹配当前采用记录。", METADATA);
+    if (old.files.some((file) => !target.files.some((next) => next.path === file.path)))
+        fail("UPGRADE_RESOURCE_REMOVAL", "当前升级不删除或移动受管资源；目标必须保留全部旧路径。", "source.json");
+    const snapshot = new Map([[METADATA, metadata]]);
+    const currentFile = (file) => { const current = localFile(root, file); if (!current.problem)
+        snapshot.set(file, current.raw); return current; };
+    const basis = new Set([METADATA, SOP_INDEX_ALIAS, ...effectiveBase.files.map((file) => file.path), ...target.files.map((file) => file.path), ...ENTRY_SECTIONS.map((entry) => entry.path)]);
+    for (const next of target.files) {
+        const resource = effectiveBase.files.find((candidate) => candidate.path === next.path), current = currentFile(next.path);
         if (current.problem) {
-            conflict(resource.path, resource.raw, null, next.raw, "UPGRADE_TARGET_INVALID", current.problem);
+            conflict(next.path, resource?.raw ?? null, null, next.raw, "UPGRADE_TARGET_INVALID", current.problem);
+            continue;
+        }
+        if (!resource) {
+            if (current.raw === null) {
+                changes.push({ path: next.path, before: null, after: next.raw });
+                comparisons.push({ path: next.path, disposition: "add", base: null, local: null, target: next.raw });
+            }
+            else if (current.raw === next.raw)
+                comparisons.push({ path: next.path, disposition: "already-current", base: null, local: current.raw, target: next.raw });
+            else
+                conflict(next.path, null, current.raw, next.raw, "UPGRADE_NEW_PATH_CONFLICT", "新增受管路径已被不同内容占用；不覆盖用户资料。");
             continue;
         }
         if (current.raw === null) {
@@ -97,7 +119,7 @@ export function planUpgrade(rootInput, oldBundleDirectory, targetBundleDirectory
         comparisons.push({ path: resource.path, disposition, base, local, target: next.raw, ...(mode === "already-adopted" ? { reason: "以当前已采用目标规范为实际基线，只报告并保留项目差异。" } : {}) });
     }
     for (const entry of ENTRY_SECTIONS) {
-        const current = localFile(root, entry.path);
+        const current = currentFile(entry.path);
         if (current.problem) {
             conflict(entry.path, null, null, null, "UPGRADE_TARGET_INVALID", current.problem);
             continue;
@@ -119,21 +141,19 @@ export function planUpgrade(rootInput, oldBundleDirectory, targetBundleDirectory
             conflict(entry.path, null, current.raw, null, "UPGRADE_ENTRY_CONFLICT", "采用片段已改写、版本未知或边界不完整，升级不覆盖项目入口。");
         }
     }
-    const index = localFile(root, SOP_INDEX_ALIAS);
+    const index = currentFile(SOP_INDEX_ALIAS);
     if (index.problem || index.raw !== null)
         conflict(SOP_INDEX_ALIAS, null, index.raw, null, "UPGRADE_INDEX_CONFLICT", index.problem ?? "存在第二个 SOP 索引入口；先明确唯一入口，升级不删除或重命名既有资料。");
     if (conflicts.length)
         throw new UpgradeConflict(comparisons, conflicts, sources, mode);
     if (mode === "upgrade") {
         const eol = metadata.match(/\r\n|\n|\r/)?.[0] ?? "\n";
-        const record = { ...adopted, source: { ...adopted.source, revision: target.source.revision } };
+        const record = { ...adopted, ruleContract: target.ruleContract, source: { ...adopted.source, revision: target.source.revision }, managed: { ...adopted.managed, files: target.files.map((file) => file.path) } };
         changes.push({ path: METADATA, before: metadata, after: JSON.stringify(record, null, 2).replaceAll("\n", eol) + eol });
     }
-    const context = { root, author: false, objects: inventoryAdoption(root, basis), basis: [...basis] };
-    const describe = (bundle) => ({ source: bundle.source, files: bundle.files.map(({ path, sha256 }) => ({ path, sha256 })) });
+    const context = { root, author: false, objects: inventoryAdoption(root, basis), basis: [...basis], ruleSnapshot: snapshot };
+    const describe = (bundle) => ({ source: bundle.source, ruleContract: bundle.ruleContract, files: bundle.files.map(({ path, sha256 }) => ({ path, sha256 })) });
     const request = { mode, source: sources.from, providedOld: describe(old), target: describe(target), ruleContract: adopted.ruleContract };
     const plan = finishPlan(context, "upgrade", { kind: "adoption", id: "fixed-rules", path: METADATA }, request, changes);
-    if (currentAdoptionFile(root, METADATA, "UPGRADE_TARGET_INVALID") !== metadata)
-        fail("CONTENT_CHANGED", "采用记录在本次盘点中变化，保留新内容并重新生成预览。", METADATA);
     return { plan, comparisons, mode, sources };
 }

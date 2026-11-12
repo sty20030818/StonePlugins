@@ -9,7 +9,7 @@
 | 澄清取舍并确认选择 | [decide](decide.md) | 写回内容所有者的决定 |
 | 明确价值和可观察行为 | [story](story.md) | 用户故事、规则和代表场景 |
 | 规划目标或阶段 | [plan](plan.md) | Goal 或 Phase 的计划 |
-| 审查实施选择 | [design](design.md) | 实施设计及验证安排 |
+| 新项目技术方案、整体重审或实施选择 | [design](design.md) | 总体/阶段技术设计及验证安排 |
 | 拆分、执行或交接阶段任务 | [task](task.md) | 交付、实际状态和接续点 |
 | 验收或复验明确对象 | [verify](verify.md) | 真实结果、必要证据及限制 |
 | 判断目标或阶段并收尾 | [review](review.md) | 结论、遗留处置与授权内归档 |
@@ -17,3 +17,5 @@
 plan/review 先明确对象是 Goal 还是 Phase；Task 始终归属 Phase。已有任务可以直接进入 task，只有讨论授权时返回草案；流程名称不会扩大授权。
 
 这些 SOP 可由人或 AI 使用 Markdown + Git 执行，不依赖同名技能或特定 CLI。资料前提与独立使用见[共同约定](../conventions.md#流程独立与组合)；常见组合和返工路线可在采用项目的指南中说明，SOP 不依赖该指南才能执行。
+
+技术设计与自适应组织的方法、选择和例子见[方法手册](../knowledge/technical-design.md)。启动/重审由 design 进入，plan/task 在细拆时核对相关方案，verify/review 按实际交付主题收敛；按当前问题读取相关章节，不要求每次通读全部手册或补演技能调用。

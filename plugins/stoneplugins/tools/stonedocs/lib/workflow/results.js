@@ -4,7 +4,7 @@ import { anchors, lineAt, parseTaskSections, withoutFences } from "../documents/
 import { resolveProjectRoot } from "../documents/project.js";
 import { readObjects } from "../documents/read.js";
 import { OperationError } from "../files/write.js";
-import { finishPlan, loadWriteContext, referenceLink, uniqueObject, validateReferences } from "./context.js";
+import { contextRule, finishPlan, loadWriteContext, referenceLink, uniqueObject, validateReferences } from "./context.js";
 import { inputObject, inputStrings, inputText, invalidInput } from "./json.js";
 export const RESULT_INPUT = {
     required: ["schemaVersion", "date", "batch", "objectVersion", "standardVersion", "method", "actual", "evidence", "limits"],
@@ -173,15 +173,16 @@ export function readResults(rootInput, kind, id, batch) {
     }
     return result;
 }
-function skeleton(root) {
-    const source = readProjectText(root, "docs/sop/verify.md");
+function skeleton(context) {
+    const rule = contextRule(context, "docs/sop/verify.md");
+    const source = rule.raw;
     const matches = [...source.matchAll(/^ {0,3}(`{3,}|~{3,})markdown[ \t]*\r?\n([\s\S]*?)^ {0,3}\1[ \t]*\r?$/gm)].filter((match) => /^# <Goal 或阶段交付目标> 验收记录$/m.test(normalize(match[2])));
     if (matches.length !== 1)
-        fail("SOP_TEMPLATE_AMBIGUOUS", "verify SOP 的验收骨架必须唯一。", "docs/sop/verify.md", 1);
+        fail("SOP_TEMPLATE_AMBIGUOUS", "verify SOP 的验收骨架必须唯一。", rule.path, 1);
     const template = normalize(matches[0][2]);
     const labels = [...template.matchAll(/^- ([^：\r\n]+)：/gm)].map((match) => match[1]);
     if (JSON.stringify(labels) !== JSON.stringify(LABELS) || !/^## <日期> · <本结果所有者内唯一批次>$/m.test(template))
-        fail("SOP_TEMPLATE_UNSUPPORTED", "verify SOP 必要字段或批次入口无法明确填写。", "docs/sop/verify.md", 1);
+        fail("SOP_TEMPLATE_UNSUPPORTED", "verify SOP 必要字段或批次入口无法明确填写。", rule.path, 1);
     return template;
 }
 export function planResult(root, kind, id, value, author) {
@@ -191,7 +192,7 @@ export function planResult(root, kind, id, value, author) {
     const parents = [owner, ...context.objects.goal.filter((goal) => goal.id === owner.goalId), ...context.objects.phase.filter((phase) => phase.id === owner.phaseId)];
     if (parents.some((object) => object.archived))
         fail("OBJECT_ARCHIVED", "对象或祖先已归档，普通结果新增不修改历史。", owner.path, 1);
-    const template = skeleton(context.root);
+    const template = skeleton(context);
     const references = validateReferences(context, input.evidence);
     const file = resultPath(owner);
     const before = owner.kind === "task" ? readProjectText(context.root, file) : projectFileExists(context.root, file) ? readProjectText(context.root, file) : null;

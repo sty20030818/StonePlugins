@@ -5,7 +5,7 @@ description: "在项目文档工作流中，澄清目标、追问取舍并记录
 
 # Decide
 
-把项目讨论收敛为有依据、有明确范围的决定。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[决定 SOP](../../tools/stonedocs/rules/docs/sop/decide.md)；确认、记录和完成判断由这些文档维护。记录骨架见[决定输出结构与示例](../../tools/stonedocs/rules/docs/sop/decide.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
+把项目讨论收敛为有依据、有明确范围的决定。按[规则与方法读取](../../references/cli.md#规则与方法读取)先定位项目本地适用规范；包内[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[决定 SOP](../../tools/stonedocs/rules/docs/sop/decide.md)供未采用讨论或显式版本核对；确认、记录和完成判断由这些文档维护。记录骨架见[决定输出结构与示例](../../tools/stonedocs/rules/docs/sop/decide.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 

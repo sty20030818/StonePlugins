@@ -4,6 +4,16 @@ import { isMissing, isUtf8Text } from "../documents/files.js";
 import { OperationError } from "../files/write.js";
 import { parseJsonInput } from "../workflow/json.js";
 export const RULE_FILES = ["docs/conventions.md", "docs/sop/README.md", ...["idea", "compare", "decide", "story", "plan", "design", "task", "verify", "review"].map((name) => "docs/sop/" + name + ".md")];
+export const isRuleContract = (value) => value === 1 || value === 2;
+/** 资源集合在作者描述、固定包与采用记录间保持同一边界。 */
+export function resourcePaths(value, contract, code, file) {
+    if (!Array.isArray(value) || value.some((entry) => typeof entry !== "string") || new Set(value).size !== value.length || RULE_FILES.some((entry) => !value.includes(entry)))
+        ruleFailure(code, "资源集合须唯一并包含全部十一份核心规则。", file);
+    const knowledge = value.filter((entry) => !RULE_FILES.includes(entry));
+    if (contract === 1 ? knowledge.length !== 0 : !knowledge.includes("docs/knowledge/technical-design.md") || knowledge.some((entry) => !/^docs\/knowledge\/(?:[a-z\d][a-z\d._-]*\/)*[a-z\d][a-z\d._-]*\.md$/.test(entry)))
+        ruleFailure(code, "v1 只含核心资源；v2 须含技术设计手册，且额外资源仅限规范小写 knowledge Markdown 路径。", file);
+    return [...RULE_FILES, ...knowledge.sort()];
+}
 export const ENTRY_SECTIONS = [{ path: "AGENTS.md", id: "adoption" }, { path: "docs/README.md", id: "adoption" }, { path: "docs/guide.md", id: "adoption" }];
 export function ruleFailure(code, message, file, exitCode = 1) {
     throw new OperationError({ code, message, path: file, remedy: "核对固定来源、支持的规则契约和实际管理范围；保留原文件，不从 latest 或作者工作树猜测。" }, exitCode);
@@ -81,14 +91,9 @@ export function readRuleText(rootInput, relative, code, allowMissing = false) {
         return ruleFailure("IO_ERROR", "规范读取未完成" + (cause ? "（" + cause + "）" : "") + "。", relative, 4);
     }
 }
-function managedFiles(value, code, file) {
-    if (!Array.isArray(value) || value.length !== RULE_FILES.length || new Set(value).size !== RULE_FILES.length || value.some((entry) => typeof entry !== "string" || !RULE_FILES.includes(entry)))
-        ruleFailure(code, "管理文件必须是本契约唯一且完整的十一份规则。", file);
-    return [...RULE_FILES];
-}
 function validateAdoption(value) {
     const file = "docs/.stonedocs.json", invalid = "ADOPTION_INVALID";
-    if (value && typeof value === "object" && !Array.isArray(value) && (value.schemaVersion !== 1 || value.ruleContract !== 1))
+    if (value && typeof value === "object" && !Array.isArray(value) && (value.schemaVersion !== 1 || !isRuleContract(value.ruleContract)))
         ruleFailure("ADOPTION_UNSUPPORTED", "采用格式或规则契约尚未支持。", file);
     const record = ruleObject(value, ["schemaVersion", "ruleContract", "source", "managed"], invalid, file);
     const declared = ruleObject(record.source, ["kind", "repository", "revision"], invalid, file);
@@ -96,13 +101,15 @@ function validateAdoption(value) {
         ruleFailure("ADOPTION_UNSUPPORTED", "采用来源类型尚未支持。", file);
     const source = fixedSource({ repository: declared.repository, revision: declared.revision }, invalid, file);
     const managed = ruleObject(record.managed, ["files", "sections"], invalid, file);
-    const files = managedFiles(managed.files, invalid, file);
+    if (!isRuleContract(record.ruleContract))
+        ruleFailure("ADOPTION_UNSUPPORTED", "规则契约尚未支持。", file);
+    const files = resourcePaths(managed.files, record.ruleContract, invalid, file);
     if (!Array.isArray(managed.sections) || managed.sections.length !== ENTRY_SECTIONS.length)
         ruleFailure(invalid, "采用入口范围不完整。", file);
     const entries = managed.sections.map((entry) => ruleObject(entry, ["path", "id"], invalid, file));
     if (ENTRY_SECTIONS.some((standard) => entries.filter((entry) => entry.path === standard.path && entry.id === standard.id).length !== 1))
         ruleFailure(invalid, "采用入口重复或超出本契约范围。", file);
-    return { schemaVersion: 1, ruleContract: 1, source: { kind: "fixed", ...source }, managed: { files, sections: ENTRY_SECTIONS.map((section) => ({ ...section })) } };
+    return { schemaVersion: 1, ruleContract: record.ruleContract, source: { kind: "fixed", ...source }, managed: { files, sections: ENTRY_SECTIONS.map((section) => ({ ...section })) } };
 }
 export function parseAdoption(raw) {
     return validateAdoption(ruleJson(raw, "ADOPTION_INVALID", "docs/.stonedocs.json"));
@@ -112,5 +119,5 @@ export function readAdoption(root) {
     return raw === null ? null : parseAdoption(raw);
 }
 export function adoptionFor(bundle) {
-    return validateAdoption({ schemaVersion: 1, ruleContract: 1, source: { kind: "fixed", ...bundle.source }, managed: { files: bundle.files.map((file) => file.path), sections: ENTRY_SECTIONS.map((section) => ({ ...section })) } });
+    return validateAdoption({ schemaVersion: 1, ruleContract: bundle.ruleContract, source: { kind: "fixed", ...bundle.source }, managed: { files: bundle.files.map((file) => file.path), sections: ENTRY_SECTIONS.map((section) => ({ ...section })) } });
 }

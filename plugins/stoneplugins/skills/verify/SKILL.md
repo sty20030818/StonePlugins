@@ -5,11 +5,13 @@ description: "对明确的交付对象执行验收或复验，核对证据是否
 
 # Verify
 
-验收或复验明确的交付对象，或核对已有证据。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[验收 SOP](../../tools/stonedocs/rules/docs/sop/verify.md)；对象和标准版本、按需证据、复验及完成判断由这些文档维护。记录骨架见[验收输出结构与示例](../../tools/stonedocs/rules/docs/sop/verify.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
+验收或复验明确的交付对象，或核对已有证据。按[规则与方法读取](../../references/cli.md#规则与方法读取)先定位项目本地适用规范；包内[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[验收 SOP](../../tools/stonedocs/rules/docs/sop/verify.md)供未采用讨论或显式版本核对；对象和标准版本、按需证据、复验及完成判断由这些文档维护。记录骨架见[验收输出结构与示例](../../tools/stonedocs/rules/docs/sop/verify.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
 沿项目入口和关联资料定位本次 Task、Phase 或 Goal 的条件、适用行为标准或阶段差异、实际受检对象及既有验证记录。先识别只读核对与获准执行、写回的边界；按项目采用的规则版本和明确差异解释资料，版本未知或契约冲突按共同约定处理。
+
+项目适用 v2 时，按上述读取路线取得项目实际的[技术设计方法](../../tools/stonedocs/rules/docs/knowledge/technical-design.md#初始设计当前实现与未来变更)，围绕已交付主题、初始/当前/未来边界和证据范围读取相关章节；包内链接是定位参照，不覆盖本地版本。旧 v1、作者模式和未采用讨论分别按共同适配说明处理。
 
 ## 执行适配
 

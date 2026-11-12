@@ -2,6 +2,7 @@ import path from "node:path";
 import { projectDirectories, projectFileExists, readProjectText, ReadError } from "./files.js";
 import { documentTitle, lineAt, metadata, parseTaskSections, STATES, withoutFences } from "./markdown.js";
 import { resolveProjectRoot } from "./project.js";
+import { AUTHOR_RESOURCES } from "../rules/author.js";
 function diagnostic(code, message, file) {
     return { code, message, path: file, remedy: "核对项目内唯一身份、所属目录和该对象原文；不通过筛选或猜值绕过结构缺口。" };
 }
@@ -73,7 +74,7 @@ function checkEntry(entry) {
 function addRelated(root, object, warnings) {
     const directory = path.dirname(object.path);
     const goalDirectory = object.kind === "goal" ? directory : path.dirname(path.dirname(directory));
-    const candidates = [{ kind: "agents", path: "AGENTS.md" }, { kind: "conventions", path: "docs/conventions.md" }, { kind: "sop-index", path: "docs/sop/README.md" }];
+    const candidates = [{ kind: "agents", path: "AGENTS.md" }, { kind: "conventions", path: "docs/conventions.md" }, { kind: "sop-index", path: "docs/sop/README.md" }, { kind: "author-resources", path: AUTHOR_RESOURCES }];
     if (object.kind === "goal") {
         candidates.push({ kind: "goal-plan", path: object.path }, { kind: "goal-verification", path: path.join(directory, "verification.md") });
         for (const phaseDirectory of projectDirectories(root, path.join(directory, "phases")))

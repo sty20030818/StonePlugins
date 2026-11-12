@@ -5,7 +5,7 @@ description: "在项目文档工作流中，围绕明确问题调研并比较可
 
 # Compare
 
-围绕项目中的真实选择形成有依据的比较。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[比较 SOP](../../tools/stonedocs/rules/docs/sop/compare.md)；调查、推荐和完成判断由这些文档维护。记录骨架见[比较输出结构与示例](../../tools/stonedocs/rules/docs/sop/compare.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
+围绕项目中的真实选择形成有依据的比较。按[规则与方法读取](../../references/cli.md#规则与方法读取)先定位项目本地适用规范；包内[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[比较 SOP](../../tools/stonedocs/rules/docs/sop/compare.md)供未采用讨论或显式版本核对；调查、推荐和完成判断由这些文档维护。记录骨架见[比较输出结构与示例](../../tools/stonedocs/rules/docs/sop/compare.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 

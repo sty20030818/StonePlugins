@@ -5,11 +5,13 @@ description: "在项目文档工作流中，规划或调整产品目标（Goal�
 
 # Plan
 
-根据已确认成果规划或调整 Goal 或 Phase，先明确本次对象。先读取项目入口、[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[计划 SOP](../../tools/stonedocs/rules/docs/sop/plan.md)；输入、操作、写回与完成判断由这些文档维护。填写结构见[计划输出结构与示例](../../tools/stonedocs/rules/docs/sop/plan.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
+根据已确认成果规划或调整 Goal 或 Phase，先明确本次对象。按[规则与方法读取](../../references/cli.md#规则与方法读取)先定位项目本地适用规范；包内[共同约定](../../tools/stonedocs/rules/docs/conventions.md)与[计划 SOP](../../tools/stonedocs/rules/docs/sop/plan.md)供未采用讨论或显式版本核对；输入、操作、写回与完成判断由这些文档维护。填写结构见[计划输出结构与示例](../../tools/stonedocs/rules/docs/sop/plan.md#输出结构与示例)，资源版本见[固定快照清单](../../tools/stonedocs/rules/source.json)。
 
 ## 项目读取
 
 沿项目入口读取PRD、roadmap、已有 Goal 及其 Phase、适用规则和已确认依赖。可直接从用户明确给出的成果与约束进入，不要求 idea、story 或其他技能已经运行；优先接续同一成果的已有计划。按项目采用的规则版本和明确差异解释材料，版本未知或契约冲突按共同约定处理。
+
+项目适用 v2 时，按上述读取路线取得项目实际的[技术设计方法](../../tools/stonedocs/rules/docs/knowledge/technical-design.md#从总体设计衔接到任务)，围绕当前阶段细拆所需的总体方案及关键选择读取相关章节；包内链接是定位参照，不覆盖本地版本。旧 v1、作者模式和未采用讨论分别按共同适配说明处理。
 
 ## 执行适配
 
