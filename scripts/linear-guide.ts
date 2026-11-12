@@ -3,7 +3,8 @@ import { createHash } from "node:crypto";
 import { lstatSync, readFileSync } from "node:fs";
 
 export const LINEAR_GUIDE_REPOSITORY = "https://github.com/sty20030818/StoneDocs";
-export const LINEAR_GUIDE_PATH = "docs/linear.md";
+export const LINEAR_GUIDE_PATHS = ["handbook/integrations/linear.md", "docs/linear.md"] as const;
+export const LINEAR_GUIDE_PATH = LINEAR_GUIDE_PATHS[0];
 const PREFIX = "<!-- stonedocs:linear-guide:v1 ";
 const SUFFIX = " -->";
 
@@ -11,7 +12,7 @@ export interface LinearGuideSource {
   repository: typeof LINEAR_GUIDE_REPOSITORY;
   revision: string;
   state: "commit" | "working-tree";
-  path: typeof LINEAR_GUIDE_PATH;
+  path: typeof LINEAR_GUIDE_PATHS[number];
 }
 
 export interface LinearGuide {
@@ -30,7 +31,7 @@ function exactObject(value: unknown, fields: string[], label: string): Record<st
 function sourceRecord(value: unknown): LinearGuideSource {
   const source = exactObject(value, ["repository", "revision", "state", "path"], "Linear 指南来源");
   assert.equal(source.repository, LINEAR_GUIDE_REPOSITORY, "Linear 指南必须来自 StoneDocs 作者源");
-  assert.equal(source.path, LINEAR_GUIDE_PATH, "Linear 指南来源路径不符合约定");
+  assert.ok(LINEAR_GUIDE_PATHS.some((file) => file === source.path), "Linear 指南来源路径不符合约定");
   assert.ok(typeof source.revision === "string" && /^[a-f\d]{40}$/.test(source.revision), "Linear 指南须记录完整提交身份");
   assert.ok(source.state === "commit" || source.state === "working-tree", "Linear 指南来源状态无效");
   return source as unknown as LinearGuideSource;

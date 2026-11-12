@@ -45,7 +45,11 @@ Goal → Phase → Task 的共用模型由[共同约定](../plugins/stoneplugins
 
 linear 是可独立使用的外部看板入口，不是第十项核心 SOP。plan、task、verify、review 在本次授权包含展示维护时可直接按同一指南接续，不要求增加技能调用。默认 Goal 用 Team 总览文档和 Project 标签表达，Phase/Task 保留 Project/Issue；保存视图按实际需要，不依赖 Initiative。
 
-操作指南的唯一作者源在 StoneDocs 的 `docs/linear.md`；[包内副本](../plugins/stoneplugins/references/linear.md)由显式导入生成，文件头记录来源提交、commit/working-tree 及正文 SHA。它独立于 CLI 的十一份核心规则，不改工具产物，也不由导入自动升级采用项目。开发者使用 `npm run import:linear -- --source /path/to/StoneDocs --revision <完整提交>` 导入固定提交；工作树候选另显式加 `--working-tree`，有效旧副本的替换另加 `--replace`。未知或被手改的副本停止覆盖，release 不接纳工作树来源；清单校验内容对应，不替代可信来源判断。
+操作指南的唯一作者源在 StoneDocs 的 `handbook/integrations/linear.md`；[包内副本](../plugins/stoneplugins/references/linear.md)由显式导入生成，文件头记录来源提交、commit/working-tree 及正文 SHA。它独立于 CLI 的十一份核心规则，不改工具产物，也不由导入自动升级采用项目。开发者使用 `npm run import:linear -- --source /path/to/StoneDocs --revision <完整提交>` 导入固定提交；工作树候选另显式加 `--working-tree`，有效旧副本的替换另加 `--replace`。未知或被手改的副本停止覆盖，release 不接纳工作树来源；清单校验内容对应，不替代可信来源判断。
+
+导入器只接受新作者路径和历史 `docs/linear.md`。固定模式直接核对指定 Git 提交中的唯一普通文件，来源头记录实际路径；新旧两份同时存在、缺失或文件类型不符均拒绝，不用当前工作树给历史提交补缺，也不受 Git replace 对象替换影响。工作树模式只在显式指定时读取当前唯一源，锚定真实 HEAD，替换前复核路径与正文；移动来源但正文相同也须重新核对。
+
+旧固定来源头继续按当时路径解释；插件内目标仍为 references/linear.md，格式和正文摘要语义不变。作者路径迁移不自动产生一个新提交：新路径尚未提交时，可以保留有效旧固定副本，或明确生成 working-tree 候选供隔离验证；新路径的实际 commit 副本须在作者提交后再显式导入，不能给候选标注 commit。
 
 本次指南与适配的实际结果见 [StoneDocs T0059 固定记录](https://github.com/sty20030818/StoneDocs/blob/425aba5f649347e366f4f11f8217090276041e1f/docs/goals/v1/phases/p004-adoption/tasks.md#result-task-t0059-linear-adapter-1)，按其对象与时点解释；固定来源元数据更新不冒称重跑了旧模型回合。
 

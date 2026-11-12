@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 import { lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { encodeLinearGuide, LINEAR_GUIDE_PATH, LINEAR_GUIDE_REPOSITORY, readLinearGuide } from "./linear-guide.ts";
+import { encodeLinearGuide, LINEAR_GUIDE_PATHS, LINEAR_GUIDE_REPOSITORY, readLinearGuide } from "./linear-guide.ts";
 
 const DESTINATION = fileURLToPath(new URL("../plugins/stoneplugins/references/linear.md", import.meta.url));
 const USAGE = "npm run import:linear -- --source <StoneDocs Git根> --revision <完整提交> [--working-tree] [--replace]";
@@ -17,20 +17,35 @@ function occupied(file: string): boolean {
 export function importLinearGuide(source: string, revision: string, destination = DESTINATION, options: { workingTree?: boolean; replace?: boolean } = {}) {
   assert.match(revision, /^[a-f\d]{40}$/, "Linear 指南来源须使用完整提交");
   const sourceRoot = realpathSync(source);
-  const git = (...args: string[]) => execFileSync("git", args, { cwd: sourceRoot, maxBuffer: 4 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] });
+  const git = (...args: string[]) => execFileSync("git", ["--no-replace-objects", ...args], { cwd: sourceRoot, maxBuffer: 4 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] });
   assert.equal(realpathSync(git("rev-parse", "--show-toplevel").toString("utf8").trim()), sourceRoot, "来源必须为明确的 Git 根");
   assert.equal(git("rev-parse", "--verify", `${revision}^{commit}`).toString("utf8").trim(), revision, "来源提交身份无法核对");
-  const sourceFile = path.join(sourceRoot, LINEAR_GUIDE_PATH);
-  const readWorkingBody = () => {
-    const docs = lstatSync(path.dirname(sourceFile));
-    assert.ok(docs.isDirectory() && !docs.isSymbolicLink(), "工作树指南的 docs 必须为普通目录");
+  const readWorkingSource = () => {
+    const candidates = LINEAR_GUIDE_PATHS.filter((file) => occupied(path.join(sourceRoot, file)));
+    assert.equal(candidates.length, 1, "工作树须有唯一 Linear 指南来源；缺少或双份来源均停止");
+    const sourcePath = candidates[0]!;
+    const parts = sourcePath.split("/");
+    for (let index = 1; index < parts.length; index++) {
+      const stat = lstatSync(path.join(sourceRoot, ...parts.slice(0, index)));
+      assert.ok(stat.isDirectory() && !stat.isSymbolicLink(), "工作树指南的路径须经过普通目录");
+    }
+    const sourceFile = path.join(sourceRoot, sourcePath);
     const stat = lstatSync(sourceFile);
     assert.ok(stat.isFile() && !stat.isSymbolicLink(), "工作树 Linear 指南必须为普通文件");
-    return readFileSync(sourceFile);
+    return { path: sourcePath, body: readFileSync(sourceFile) };
+  };
+  const readCommittedSource = () => {
+    const entries = git("ls-tree", revision, "--", ...LINEAR_GUIDE_PATHS).toString("utf8").trim().split("\n").filter(Boolean);
+    assert.equal(entries.length, 1, "固定提交须有唯一 Linear 指南来源；缺少或双份来源均停止");
+    const entry = entries[0]!.match(/^100(?:644|755) blob [a-f\d]{40}\t(.+)$/);
+    assert.ok(entry, "固定提交的 Linear 指南须为普通文件，文件类型不符则停止");
+    const sourcePath = LINEAR_GUIDE_PATHS.find((file) => file === entry[1]);
+    assert.ok(sourcePath, "固定提交的 Linear 指南来源路径不符合约定");
+    return { path: sourcePath, body: git("show", `${revision}:${sourcePath}`) };
   };
   if (options.workingTree) assert.equal(git("rev-parse", "HEAD").toString("utf8").trim(), revision, "working-tree 来源须锚定当前真实 HEAD");
-  const body = options.workingTree ? readWorkingBody() : git("show", `${revision}:${LINEAR_GUIDE_PATH}`);
-  const bytes = encodeLinearGuide(body, { repository: LINEAR_GUIDE_REPOSITORY, revision, state: options.workingTree ? "working-tree" : "commit", path: LINEAR_GUIDE_PATH });
+  const snapshot = options.workingTree ? readWorkingSource() : readCommittedSource();
+  const bytes = encodeLinearGuide(snapshot.body, { repository: LINEAR_GUIDE_REPOSITORY, revision, state: options.workingTree ? "working-tree" : "commit", path: snapshot.path });
 
   const target = path.resolve(destination);
   const previous = occupied(target) ? (() => {
@@ -46,7 +61,9 @@ export function importLinearGuide(source: string, revision: string, destination 
   const assertSource = () => {
     if (options.workingTree) {
       assert.equal(git("rev-parse", "HEAD").toString("utf8").trim(), revision, "导入期间来源 HEAD 已变化");
-      assert.ok(readWorkingBody().equals(body), "导入期间来源正文已变化，请重新核对");
+      const current = readWorkingSource();
+      assert.equal(current.path, snapshot.path, "导入期间来源路径已变化，请重新核对");
+      assert.ok(current.body.equals(snapshot.body), "导入期间来源正文已变化，请重新核对");
     }
   };
   assertSource();
