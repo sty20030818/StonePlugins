@@ -84,7 +84,7 @@ codex plugin marketplace add /path/to/StonePlugins-0.11.0
 codex plugin add stoneplugins@stonefish
 ```
 
-已有同名来源时先核对 `codex plugin marketplace list`、原 ref 和回退来源。切换时只操作 `stonefish`，安装后独立读回版本及技能入口。远端固定 ref 示例仅供 GitHub 上能取回对应 tag 后使用：
+已有同名来源时，先用 `codex plugin marketplace list` 记录原来源与可回退的 ref，再运行 `codex plugin marketplace remove stonefish` 并执行上面的两条安装命令。保留固定目录供后续启动使用。原登记若仍指向旧版，Codex 启动时可能把插件切回该版本。打开并退出一次原生 Codex，再用 `codex plugin list -m stonefish --json` 核对版本、启用状态与本地来源，工程 Hook 如提示变更则逐项审核。远端固定 ref 示例仅供 GitHub 上能取回对应 tag 后使用：
 
 ```bash
 codex plugin marketplace add sty20030818/StonePlugins --ref v0.11.0
