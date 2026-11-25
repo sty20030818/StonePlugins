@@ -2,13 +2,13 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-## v0.10.0 本地候选（尚未发布）
+## 已发布版本 v0.10.0
 
-本地候选接入 StoneDocs CLI 0.2.0 与 v2 十二份同源资源，design 支持新项目总体技术方案和整体架构重审，相关技能按项目本地规则读取匹配方法。消费者仍支持 v1，不自动升级旧项目；方法入口与作者模式见[文档工作流](docs/document-workflow.md)和[读取适配](plugins/stoneplugins/references/cli.md#规则与方法读取)。
+本版接入 StoneDocs CLI 0.2.0 与 v2 十二份同源资源，design 支持新项目总体技术方案和整体架构重审，相关技能按项目本地规则读取匹配方法。消费者仍支持 v1，不自动升级旧项目；方法入口与作者模式见[文档工作流](docs/document-workflow.md)和[读取适配](plugins/stoneplugins/references/cli.md#规则与方法读取)。
 
-CLI 与规则均从 StoneDocs 固定提交 `1965e5602558bb9a3a96116deace45949ae53b23` 构建，实际身份见[产物清单](plugins/stoneplugins/tools/stonedocs/artifact.json)。这是本地候选，正式发布与个人安装尚未执行。以下历史版本及示例继续对应各自固定 tag，不把候选结果外推为宿主触发通过。
+CLI 与规则均从 StoneDocs 固定提交 `1965e5602558bb9a3a96116deace45949ae53b23` 构建，实际身份见[产物清单](plugins/stoneplugins/tools/stonedocs/artifact.json)。本版已发布为[正式 GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.10.0)，个人固定安装、新进程技能发现、三个 Hook 原生信任及一次只读新会话接续已验证；桌面 UI 与其余生命周期未重新验收。以下历史版本及示例继续对应各自固定 tag，不把发布结果外推为个人安装或宿主触发通过。
 
-Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b` 的 handbook/integrations/linear.md。版本选入范围、私有上游追溯与正式安装顺序见[发布方案](docs/plans/2026-11-12-v0.10.0-release-and-personal-install.md)，本地实际检查及未完成项见[v0.10.0候选验证](docs/evals/v0.10.0.md)。目标 V2、插件 0.10.0、CLI 0.2.0 与项目采用版本分别解释。
+Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b` 的 handbook/integrations/linear.md。版本选入范围、私有上游追溯与正式安装顺序见[发布方案](docs/plans/2026-11-12-v0.10.0-release-and-personal-install.md)，本地检查、tag CI、正式发布及未完成项见[v0.10.0验证](docs/evals/v0.10.0.md)。目标 V2、插件 0.10.0、CLI 0.2.0 与项目采用版本分别解释。
 
 ## 已发布版本 v0.9.2
 
@@ -71,9 +71,9 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 
 需要支持 Plugins 和 Hooks 的 Codex，以及在 `PATH` 中可用的 Node.js 22.18 或更高版本。Hook 运行时没有 npm 依赖。
 
-### v0.10.0 正式发布后的固定安装示例
+### v0.10.0：固定版本安装
 
-本候选尚未发布，以下命令现在不应执行；仅供 v0.10.0 的固定 tag、CI 与 Release 均确认后，尚未配置 stonefish 来源的新用户使用。已有安装者须先按[发布方案](docs/plans/2026-11-12-v0.10.0-release-and-personal-install.md)核对来源、恢复材料与原生更新路径，不直接叠加同名来源。
+v0.10.0 的固定 tag、CI 与正式 Release 已确认，以下命令面向尚未配置 stonefish 来源的新用户；个人已按原生换源流程从 0.9.2 更新至 0.10.0，实际结果见[本版验证](docs/evals/v0.10.0.md#个人固定安装与有限新会话验收)。已有安装者须先按[发布方案](docs/plans/2026-11-12-v0.10.0-release-and-personal-install.md)核对来源、恢复材料与原生更新路径，不直接叠加同名来源。
 
 ```bash
 node --version
@@ -83,7 +83,7 @@ codex plugin add stoneplugins@stonefish
 
 完整插件包含十一个入口、CLI 0.2.0 和十二份 v2 资源，不需要另装全局 CLI。项目仍读取其已采用的本地规则，安装不自动升级旧项目；实际安装后用新进程核对缓存、来源与 Hook 审核状态。
 
-### 当前正式 v0.9.2：一次安装完整插件
+### 已发布 v0.9.2 的历史安装示例
 
 以下固定版本命令面向**尚未配置 `stonefish` 来源、未安装旧工程插件** 的新用户：
 
@@ -101,7 +101,7 @@ v0.9.2 包含十一个入口、配套 CLI、元数据及所需资源，不需要
 
 ### 其他 CLI：只安装同源 Skill
 
-以下保留当前正式 `v0.9.2` 的示例；v0.10.0 发布后可检出新 tag，沿用同一 engineering 安装命令，但本轮没有重新验收其它 CLI。
+以下保留已发布 `v0.9.2` 的历史示例；使用 v0.10.0 时可检出该固定 tag，沿用同一 engineering 安装命令，但本轮没有重新验收其它 CLI。
 
 检出 `v0.9.2` 后，在仓库根目录中以 Grok 为例：
 
