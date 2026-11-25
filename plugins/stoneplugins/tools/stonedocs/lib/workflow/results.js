@@ -1,6 +1,6 @@
 import path from "node:path";
 import { projectFileExists, readProjectText } from "../documents/files.js";
-import { anchors, lineAt, parseTaskSections, withoutFences } from "../documents/markdown.js";
+import { anchors, lineAt, parseTaskSections, withoutFences, withoutFrontmatter } from "../documents/markdown.js";
 import { resolveProjectRoot } from "../documents/project.js";
 import { readObjects } from "../documents/read.js";
 import { OperationError } from "../files/write.js";
@@ -157,7 +157,7 @@ function inspect(owner, file, raw, warnings) {
         warnings.push(issue("RESULT_LEGACY_CONTENT", "存在未结构化原文；不能将它视为没有结果。", file));
     return { owner, path: file, raw, records, legacy, warnings };
 }
-export function readResults(rootInput, kind, id, batch) {
+function selectResults(rootInput, kind, id, batch) {
     const root = resolveProjectRoot(rootInput);
     const selected = readObjects(root, kind, { id });
     const owner = selected.objects[0];
@@ -166,12 +166,37 @@ export function readResults(rootInput, kind, id, batch) {
     const file = resultPath(owner);
     const raw = owner.kind === "task" ? owner.raw : projectFileExists(root, file) ? readProjectText(root, file) : "";
     const result = inspect(owner, file, raw, selected.warnings);
-    if (batch !== undefined) {
-        result.records = result.records.filter((record) => record.batch === batch);
-        if (!result.records.length)
-            result.warnings.push(issue("RESULT_BATCH_NOT_FOUND", "没有可识别的指定批次；原文与格式缺口仍保留。", file));
+    const records = batch === undefined ? result.records : result.records.filter((record) => record.batch === batch);
+    if (batch !== undefined && !records.length)
+        result.warnings.push(issue("RESULT_BATCH_NOT_FOUND", "没有可识别的指定批次；原文与格式缺口仍保留。", file));
+    return { result, records };
+}
+export function readResults(root, kind, id, batch) {
+    const { result, records } = selectResults(root, kind, id, batch);
+    return { ...result, records };
+}
+export function readResultIndex(root, kind, id, batch) {
+    const { result, records } = selectResults(root, kind, id, batch);
+    const { raw, related, ...owner } = result.owner;
+    const firstLine = kind === "task" ? owner.lineStart : 1;
+    const body = withoutFrontmatter(result.raw).replace(/^\uFEFF/, "");
+    const lines = withoutFences(body, { maskComments: true }).clean.split(/\r\n|\n/);
+    // 原生块按批次定位。其标题即使被 --batch 筛掉，也不能冒充未结构化小节。
+    for (const record of result.records) {
+        lines.fill("", record.lineStart - firstLine, record.lineEnd - firstLine + 1);
     }
-    return result;
+    const sections = [];
+    for (const [offset, line] of lines.entries()) {
+        const heading = /^ {0,3}(#{1,6})[ \t]+(.+?)(?:[ \t]+#+)?[ \t]*$/.exec(line);
+        if (heading && heading[2].trim()) {
+            sections.push({ title: heading[2].trim(), level: heading[1].length, line: firstLine + offset });
+        }
+    }
+    return {
+        view: "index", owner, path: result.path, sections, hasLegacy: Boolean(result.legacy),
+        records: records.map(({ batch, date, anchor, lineStart, lineEnd }) => ({ batch, date, anchor, lineStart, lineEnd })),
+        warnings: result.warnings,
+    };
 }
 function skeleton(context) {
     const rule = contextRule(context, "docs/sop/verify.md");

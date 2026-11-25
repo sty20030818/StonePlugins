@@ -2,6 +2,10 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
+## v0.11.0 本地版本
+
+查长验收时，配套 CLI 0.3.0 可以先列批次、手写标题与行号，再打开所需原文。已接入且获授权的 Linear 项目在正式建阶段、建任务与状态转换时同轮同步并读回。日常操作见[文档工作流](docs/document-workflow.md)，固定输入与实际验证见[v0.11.0 评测](docs/evals/v0.11.0.md)。
+
 ## 已发布版本 v0.10.0
 
 本版接入 StoneDocs CLI 0.2.0 与 v2 十二份同源资源，design 支持新项目总体技术方案和整体架构重审，相关技能按项目本地规则读取匹配方法。消费者仍支持 v1，不自动升级旧项目；方法入口与作者模式见[文档工作流](docs/document-workflow.md)和[读取适配](plugins/stoneplugins/references/cli.md#规则与方法读取)。
@@ -70,6 +74,22 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 ## 安装
 
 需要支持 Plugins 和 Hooks 的 Codex，以及在 `PATH` 中可用的 Node.js 22.18 或更高版本。Hook 运行时没有 npm 依赖。
+
+### v0.11.0 本地安装
+
+取得固定到该版本提交的本地 marketplace 目录。新配置可通过 Codex 原生入口安装，目录应可长期取回，其中包含 `.agents/plugins/marketplace.json` 与 `plugins/stoneplugins/`。
+
+```bash
+codex plugin marketplace add /path/to/StonePlugins-0.11.0
+codex plugin add stoneplugins@stonefish
+```
+
+已有同名来源时先核对 `codex plugin marketplace list`、原 ref 和回退来源。切换时只操作 `stonefish`，安装后独立读回版本及技能入口。远端固定 ref 示例仅供 GitHub 上能取回对应 tag 后使用：
+
+```bash
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.11.0
+codex plugin add stoneplugins@stonefish
+```
 
 ### v0.10.0：固定版本安装
 

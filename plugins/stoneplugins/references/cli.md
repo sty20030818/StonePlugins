@@ -32,10 +32,13 @@
 ```sh
 node "$stone_cli" help task new --json
 node "$stone_cli" task show T0001 --project "$project_root" --json
+node "$stone_cli" result show P001 --kind phase --view index --project "$project_root" --json
 node "$stone_cli" sop show task --project "$project_root" --json
 ```
 
 按当前职责选择 goal/phase/task list 或 show、result show、release show、sop list/show；同一编号的对象始终限定当前项目。对象返回路径和关联入口后，继续读取真正需要的资料，不能把摘要当作完整设计或行为规则。需要校验文档结构时调用 check；它不代替测试、语义审阅或业务验收。
+
+查长验收时，`result show --view index` 列出原生批次与文件行范围、块外 `#` 式标题及行号。沿位置读原文中的实际结果和限制。省略 `--view` 可取完整输出。手写记录可能没有可识别的原生批次，`--batch` 只按原生批次名筛选。使用旧工具时先查实际 help，缺少索引选项可沿 Markdown 标题或锚点定位。
 
 准备某个写入时先查该命令的 `help <对象> <动作> --json`，采用真实帮助给出的输入合同；具体 JSON 只保存本次实际内容，不在技能另维护一套模板。所有写入显式带 `--project "$project_root"`。未采用的规范作者仓才在已核实范围使用 `--author`，不能借它绕过采用记录故障或契约冲突。
 

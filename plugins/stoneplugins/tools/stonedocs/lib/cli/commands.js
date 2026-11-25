@@ -7,6 +7,7 @@ export const OPTIONS = {
     phase: { value: "Phase ID", description: "创建任务时指定所属 Phase，或按 Phase 筛选 Task；编号不表示顺序。" },
     kind: { value: "对象种类", description: "显式指定 goal、phase 或 task，避免结果对象被猜测。" },
     batch: { value: "批次标识", description: "读取指定原生验收批次；省略时保留所有批次与已有自由格式结果。" },
+    view: { value: "index", description: "只列结果所有者、文件、原生批次位置和其余 Markdown # 标题行。--batch 仅筛原生批次，未命中仍返回历史定位与告警；省略 --view 可读完整原文。" },
     status: { value: "状态", description: "筛选 todo、doing、done 或 cancelled；没有此选项时包含所有状态及归档资料。" },
     author: { description: "显式使用本项目本地作者规则；不是用户授权，也不能绕过未知采用记录。" },
     from: { value: "旧固定规范包目录", description: "显式提供当前采用来源的旧原文包；不以当前文件、摘要或 latest 猜基线。" },
@@ -43,7 +44,7 @@ export const COMMANDS = [
         ];
     }),
     { path: "result add", action: "result", inputSchema: "result", argument: "ID", summary: "给唯一对象追加实际验收批次；保留失败，不自动完成对象。同批次内容一致时不重复写入。", usage: "result add <ID> --kind <goal|phase|task> --project <目录> [--author] --input <文件|-> [--dry-run] [--expect <摘要>] [--json]；恢复只带 --resume 或 --rollback、项目及作者模式", options: [...progressOptions, "kind", "input"], example: "result add T0001 --kind task --project /path/to/project --author --input result.json" },
-    { path: "result show", argument: "ID", summary: "只读返回原生验收批次与现有原文，未识别资料单列缺口，不视为没有结果。", usage: "result show <ID> --kind <goal|phase|task> [--batch <标识>] [--project <目录>] [--json]", options: [...common, "kind", "batch"], example: "result show T0001 --kind task --project /path/to/project --json" },
+    { path: "result show", argument: "ID", summary: "默认读取完整结果；可显式查看批次与小节位置，未识别资料保留提示。", usage: "result show <ID> --kind <goal|phase|task> [--batch <标识>] [--view index] [--project <目录>] [--json]", options: [...common, "kind", "batch", "view"], example: "result show T0001 --kind task --project /path/to/project --json" },
     { path: "release plan", action: "release-plan", inputSchema: "releasePlan", summary: "在唯一 Goal/Phase plan 维护发布意图；默认直接写文档，可只读预览，不创建实际发布记录。", usage: "release plan (--goal <ID> | --phase <ID>) --project <目录> [--author] --input <文件|-> [--dry-run] [--expect <摘要>] [--json]；恢复仅带项目/原作者模式和 --resume 或 --rollback", options: [...progressOptions, "goal", "phase", "input"], example: "release plan --phase P001 --project /path/to/project --input release-plan.json --dry-run --json" },
     { path: "release show", argument: "版本", argumentOptional: true, summary: "按版本或唯一承接对象读取意图、实际记录和原文；不从计划推断已发布。", usage: "release show [版本] [--goal <ID> 或 --phase <ID>] [--project <目录>] [--json]；版本、Goal、Phase 三者恰一", options: [...common, "goal", "phase"], example: "release show 0.1.0-beta.1 --project /path/to/project --json" },
     { path: "release record", action: "release-record", inputSchema: "releaseRecord", summary: "独立追加真实发布事实，不强制先有计划，也不执行打包、tag、GitHub或云端发布。", usage: "release record --project <目录> [--author] --input <文件|-> [--dry-run] [--expect <摘要>] [--json]；恢复仅带项目/原作者模式和 --resume 或 --rollback", options: [...progressOptions, "input"], example: "release record --project /path/to/project --input released.json --json" },
@@ -107,6 +108,8 @@ export function parseCommand(args) {
             throw new UsageError("当前命令不接受 --" + name);
     if (options.kind && !["goal", "phase", "task"].includes(String(options.kind)))
         throw new UsageError("--kind 需要 goal/phase/task。 ");
+    if (options.view !== undefined && options.view !== "index")
+        throw new UsageError("--view 仅支持 index；省略时读取完整结果。");
     if (definition.path === "result show" && typeof options.kind !== "string")
         throw new UsageError("result show 需要 --kind <goal|phase|task>。");
     if (definition.path === "release show" && Number(Boolean(arguments_[0])) + Number(Boolean(options.goal)) + Number(Boolean(options.phase)) !== 1)

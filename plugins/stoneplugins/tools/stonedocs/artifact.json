@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "cliContract": 1,
   "ruleContract": 2,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "source": {
     "repository": "https://github.com/sty20030818/StoneDocs",
-    "revision": "1965e5602558bb9a3a96116deace45949ae53b23",
+    "revision": "7b6e13860c4b90609ae0762c58bf034e0650c31e",
     "state": "commit",
     "files": [
       {
@@ -22,7 +22,7 @@
       },
       {
         "path": "src/cli/commands.ts",
-        "sha256": "882d43633850eb8db42a46b337e4af36836c4d36f10c608e9ec52181e57d25f7"
+        "sha256": "bd1a97353d7e185bfa9c1066d743645c8615956d3c233111d6729b770e61ef56"
       },
       {
         "path": "src/cli/create.ts",
@@ -38,7 +38,7 @@
       },
       {
         "path": "src/cli/main.ts",
-        "sha256": "7b38dcbd32d8f11c8cd77667a17b246a991b9436af06ee33215a382554e6b98f"
+        "sha256": "cd7792cb941fbbd7767359e7df2f254a820bcb19ce6f74a067e75498375b4162"
       },
       {
         "path": "src/cli/progress.ts",
@@ -70,7 +70,7 @@
       },
       {
         "path": "src/documents/markdown.ts",
-        "sha256": "2ffa958b8af1e82e8e21c8f6d4c8f1b9bc378b5b8128d4cf8fb14f75c745b495"
+        "sha256": "2affc36fc9f147a82bf568e877f03cdad37bb330ef079cdba34aaa2733801c9a"
       },
       {
         "path": "src/documents/project.ts",
@@ -146,7 +146,7 @@
       },
       {
         "path": "src/workflow/results.ts",
-        "sha256": "39490591289201bd5d05b87828abe5e15fc495962d43dfcff825302cf3167f92"
+        "sha256": "a2aa6b556acc526a3e2e03fe2d6752ffa8c2c6b389fc9bc34d282492172c35b4"
       },
       {
         "path": "src/workflow/upgrade.ts",
@@ -164,12 +164,12 @@
   },
   "rules": {
     "repository": "https://github.com/sty20030818/StoneDocs",
-    "revision": "1965e5602558bb9a3a96116deace45949ae53b23"
+    "revision": "7b6e13860c4b90609ae0762c58bf034e0650c31e"
   },
   "files": [
     {
       "path": "lib/cli/commands.js",
-      "sha256": "afc1b1655e161717ce2efda64bd3c7a7df26a0d635ba17bf510a5b56b8f0b02b",
+      "sha256": "ee77466eb0a1dd418aa746afb8c9434980cfe0f219c43ccc6b055d8632ca4522",
       "executable": false
     },
     {
@@ -189,7 +189,7 @@
     },
     {
       "path": "lib/cli/main.js",
-      "sha256": "b35552997cc1390e43f85360bce0386bd96cc6e43388baa4cf7bece2bdd9cab6",
+      "sha256": "ca12eca3f5bb52cbc3a9a8e61b942ecb3b7c493cc4d40706287ff87de2aaa530",
       "executable": true
     },
     {
@@ -229,7 +229,7 @@
     },
     {
       "path": "lib/documents/markdown.js",
-      "sha256": "e36d12914296d862364d04a3e794f5b29cdece800a46decf1effe9b9a604452f",
+      "sha256": "b5e56fca34829a5204f84becb9a625f806a3d64290f6182ef6383c878a45fd90",
       "executable": false
     },
     {
@@ -324,7 +324,7 @@
     },
     {
       "path": "lib/workflow/results.js",
-      "sha256": "0eda5c3663692f10cc73ac79e61ce588a724dd13986b68d827fc142f6cba2825",
+      "sha256": "6aee722063f550d8994ffe70e17337f9bf343897fdff47cc57512d53529942c2",
       "executable": false
     },
     {
@@ -334,12 +334,12 @@
     },
     {
       "path": "package.json",
-      "sha256": "2a8b76e232b594e3b7b311f65a93afa282692d11e2b8bfddd01ed6f63149cdaf",
+      "sha256": "aa8197c5c8155bc7195a0cf05c2770a915af330ae4441c23bf53c4c02da8a4a5",
       "executable": false
     },
     {
       "path": "rules/docs/conventions.md",
-      "sha256": "6d814419b0ea8e34bdde9e1b023d620afff3a5ee4d2e8edac0eb62f035cbc6b3",
+      "sha256": "fcac3acba72732f5b438890f5382a40ae9e64a4e938b4370b75edc5edb12827f",
       "executable": false
     },
     {
@@ -374,12 +374,12 @@
     },
     {
       "path": "rules/docs/sop/plan.md",
-      "sha256": "f6c673f210632cd55645546a0926c71ff53080720184ab356460929ada86a49c",
+      "sha256": "83ab51a7d9e3b5b9147ec81533a22c1a44221a533df54f6dd0b7bd0713e8db37",
       "executable": false
     },
     {
       "path": "rules/docs/sop/review.md",
-      "sha256": "2d7850ab76fed98bf87d01e590ba8a908b148c16a1993a90fe2bcf7f736c0f76",
+      "sha256": "887bc23863d0c6c0831bca3bb9374d0d830177eccb6d0f6e12d00d08f902a00e",
       "executable": false
     },
     {
@@ -389,17 +389,17 @@
     },
     {
       "path": "rules/docs/sop/task.md",
-      "sha256": "57e73723a7f0e67057de9830242801b9177f79dac23e400b7a0aadab0d373ae2",
+      "sha256": "99238a91da671e843869c870dbeeb9fd646a8c9be0f6dc00e6f0c03768952cf8",
       "executable": false
     },
     {
       "path": "rules/docs/sop/verify.md",
-      "sha256": "b2e05713329122e944e396ba7c5144cf8abdfa8ad0708e6be6c49872c0316568",
+      "sha256": "897bf37c021df4a022aaf6e70b0c1c8f682939f5e95c744a3528d27d19b33add",
       "executable": false
     },
     {
       "path": "rules/source.json",
-      "sha256": "1ec30a2d5a60b82f9d36418ccd3369ad97d62c5b749559b633916534d0f6f10d",
+      "sha256": "2e46ad0edacdfc8c2dc95d8202b8e153511715a77ee0ad24e4bb5b48249c4cd0",
       "executable": false
     }
   ]

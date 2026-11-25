@@ -3,12 +3,12 @@
   "ruleContract": 2,
   "source": {
     "repository": "https://github.com/sty20030818/StoneDocs",
-    "revision": "1965e5602558bb9a3a96116deace45949ae53b23"
+    "revision": "7b6e13860c4b90609ae0762c58bf034e0650c31e"
   },
   "files": [
     {
       "path": "docs/conventions.md",
-      "sha256": "6d814419b0ea8e34bdde9e1b023d620afff3a5ee4d2e8edac0eb62f035cbc6b3"
+      "sha256": "fcac3acba72732f5b438890f5382a40ae9e64a4e938b4370b75edc5edb12827f"
     },
     {
       "path": "docs/sop/README.md",
@@ -32,7 +32,7 @@
     },
     {
       "path": "docs/sop/plan.md",
-      "sha256": "f6c673f210632cd55645546a0926c71ff53080720184ab356460929ada86a49c"
+      "sha256": "83ab51a7d9e3b5b9147ec81533a22c1a44221a533df54f6dd0b7bd0713e8db37"
     },
     {
       "path": "docs/sop/design.md",
@@ -40,15 +40,15 @@
     },
     {
       "path": "docs/sop/task.md",
-      "sha256": "57e73723a7f0e67057de9830242801b9177f79dac23e400b7a0aadab0d373ae2"
+      "sha256": "99238a91da671e843869c870dbeeb9fd646a8c9be0f6dc00e6f0c03768952cf8"
     },
     {
       "path": "docs/sop/verify.md",
-      "sha256": "b2e05713329122e944e396ba7c5144cf8abdfa8ad0708e6be6c49872c0316568"
+      "sha256": "897bf37c021df4a022aaf6e70b0c1c8f682939f5e95c744a3528d27d19b33add"
     },
     {
       "path": "docs/sop/review.md",
-      "sha256": "2d7850ab76fed98bf87d01e590ba8a908b148c16a1993a90fe2bcf7f736c0f76"
+      "sha256": "887bc23863d0c6c0831bca3bb9374d0d830177eccb6d0f6e12d00d08f902a00e"
     },
     {
       "path": "docs/knowledge/technical-design.md",

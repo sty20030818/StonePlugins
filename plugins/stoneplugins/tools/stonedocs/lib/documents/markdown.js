@@ -1,8 +1,27 @@
 export const STATES = new Set(["todo", "doing", "done", "cancelled"]);
 const INLINE_LINK = /(!?)\[[^\]\n]*\]\(\s*(?:<([^>\n]*)>|((?:\\.|[^\s()\\]|\([^()]*\))*))(?:\s+["'][^\n]*?["'])?\s*\)/g;
 const TASK_HEADING = /^(#{1,6})[ \t]+(T\d+)[ \t]*·[ \t]*(.*?)[ \t]*$/gm;
-export function withoutFences(text) {
+function maskCommentLine(line, state) {
+    if (state.open) {
+        const end = line.indexOf("-->");
+        if (end === -1)
+            return " ".repeat(line.length);
+        line = " ".repeat(end + 3) + line.slice(end + 3);
+        state.open = false;
+    }
+    if (!line.includes("<!--"))
+        return line;
+    // 转义符和行内代码中的 <!-- 属于示例。其余注释等长遮罩，保留原文位置。
+    return line.replace(/\\.|(?<!`)(`+)(?!`).*?(?<!`)\1(?!`)|<!--.*?(-->|$)/g, (match, _ticks, closing) => {
+        if (!match.startsWith("<!--"))
+            return match;
+        state.open = !closing;
+        return " ".repeat(match.length);
+    });
+}
+export function withoutFences(text, options = {}) {
     let opening;
+    const comment = { open: false };
     const pieces = [];
     for (const match of text.matchAll(/([^\r\n]*)(\r\n|\n|\r|$)/g)) {
         const line = match[1];
@@ -13,14 +32,15 @@ export function withoutFences(text) {
                 opening = undefined;
             masked = true;
         }
-        else {
+        else if (!comment.open) {
             const fence = line.match(/^ {0,3}(\x60{3,}|~{3,})(.*)$/);
             if (fence && !(fence[1][0] === "\x60" && fence[2].includes("\x60"))) {
                 opening = { marker: fence[1][0], length: fence[1].length };
                 masked = true;
             }
         }
-        pieces.push((masked ? " ".repeat(line.length) : line) + ending);
+        const visible = !masked && options.maskComments ? maskCommentLine(line, comment) : line;
+        pieces.push((masked ? " ".repeat(line.length) : visible) + ending);
     }
     return { clean: pieces.join(""), unclosed: opening !== undefined };
 }

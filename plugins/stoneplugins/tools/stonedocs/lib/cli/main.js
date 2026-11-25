@@ -17,7 +17,7 @@ import { executeProgress, validateProgressOptions } from "./progress.js";
 import { readRelease } from "../workflow/releases.js";
 import { RELEASE_INPUTS } from "../workflow/release-format.js";
 import { LIFECYCLE_INPUTS } from "../workflow/lifecycle.js";
-import { readResults, RESULT_INPUT } from "../workflow/results.js";
+import { readResultIndex, readResults, RESULT_INPUT } from "../workflow/results.js";
 import { OperationError } from "../files/write.js";
 const toolRoot = fileURLToPath(new URL("../../", import.meta.url));
 const ACTION_INPUTS = { ...LIFECYCLE_INPUTS, result: RESULT_INPUT, releasePlan: RELEASE_INPUTS.plan, releaseRecord: RELEASE_INPUTS.record };
@@ -96,7 +96,8 @@ function execute(args) {
                 return { exitCode: conflicts.length ? 3 : 0, result };
             }
             if (call.definition.path === "result show") {
-                const shown = readResults(root, call.options.kind, call.argument, typeof call.options.batch === "string" ? call.options.batch : undefined);
+                const read = call.options.view === "index" ? readResultIndex : readResults;
+                const shown = read(root, call.options.kind, call.argument, typeof call.options.batch === "string" ? call.options.batch : undefined);
                 const { warnings, ...data } = shown;
                 const declared = readRuleSource(root);
                 result.data = { ...data, source: declared.source };
@@ -192,6 +193,8 @@ function printText(result, exitCode) {
         console.log(data.name + " " + (data.version ?? "unversioned-source（源码未标版本）"));
     else if (result.command === "release show" && data)
         console.log("发布意图、实际记录与原文：\n" + JSON.stringify(data, null, 2));
+    else if (result.command === "result show" && data?.view === "index")
+        console.log(String(data.path) + "\n结果定位：\n" + JSON.stringify({ owner: data.owner, records: data.records, sections: data.sections, hasLegacy: data.hasLegacy }, null, 2));
     else if (result.command === "result show" && data)
         console.log(String(data.path) + "\n" + String(data.raw) + "\n结果批次与未识别原文：\n" + JSON.stringify({ records: data.records, legacy: data.legacy }, null, 2));
     else if (typeof data?.raw === "string")

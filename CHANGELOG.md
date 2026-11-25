@@ -4,6 +4,18 @@
 
 ## [未发布]
 
+## [0.11.0]
+
+### 新增
+
+- StoneDocs CLI 0.3.0 支持用 `result show --view index` 先查验收批次、手写标题与所在行。省略视图参数时仍返回完整原文。
+- 已接入 Linear 且获授权的项目，可在正式建阶段、建任务或状态变化的同一轮维护看板并独立读回。部分失败时记录待补对象与下一步。
+
+### 变更
+
+- 规则与方法继续按 ruleContract 2 固定分发。日常入口指向当前主线，长验收按题查原文；研究与想法采纳后链接实际承接位置。verify 技能接入按需读法。
+- 程序、十二份规则资源与独立 Linear 指南均固定到 StoneDocs 提交 `7b6e13860c4b90609ae0762c58bf034e0650c31e`。本地版本的受检范围见[版本评测](docs/evals/v0.11.0.md)。
+
 ## [0.10.0] - 2026-11-12
 
 已创建[正式 GitHub Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.10.0)；发布日期按实际 published_at 转为 Asia/Shanghai 记载，个人安装、三个 Hook 原生信任及有限新会话已独立验收，具体范围见[本版验证](docs/evals/v0.10.0.md#个人固定安装与有限新会话验收)。
