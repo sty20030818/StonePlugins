@@ -4,7 +4,9 @@
 
 ## [未发布]
 
-## [0.12.0]
+## [0.12.0] - 2026-11-27
+
+已发布[GitHub 正式版](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.0)。
 
 ### 变更
 

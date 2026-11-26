@@ -2,9 +2,9 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-## v0.12.0 工程小结
+## 已发布版本 v0.12.0
 
-工程回复用带 emoji 的标题写出结论，标题下面列要点。有流程时标明当前步骤；有后续时单列「➡️ 下一步」，说明谁来做什么。见[工程规则](plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)和[版本评测](docs/evals/v0.12.0.md)。
+v0.12.0 已于 2026-11-27 发布。工程回复用带 emoji 的标题写出结论，标题下面列要点。有流程时标明当前步骤；有后续时单列「➡️ 下一步」，说明谁来做什么。见[GitHub 正式版](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.0)、[工程规则](plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)和[版本评测](docs/evals/v0.12.0.md)。
 
 ## 已发布版本 v0.11.0
 
@@ -82,7 +82,7 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 
 ### v0.12.0 GitHub 固定标签安装
 
-正式 Release 发布后，使用以下命令安装。已有同名市场时，先用 `codex plugin marketplace list` 记下原来源与可回退的 ref，再运行 `codex plugin marketplace remove stonefish` 移除旧登记。
+使用以下命令从 GitHub 正式标签安装。已有同名市场时，先用 `codex plugin marketplace list` 记下原来源与可回退的 ref，再运行 `codex plugin marketplace remove stonefish` 移除旧登记。
 
 ```bash
 codex plugin marketplace add sty20030818/StonePlugins --ref v0.12.0
