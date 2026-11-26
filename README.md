@@ -2,6 +2,10 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
+## v0.12.0 工程小结
+
+工程回复用带 emoji 的标题写出结论，标题下面列要点。有流程时标明当前步骤；有后续时单列「➡️ 下一步」，说明谁来做什么。见[工程规则](plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)和[版本评测](docs/evals/v0.12.0.md)。
+
 ## 已发布版本 v0.11.0
 
 v0.11.0 已于 2026-11-26 在 GitHub 正式发布。查长验收时，配套 CLI 0.3.0 可以先列批次、手写标题与行号，再打开所需原文。已接入且获授权的 Linear 项目在正式建阶段、建任务与状态转换时同轮同步并读回。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.11.0)、[文档工作流](docs/document-workflow.md)和[v0.11.0 评测](docs/evals/v0.11.0.md)。
@@ -53,10 +57,11 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 唯一核心正文位于 [plugins/stoneplugins/skills/engineering/SKILL.md](plugins/stoneplugins/skills/engineering/SKILL.md)，与包内三份细则共同持有运行时规则。插件 ID 为 `stoneplugins`，工程 Skill 名为 `engineering`，Codex 限定入口为 `$stoneplugins:engineering`；marketplace ID 仍为 `stonefish`。对话中称为“石头鱼的工程规则”，不把作者的语言、称呼或包管理器偏好强加给其他用户。
 
 - `SessionStart` 的 startup、resume、clear、compact，以及 `SubagentStart`，从实际运行的插件缓存读取包内 Skill，移除 frontmatter 后送达完整核心，并给出当前资源路径；不展开 references。
-- `UserPromptSubmit` 每轮只发送不超过 300 UTF-8 bytes 的执行提醒，指向核心“回复格式”并检查全部加粗；不根据用户提示关键词路由，也不重复注入核心。
+- `UserPromptSubmit` 每轮发送不超过 300 UTF-8 bytes 的执行提醒，指向核心的[回复格式](plugins/stoneplugins/skills/engineering/SKILL.md#回复格式)。同一短提醒用于各种提问，完整核心沿用生命周期送达的正文。
 - 工程任务沿用当前上下文已完整收到的核心，按当前任务直接读取[架构](plugins/stoneplugins/skills/engineering/references/architecture.md)、[修改边界](plugins/stoneplugins/skills/engineering/references/change-boundaries.md)或[验证](plugins/stoneplugins/skills/engineering/references/verification.md)细则，不经过二级选择器；多个主题可以同时读取，不为显示调用徽标重复读取同一核心。
-- “为什么这么做”的公开决策说明仅在本轮最终回复展示，每轮短提醒重申这一边界；中途进展正常报告发现、风险、待确认事项与下一步，不展开完整说明。展示时机的权威规则由核心“公开决策说明”持有。
-- 所有任务继续遵守宿主的全局协作规则；纯聊天、翻译等非工程任务不因此变成工程任务，也不强制输出工程决策说明。
+- 工程小结用带 emoji 的 Markdown 三级标题写出具体结果，例如 `### ✅ 文档已写好`。标题下空一行，用无序短列表写事实。涉及多步流程时，在标题下用一行路线标出当前步骤，再列细节。
+- 还有实际后续时，单列 `### ➡️ 下一步`，写明谁来做、做什么。确需用户拍板的问题放进独立引用块。工作已全部收尾时可以直接结束。
+- 用户追问原因时，解释具体取舍。有影响范围或授权的选择，在行动前说明。普通问答按宿主的协作约定直接回答。
 - [方法论解释与治理](docs/methodologies.md)供维护者查阅，不参与运行时注入或任务必读。
 
 生命周期上下文上限为 8,000 UTF-8 bytes；超限显式失败，不截断后声称成功。这不是 tokenizer 计数，也不保证宿主完整接收。Codex 的 `additionalContextLimit` 仍用默认有限阈值，没有设为 `0`。多个同事件命令 Hook 可能并发，不能依赖完成顺序。宿主协议见 [OpenAI Hooks 文档](https://learn.chatgpt.com/docs/hooks)。
@@ -67,7 +72,7 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 - SRP、高内聚低耦合、整洁与六边形架构的领域独立和依赖方向持续参与设计；按真实消费、隔离价值和已确认演进选择结构，不以实现数量设置门槛。
 - KISS 与 YAGNI 控制概念、状态和维护成本；TDD、特征测试、契约测试、迁移策略等保留各自适用条件和具体动作，详见[语义映射](docs/methodologies.md#语义保留与改写映射)。
 - 可以推荐破坏性长期方案，但实施仍受消费者、迁移、数据、恢复和当前授权约束。
-- 输入校验、可信端授权和失败语义不能因简化被省略；不靠弱化断言、跳过测试或盲目重试制造通过。必要检查通过且没有新增风险后停止重复验证；公开说明只展开真正改变结果的决定，不要求复述全部方法。
+- 输入校验、可信端授权和失败语义不能因简化被省略；不靠弱化断言、跳过测试或盲目重试制造通过。必要检查通过且没有新增风险后停止重复验证。
 
 **插件已安装、Hook 输出、宿主完整接收、规则落实** 是不同证据。单元测试不能替代真实客户端轨迹或行为评测；调用徽标、使用次数也不能证明规则落实。命令权限、不可逆操作和 CI 仍由 Codex 审批、沙箱、`.rules` 和项目检查负责。
 
@@ -75,7 +80,18 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 
 需要支持 Plugins 和 Hooks 的 Codex，以及在 `PATH` 中可用的 Node.js 22.18 或更高版本。Hook 运行时没有 npm 依赖。
 
-### v0.11.0 GitHub 正式版安装（推荐）
+### v0.12.0 GitHub 固定标签安装
+
+正式 Release 发布后，使用以下命令安装。已有同名市场时，先用 `codex plugin marketplace list` 记下原来源与可回退的 ref，再运行 `codex plugin marketplace remove stonefish` 移除旧登记。
+
+```bash
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.12.0
+codex plugin add stoneplugins@stonefish
+```
+
+用 `codex plugin list -m stonefish --json` 核对版本、启用状态及 GitHub 来源。工程 Hook 如提示变更，逐项核对后审核。另开新对话观察工程小结的标题和下一步。
+
+### v0.11.0 GitHub 正式版安装
 
 使用 GitHub 固定标签。若已有其他版本或本地目录登记为 `stonefish`，先用 `codex plugin marketplace list` 记下可回退的来源与 ref，再运行 `codex plugin marketplace remove stonefish` 移除旧登记。
 

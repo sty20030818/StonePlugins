@@ -16,6 +16,8 @@ StonePlugins 优先提供自包含的 Codex 原生插件：核心 Skill、条件
 
 短公开说明由核心持有，保留标题外置、引用、加粗后空格及独立的“影响与取舍”段，取消固定通用前言，不要求每次解释决定前再读一份格式文件。参与判断、产生结构与公开展开是三个不同层面。
 
+2026-11-26，用户确认后续版本改用工程小结。上段记录当时的展示决定，现行作者规则见[回复格式](../../plugins/stoneplugins/skills/engineering/SKILL.md#回复格式)。
+
 对外品牌保留 StonePlugins，插件 ID 为 `stoneplugins`，Skill 为 `engineering`，限定入口为 `stoneplugins:engineering`；marketplace ID `stonefish` 保持不变，安装时仍须核对它对应的本地或远端来源。唯一规则树位于 `plugins/stoneplugins/skills/engineering/`，manifest 声明 `skills: ./skills/`，Hooks 沿用默认目录发现。其他 CLI 暂时仅独立安装同源 Skills，原生插件与 Hook 适配后置。
 
 ## 原因与后果
