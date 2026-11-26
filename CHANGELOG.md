@@ -4,7 +4,9 @@
 
 ## [未发布]
 
-## [0.11.0]
+## [0.11.0] - 2026-11-26
+
+已发布 [GitHub 正式版](https://github.com/sty20030818/StonePlugins/releases/tag/v0.11.0)。
 
 ### 新增
 
@@ -14,7 +16,7 @@
 ### 变更
 
 - 规则与方法继续按 ruleContract 2 固定分发。日常入口指向当前主线，长验收按题查原文；研究与想法采纳后链接实际承接位置。verify 技能接入按需读法。
-- 程序、十二份规则资源与独立 Linear 指南均固定到 StoneDocs 提交 `7b6e13860c4b90609ae0762c58bf034e0650c31e`。本地版本的受检范围见[版本评测](docs/evals/v0.11.0.md)。
+- 程序、十二份规则资源与独立 Linear 指南均固定到 StoneDocs 提交 `7b6e13860c4b90609ae0762c58bf034e0650c31e`。固定来源及受检范围见[版本评测](docs/evals/v0.11.0.md)。
 
 ## [0.10.0] - 2026-11-12
 
@@ -336,7 +338,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.9.2...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/sty20030818/StonePlugins/compare/v0.10.0...v0.11.0
 [0.9.2]: https://github.com/sty20030818/StonePlugins/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/sty20030818/StonePlugins/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/sty20030818/StonePlugins/compare/v0.8.1...v0.9.0

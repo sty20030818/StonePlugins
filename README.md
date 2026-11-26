@@ -2,9 +2,9 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-## v0.11.0 本地版本
+## 已发布版本 v0.11.0
 
-查长验收时，配套 CLI 0.3.0 可以先列批次、手写标题与行号，再打开所需原文。已接入且获授权的 Linear 项目在正式建阶段、建任务与状态转换时同轮同步并读回。日常操作见[文档工作流](docs/document-workflow.md)，固定输入与实际验证见[v0.11.0 评测](docs/evals/v0.11.0.md)。
+v0.11.0 已于 2026-11-26 在 GitHub 正式发布。查长验收时，配套 CLI 0.3.0 可以先列批次、手写标题与行号，再打开所需原文。已接入且获授权的 Linear 项目在正式建阶段、建任务与状态转换时同轮同步并读回。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.11.0)、[文档工作流](docs/document-workflow.md)和[v0.11.0 评测](docs/evals/v0.11.0.md)。
 
 ## 已发布版本 v0.10.0
 
@@ -75,21 +75,27 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 
 需要支持 Plugins 和 Hooks 的 Codex，以及在 `PATH` 中可用的 Node.js 22.18 或更高版本。Hook 运行时没有 npm 依赖。
 
+### v0.11.0 GitHub 正式版安装（推荐）
+
+使用 GitHub 固定标签。若已有其他版本或本地目录登记为 `stonefish`，先用 `codex plugin marketplace list` 记下可回退的来源与 ref，再运行 `codex plugin marketplace remove stonefish` 移除旧登记。
+
+```bash
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.11.0
+codex plugin add stoneplugins@stonefish
+```
+
+打开并退出一次原生 Codex，再用 `codex plugin list -m stonefish --json` 核对版本为 `0.11.0`、已启用、来源为上述 GitHub 仓库及标签。工程 Hook 如提示变更，逐项核对并审核。
+
 ### v0.11.0 本地安装
 
-取得固定到该版本提交的本地 marketplace 目录。新配置可通过 Codex 原生入口安装，目录应可长期取回，其中包含 `.agents/plugins/marketplace.json` 与 `plugins/stoneplugins/`。
+本地试验可使用固定提交的快照。将含 `.agents/plugins/marketplace.json` 和 `plugins/stoneplugins/` 的目录放在可长期访问的位置，按上面的步骤处理同名旧登记，再运行：
 
 ```bash
 codex plugin marketplace add /path/to/StonePlugins-0.11.0
 codex plugin add stoneplugins@stonefish
 ```
 
-已有同名来源时，先用 `codex plugin marketplace list` 记录原来源与可回退的 ref，再运行 `codex plugin marketplace remove stonefish` 并执行上面的两条安装命令。保留固定目录供后续启动使用。原登记若仍指向旧版，Codex 启动时可能把插件切回该版本。打开并退出一次原生 Codex，再用 `codex plugin list -m stonefish --json` 核对版本、启用状态与本地来源，工程 Hook 如提示变更则逐项审核。远端固定 ref 示例仅供 GitHub 上能取回对应 tag 后使用：
-
-```bash
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.11.0
-codex plugin add stoneplugins@stonefish
-```
+保留该目录供后续启动使用，并在重启后用同一命令核对本地来源。原登记若仍指向旧版，Codex 启动时可能把插件切回该版本。
 
 ### v0.10.0：固定版本安装
 

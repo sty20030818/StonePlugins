@@ -2,7 +2,7 @@
 
 ## 文档工作流与版本范围
 
-v0.11.0 本地版本选入验收索引、日常文档维护及 Linear 同轮同步。使用入口见[文档工作流](document-workflow.md)，固定来源、检查与安装的实际范围见[v0.11.0 验证](evals/v0.11.0.md)。
+v0.11.0 已于 2026-11-26 正式发布，包含验收索引、日常文档维护及 Linear 同轮同步。安装首选 GitHub 固定标签。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.11.0)、[安装说明](../README.md#安装)、[文档工作流](document-workflow.md)和[v0.11.0 验证](evals/v0.11.0.md)。
 
 v0.10.0 已通过固定标签[正式发布](https://github.com/sty20030818/StonePlugins/releases/tag/v0.10.0)，包含总体技术设计/架构重审入口、CLI 0.2.0、v2 十二份同源资源及新版 Linear 固定指南；个人已更新至 0.10.0，11 个技能与三个已信任 Hook 已读回，并完成一次只读新会话文档接续；桌面 UI 与其余生命周期未重验。范围与门禁见[发布方案](plans/2026-11-12-v0.10.0-release-and-personal-install.md)，实际检查与发布结果见[v0.10.0验证](evals/v0.10.0.md)。以下正式版本记录继续按各自 tag 解释。
 

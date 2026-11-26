@@ -4,7 +4,7 @@
 
 九项核心文档工作流，另有 engineering 与 linear 适配，共十一个技能入口。各入口可依据足够的目标、约束和事实独立使用，通过项目文件接续；不要求前序调用记录。
 
-v0.11.0 本地版本配套 CLI 0.3.0。查验收时可按[配套 CLI 说明](../plugins/stoneplugins/references/cli.md#按需读取与操作)先定位原生批次或手写标题。已接入且获授权的项目，在正式建档和状态转换时沿 [Linear 指南](../plugins/stoneplugins/references/linear.md#看什么何时更新)同轮更新并独立读回。固定输入及本版验收见[v0.11.0 验证](evals/v0.11.0.md)。
+v0.11.0 正式版配套 CLI 0.3.0。查验收时可按[配套 CLI 说明](../plugins/stoneplugins/references/cli.md#按需读取与操作)先定位原生批次或手写标题。已接入且获授权的项目，在正式建档和状态转换时沿 [Linear 指南](../plugins/stoneplugins/references/linear.md#看什么何时更新)同轮更新并独立读回。固定输入及本版验收见[v0.11.0 验证](evals/v0.11.0.md)。
 
 v0.10.0 接入 CLI 0.2.0 与 ruleContract 2 的十二份固定资源，方法与规则同源。消费者支持 v1，项目本地规则优先。该批的实际执行结果由 StoneDocs 的 P006/T0069 记录维护。以下 v0.9.2 内容按其固定版本与原验收解释。
 
