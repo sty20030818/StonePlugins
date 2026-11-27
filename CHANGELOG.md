@@ -4,6 +4,12 @@
 
 ## [未发布]
 
+## [0.12.5] - 2026-11-27
+
+### 修正
+
+- 有实际下一步时省略可选想法的标题和内容，逐轮提醒直接说明两者互斥。
+
 ## [0.12.4] - 2026-11-27
 
 ### 修正
@@ -371,7 +377,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.12.4...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.12.5...HEAD
+[0.12.5]: https://github.com/sty20030818/StonePlugins/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/sty20030818/StonePlugins/compare/v0.12.3...v0.12.4
 [0.12.3]: https://github.com/sty20030818/StonePlugins/compare/v0.12.2...v0.12.3
 [0.12.2]: https://github.com/sty20030818/StonePlugins/compare/v0.12.1...v0.12.2

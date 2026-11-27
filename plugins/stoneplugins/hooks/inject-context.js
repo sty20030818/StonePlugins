@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const CONTEXT_BYTE_LIMIT = 8_000;
 const FAILURE_CONTEXT = "暂停工程决定并报告加载失败，不自动安装，也不回退旧缓存。";
 const EVENTS = ["SessionStart", "SubagentStart", "UserPromptSubmit"];
-const PROMPT_CONTEXT = "回复前检查核心“回复格式”和全部加粗。用✅⚠️❓➡️💡写三级标题，流程标当前。接续至多一组，待办写动作和接手人。拍板才引用。缺核心用 $stoneplugins:engineering 补全，失败暂停工程决定。按需读细则，非工程照常。";
+const PROMPT_CONTEXT = "回复前检查核心“回复格式”和全部加粗。用✅⚠️❓➡️💡写三级标题，流程标当前。有➡️就省💡，待办写动作和接手人。拍板才引用。缺核心用 $stoneplugins:engineering 补全，失败暂停工程决定。按需读细则，非工程照常。";
 class SafeHookError extends Error {
 }
 function parseHookInput(rawInput) {

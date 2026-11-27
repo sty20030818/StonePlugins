@@ -119,7 +119,7 @@ test("每轮只发送工程执行提醒，不重复展开核心", () => {
   assert.match(context, /回复前检查核心“回复格式”/);
   assert.match(context, /全部加粗/);
   assert.match(context, /✅⚠️❓➡️💡.*三级标题/);
-  assert.match(context, /接续至多一组.*待办写动作和接手人/);
+  assert.match(context, /有➡️就省💡.*待办写动作和接手人/);
   assert.ok(!context.includes(coreBody()));
   assert.ok(Buffer.byteLength(context, "utf8") <= 300);
 });

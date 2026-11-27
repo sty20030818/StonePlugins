@@ -2,6 +2,8 @@
 
 ## 文档工作流与版本范围
 
+v0.12.5 明确实际下一步与可选想法互斥，检查范围涵盖标题、正文和附注。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.5)和[v0.12.5 验证](evals/v0.12.5.md)。
+
 v0.12.4 约定工程小结按实际情况只写下一步或可选想法，整件事收尾就结束。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.4)和[v0.12.4 验证](evals/v0.12.4.md)。
 
 v0.12.3 明确了拍板要交代的推荐和选项影响，以及工程小结逐组检查要点的要求。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.3)和[v0.12.3 验证](evals/v0.12.3.md)。
