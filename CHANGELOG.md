@@ -4,6 +4,13 @@
 
 ## [未发布]
 
+## [0.12.3] - 2026-11-27
+
+### 修正
+
+- 拍板时给出推荐和各可行选项的主要影响，只问一次。推荐和影响可以写在要点或引用块中。
+- 每组标题下列出事实或动作要点。有实际后续时写明动作和接手人，只有用户明确要求时才附提示词。
+
 ## [0.12.2] - 2026-11-27
 
 ### 修正
@@ -358,7 +365,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.12.2...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.12.3...HEAD
+[0.12.3]: https://github.com/sty20030818/StonePlugins/compare/v0.12.2...v0.12.3
 [0.12.2]: https://github.com/sty20030818/StonePlugins/compare/v0.12.1...v0.12.2
 [0.12.1]: https://github.com/sty20030818/StonePlugins/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/sty20030818/StonePlugins/compare/v0.11.0...v0.12.0

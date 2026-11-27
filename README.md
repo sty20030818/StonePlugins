@@ -2,9 +2,9 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-## 当前版本 v0.12.2
+## 当前版本 v0.12.3
 
-简短交接也写出本轮成果和实际接续。下一步标题直接说要做什么，下面列明接手人。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.2)、[工程规则](plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)和[版本评测](docs/evals/v0.12.2.md)。
+拍板时写清推荐和各选项的影响。有实际接续时，下一步标题写明动作，下面列出接手人。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.3)、[工程规则](plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)和[版本评测](docs/evals/v0.12.3.md)。
 
 ## 已发布版本 v0.11.0
 
@@ -80,12 +80,12 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 
 需要支持 Plugins 和 Hooks 的 Codex，以及在 `PATH` 中可用的 Node.js 22.18 或更高版本。Hook 运行时没有 npm 依赖。
 
-### v0.12.2 GitHub 固定标签安装
+### v0.12.3 GitHub 固定标签安装
 
 使用以下命令从 GitHub 正式标签安装。已有同名市场时，先用 `codex plugin marketplace list` 记下原来源与可回退的 ref，再运行 `codex plugin marketplace remove stonefish` 移除旧登记。
 
 ```bash
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.12.2
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.12.3
 codex plugin add stoneplugins@stonefish
 ```
 

@@ -2,6 +2,8 @@
 
 ## 文档工作流与版本范围
 
+v0.12.3 明确了拍板要交代的推荐和选项影响，以及工程小结逐组检查要点的要求。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.3)和[v0.12.3 验证](evals/v0.12.3.md)。
+
 v0.12.2 明确简短工程交接也应分别写出成果和实际接续，移除了默认附上指令模板的要求。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.2)和[v0.12.2 验证](evals/v0.12.2.md)。
 
 v0.12.1 固定了工程小结图标及含义，要求下一步标题写出具体动作。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.1)和[v0.12.1 验证](evals/v0.12.1.md)。
