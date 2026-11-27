@@ -2,6 +2,8 @@
 
 ## 文档工作流与版本范围
 
+v0.12.2 明确简短工程交接也应分别写出成果和实际接续，移除了默认附上指令模板的要求。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.2)和[v0.12.2 验证](evals/v0.12.2.md)。
+
 v0.12.1 固定了工程小结图标及含义，要求下一步标题写出具体动作。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.1)和[v0.12.1 验证](evals/v0.12.1.md)。
 
 v0.12.0 已于 2026-11-27 正式发布，调整工程回复的标题、流程位置和接续动作。见[GitHub 正式版](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.0)。行为约定见[工程小结](../plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)，版本与宿主证据见[v0.12.0 验证](evals/v0.12.0.md)。

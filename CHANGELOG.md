@@ -4,6 +4,12 @@
 
 ## [未发布]
 
+## [0.12.2] - 2026-11-27
+
+### 修正
+
+- 简短的工程结论和交接也使用小结标题。收尾同时核对本轮成果和整件事的后续，有实际接续时单列动作和接手人。移除默认附上可复制指令的要求。
+
 ## [0.12.1] - 2026-11-27
 
 ### 变更
@@ -352,7 +358,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.12.1...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.12.2...HEAD
+[0.12.2]: https://github.com/sty20030818/StonePlugins/compare/v0.12.1...v0.12.2
 [0.12.1]: https://github.com/sty20030818/StonePlugins/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/sty20030818/StonePlugins/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/sty20030818/StonePlugins/compare/v0.10.0...v0.11.0
