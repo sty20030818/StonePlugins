@@ -2,9 +2,9 @@
 
 StonePlugins 把长期维护、正确职责边界、简洁架构和证据验证组成一份常驻工程执行契约。Codex 插件同包提供 Skill、条件细则和生命周期 Hook；其他 CLI 可以独立安装同源 Skill。
 
-## 当前版本 v0.12.3
+## 当前版本 v0.12.4
 
-拍板时写清推荐和各选项的影响。有实际接续时，下一步标题写明动作，下面列出接手人。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.3)、[工程规则](plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)和[版本评测](docs/evals/v0.12.3.md)。
+工程小结的结尾最多一组。有实际后续时写下一步和接手人，只有值得考虑的延伸时可以写一条可选想法。确实收尾就直接结束。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.4)、[工程规则](plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)和[版本评测](docs/evals/v0.12.4.md)。
 
 ## 已发布版本 v0.11.0
 
@@ -59,8 +59,8 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 - `SessionStart` 的 startup、resume、clear、compact，以及 `SubagentStart`，从实际运行的插件缓存读取包内 Skill，移除 frontmatter 后送达完整核心，并给出当前资源路径；不展开 references。
 - `UserPromptSubmit` 每轮发送不超过 300 UTF-8 bytes 的执行提醒，指向核心的[回复格式](plugins/stoneplugins/skills/engineering/SKILL.md#回复格式)。同一短提醒用于各种提问，完整核心沿用生命周期送达的正文。
 - 工程任务沿用当前上下文已完整收到的核心，按当前任务直接读取[架构](plugins/stoneplugins/skills/engineering/references/architecture.md)、[修改边界](plugins/stoneplugins/skills/engineering/references/change-boundaries.md)或[验证](plugins/stoneplugins/skills/engineering/references/verification.md)细则，不经过二级选择器；多个主题可以同时读取，不为显示调用徽标重复读取同一核心。
-- 工程小结用固定图标写 Markdown 三级标题，✅ 表示本轮成果，⚠️ 表示已确认问题，❓ 表示待确认问题，➡️ 表示实际接续。标题写出具体结论，空一行后列要点，有流程时标明当前步骤。简短的工程结论和交接也用这套格式。
-- 本轮有成果且整件事还有实际后续时，分别写 ✅ 和 ➡️ 标题。接续标题写出动作，例如 `### ➡️ 下一步搭建静态界面`，下方列明接手人。确需用户拍板时用独立引用块。
+- 工程小结用固定图标写 Markdown 三级标题，✅ 表示本轮成果，⚠️ 表示已确认问题，❓ 表示待确认问题，➡️ 表示实际接续，💡 表示可选想法。标题写出具体结论，空一行后列要点，有流程时标明当前步骤。简短的工程结论和交接也用这套格式。
+- 结尾最多一组。有实际后续时只写 ➡️，例如 `### ➡️ 下一步搭建静态界面`，下方列明接手人。没有待办且有值得考虑的延伸时才写 💡。整件事明确收尾就直接结束。确需用户拍板时用独立引用块。
 - 用户追问原因时，解释具体取舍。有影响范围或授权的选择，在行动前说明。普通问答按宿主的协作约定直接回答。
 - [方法论解释与治理](docs/methodologies.md)供维护者查阅，不参与运行时注入或任务必读。
 
@@ -80,12 +80,12 @@ Linear 独立指南固定到 StoneDocs `659543825e8ad2586132afd0eb53b1e3aa3bcf8b
 
 需要支持 Plugins 和 Hooks 的 Codex，以及在 `PATH` 中可用的 Node.js 22.18 或更高版本。Hook 运行时没有 npm 依赖。
 
-### v0.12.3 GitHub 固定标签安装
+### v0.12.4 GitHub 固定标签安装
 
 使用以下命令从 GitHub 正式标签安装。已有同名市场时，先用 `codex plugin marketplace list` 记下原来源与可回退的 ref，再运行 `codex plugin marketplace remove stonefish` 移除旧登记。
 
 ```bash
-codex plugin marketplace add sty20030818/StonePlugins --ref v0.12.3
+codex plugin marketplace add sty20030818/StonePlugins --ref v0.12.4
 codex plugin add stoneplugins@stonefish
 ```
 
