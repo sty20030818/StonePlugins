@@ -4,6 +4,12 @@
 
 ## [未发布]
 
+## [0.12.1] - 2026-11-27
+
+### 变更
+
+- 工程小结用 ✅、⚠️、❓、➡️ 区分本轮成果、已确认问题、待确认问题和接续动作。下一步标题写明动作，正文注明接手人，需要用户转交时提供可复制的指令。
+
 ## [0.12.0] - 2026-11-27
 
 已发布[GitHub 正式版](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.0)。
@@ -346,7 +352,8 @@
 - 新增以 Git 为后端的 Codex marketplace 元数据。
 - 新增无依赖的 Hook 测试和仓库校验。
 
-[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.12.0...HEAD
+[未发布]: https://github.com/sty20030818/StonePlugins/compare/v0.12.1...HEAD
+[0.12.1]: https://github.com/sty20030818/StonePlugins/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/sty20030818/StonePlugins/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/sty20030818/StonePlugins/compare/v0.10.0...v0.11.0
 [0.9.2]: https://github.com/sty20030818/StonePlugins/compare/v0.9.1...v0.9.2

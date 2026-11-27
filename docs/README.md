@@ -2,6 +2,8 @@
 
 ## 文档工作流与版本范围
 
+v0.12.1 固定了工程小结图标及含义，要求下一步标题写出具体动作。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.1)和[v0.12.1 验证](evals/v0.12.1.md)。
+
 v0.12.0 已于 2026-11-27 正式发布，调整工程回复的标题、流程位置和接续动作。见[GitHub 正式版](https://github.com/sty20030818/StonePlugins/releases/tag/v0.12.0)。行为约定见[工程小结](../plugins/stoneplugins/skills/engineering/SKILL.md#工程小结)，版本与宿主证据见[v0.12.0 验证](evals/v0.12.0.md)。
 
 v0.11.0 已于 2026-11-26 正式发布，包含验收索引、日常文档维护及 Linear 同轮同步。安装首选 GitHub 固定标签。见[正式 Release](https://github.com/sty20030818/StonePlugins/releases/tag/v0.11.0)、[安装说明](../README.md#安装)、[文档工作流](document-workflow.md)和[v0.11.0 验证](evals/v0.11.0.md)。

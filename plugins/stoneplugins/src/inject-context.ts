@@ -11,7 +11,7 @@ const FAILURE_CONTEXT =
 
 const EVENTS = ["SessionStart", "SubagentStart", "UserPromptSubmit"] as const;
 const PROMPT_CONTEXT =
-  "工程按需读细则。回复前检查核心“回复格式”和全部加粗。用 ### 和 emoji 作标题，下接列表。有流程标当前，有后续单列下一步和接手人，拍板才引用。缺核心用 $stoneplugins:engineering 补全，失败暂停工程决定。非工程照常。";
+  "工程按需读细则。回复前检查核心“回复格式”和全部加粗。用✅⚠️❓➡️写三级标题，有流程标当前。查接续，标题写动作，列接手人；拍板才引用。缺核心用 $stoneplugins:engineering 补全，失败暂停工程决定。非工程照常。";
 
 type HookEventName = (typeof EVENTS)[number];
 
